@@ -9,4 +9,4 @@ matrix:
     - rust: nightly
       env: TEST_FLAGS="--features nightly"
 script:
-  - eval "cargo test $TEST_FLAGS"
+  - cargo test $TEST_FLAGS
