@@ -3,7 +3,7 @@
 #[doc(hidden)]
 pub extern crate core as _core;
 
-/// Asserts at compile-time that the two types have equal sizes.
+/// Asserts at compile-time that the types have equal sizes.
 ///
 /// # Example
 ///
