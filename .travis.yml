@@ -1,6 +1,7 @@
 language: rust
 matrix:
   include:
+    - rust: 1.6.0
     - rust: stable
     - rust: stable
       os: osx
