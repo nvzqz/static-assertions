@@ -12,5 +12,9 @@ macro_rules! assert_eq_size {
             use $crate::_core::mem::{forget, transmute, uninitialized};
             forget::<$y>(transmute(uninitialized::<$x>()));
         }
-    }
+    };
+    ($x:ty, $y:ty, $($rest:ty),+) => {
+        assert_eq_size!($x, $y);
+        assert_eq_size!($y, $($rest),+);
+    };
 }
