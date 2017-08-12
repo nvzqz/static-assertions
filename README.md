@@ -31,6 +31,10 @@ assert_eq_size_val!(x, 0u8);
 
 _**Note:** Both macros support multiple arguments and are not restricted by the recursion limit._
 
+**Limitation:** Due to implementation details, these macros can only be called
+from within the context of a function. This may change when `mem::size_of`
+becomes a `const fn`.
+
 ### Assert Constant Expression
 
 A constant expression can be ensured to evaluate to `true` at compile-time.
