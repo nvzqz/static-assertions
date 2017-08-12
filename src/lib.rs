@@ -36,6 +36,25 @@ macro_rules! assert_eq_size {
 }
 
 /// Asserts at compile-time that the values have equal sizes.
+///
+/// # Example
+///
+/// ```
+/// # #[macro_use]
+/// # extern crate static_assertions;
+/// # fn main() {
+/// struct Byte(u8);
+///
+/// let x = 10u8;
+/// let y = Byte(42); // Works for non-cloneable types
+///
+/// assert_eq_size_val!(x, y);
+/// assert_eq_size_val!(x, y, 0u8);
+///
+/// // Fails to compile:
+/// // assert_eq_size_val!(x, 0u32);
+/// # }
+/// ```
 #[macro_export]
 macro_rules! assert_eq_size_val {
     ($x:expr, $($xs:expr),+) => {
