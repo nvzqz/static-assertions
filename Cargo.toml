@@ -4,6 +4,6 @@ version = "0.1.0"
 authors = ["Nikolai Vazquez"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/nvzqz/static-assertions-rs"
-categories = ["no-std"]
+categories = ["no-std", "rust-patterns"]
 keywords = ["assert", "static"]
 description = "Compile-time assertions to ensure that invariants are met."
