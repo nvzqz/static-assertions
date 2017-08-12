@@ -9,5 +9,6 @@ matrix:
     - rust: nightly
       env: TEST_FLAGS="--features nightly"
 script:
-  - cargo test $TEST_FLAGS
-  - echo '! cargo test --features failure' | bash
+  matrix:
+    - cargo test $TEST_FLAGS
+    - echo '! cargo test --features failure' | bash
