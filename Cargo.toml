@@ -7,3 +7,6 @@ repository = "https://github.com/nvzqz/static-assertions-rs"
 categories = ["no-std", "rust-patterns"]
 keywords = ["assert", "static"]
 description = "Compile-time assertions to ensure that invariants are met."
+
+[badges]
+travis-ci = { repository = "nvzqz/static-assertions-rs" }
