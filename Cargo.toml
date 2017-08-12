@@ -1,0 +1,6 @@
+[package]
+name = "static_assertions"
+version = "0.1.0"
+authors = ["Nikolai Vazquez"]
+license = "MIT/Apache-2.0"
+description = "Compile-time assertions to ensure that invariants are met."
