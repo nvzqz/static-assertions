@@ -2,8 +2,9 @@ language: rust
 matrix:
   include:
     - rust: stable
-      os: linux
     - rust: stable
       os: osx
+    - rust: beta
+    - rust: nightly
 script:
   - cargo test
