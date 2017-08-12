@@ -48,3 +48,18 @@ macro_rules! assert_eq_size_val {
         }
     }
 }
+
+/// Asserts at compile-time that the constant expression evaluates to `true`.
+#[macro_export]
+macro_rules! const_assert {
+    ($cond:expr) => {
+        // Causes overflow if condition is false
+        let _ = [(); 0 - (!($cond) as usize)];
+    };
+    ($($xs:expr),+) => {
+        const_assert!($($xs)&&+);
+    };
+    ($($xs:expr);+ $(;)*) => {
+        const_assert!($($xs),+);
+    };
+}
