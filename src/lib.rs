@@ -35,3 +35,22 @@ macro_rules! assert_eq_size {
         assert_eq_size!($y, $($rest),+);
     };
 }
+
+/// Asserts at compile-time that the values have equal sizes.
+#[macro_export]
+macro_rules! assert_eq_size_val {
+    ($x:expr, $y:expr) => {
+        #[allow(unused_unsafe)]
+        unsafe {
+            use $crate::_core::{mem, ptr};
+            let (x, y) = (&$x, &$y);
+            let mut copy = ptr::read(x);
+            ptr::write(&mut copy, mem::transmute(ptr::read(y)));
+            mem::forget(copy);
+        }
+    };
+    ($x:expr, $y:expr, $($rest:expr),+) => {
+        assert_eq_size_val!($x, $y);
+        assert_eq_size_val!($y, $($rest),+);
+    };
+}
