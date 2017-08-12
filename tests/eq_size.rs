@@ -73,6 +73,9 @@ fn test_eq_size_drop_count() {
         let dc = DropCounter::new(&mut count);
         assert_eq!(*dc.count(), 1);
         assert_eq_size_val!(dc, 0usize);
+        assert_eq!(*dc.count(), 1);
+        assert_eq_size_val!(dc, 0usize, dc);
+        assert_eq!(*dc.count(), 1);
     }
     assert_eq!(count, 0);
 
