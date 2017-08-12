@@ -10,4 +10,4 @@ matrix:
       env: TEST_FLAGS="--features nightly"
 script:
   - cargo test $TEST_FLAGS
-  - ! cargo test --features failure
+  - echo '! cargo test --features failure' | bash
