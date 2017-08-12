@@ -82,3 +82,12 @@ fn test_eq_size_drop_count() {
     assert_eq_size_val!(DropCounter::new(&mut count), 0usize);
     assert_eq!(count, 0);
 }
+
+// This test is expected to fail at compile-time
+#[cfg(feature = "failure")]
+#[test]
+fn test_fail() {
+    assert_eq_size!(u8, u32);
+    assert_eq_size!(u8, u32, u64);
+    assert_eq_size!([u8; 1], u8, u8, u64);
+}

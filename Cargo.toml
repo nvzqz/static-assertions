@@ -15,3 +15,4 @@ travis-ci = { repository = "nvzqz/static-assertions-rs" }
 # For testing
 const_fn = []
 nightly = ["const_fn"]
+failure = [] # Compiles tests that are expected to fail

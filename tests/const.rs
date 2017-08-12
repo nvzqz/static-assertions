@@ -38,3 +38,11 @@ fn assoc_const() {
 
     const_assert!(Concrete::VAL == FOUR);
 }
+
+// This test is expected to fail at compile-time
+#[cfg(feature = "failure")]
+#[test]
+fn test_fail() {
+    const_assert!(1 + 1 != 2);
+    const_assert!(1 < 1);
+}
