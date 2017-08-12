@@ -5,6 +5,9 @@ pub extern crate core as _core;
 
 /// Asserts at compile-time that the types have equal sizes.
 ///
+/// This especially is useful for when coercing pointers between different types
+/// and ensuring the underlying values are the same size.
+///
 /// # Example
 ///
 /// ```
