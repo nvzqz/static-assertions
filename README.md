@@ -39,9 +39,6 @@ becomes a `const fn`.
 
 A constant expression can be ensured to evaluate to `true` at compile-time.
 
-**Limitation:** Due to implementation details, `const_assert!` can only be
-called from within the context of a function.
-
 ```rust
 const_assert!(1 + 1 == 2);
 
@@ -58,6 +55,9 @@ const_assert! {
 // Fails to compile
 const_assert!(2 != 2);
 ```
+
+**Limitation:** Due to implementation details, `const_assert!` can only be
+called from within the context of a function.
 
 ## License
 
