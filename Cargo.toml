@@ -10,3 +10,8 @@ description = "Compile-time assertions to ensure that invariants are met."
 
 [badges]
 travis-ci = { repository = "nvzqz/static-assertions-rs" }
+
+[features]
+# For testing
+const_fn = []
+nightly = ["const_fn"]
