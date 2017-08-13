@@ -122,6 +122,10 @@
 //!
 //! To use these macros in other contexts, a unique label must be provided.
 //!
+//! If you want to read up about this and provide feedback, see
+//! [the related issue on GitHub][issue1].
+//!
+//! [issue1]: https://github.com/nvzqz/static-assertions-rs/issues/1
 //! [crate]: https://crates.io/crates/static_assertions
 //! [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
 //! [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
