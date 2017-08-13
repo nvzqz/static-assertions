@@ -142,6 +142,24 @@
 //! }
 //! ```
 //!
+//! # Assert Trait `impl`
+//!
+//! To ensure types implement [`Send`], [`Sync`], and other traits, there's
+//! [`assert_impl`]:
+//!
+//! ```
+//! # #[macro_use]
+//! # extern crate static_assertions;
+//! assert_impl!(str; String, Send, Sync, From<&'static str>);
+//! assert_impl!(vec; Box<[u8]>, Into<Vec<u8>>);
+//!
+//! fn main() {
+//!     // Produces a compilation failure:
+//!     // `*const u8` cannot be sent between threads safely
+//!     // assert_impl!(*const u8, Send);
+//! }
+//! ```
+//!
 //! # Limitations
 //!
 //! Due to implementation details, the following can only be used normally from
@@ -161,6 +179,8 @@
 //! [crate]: https://crates.io/crates/static_assertions
 //! [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
 //! [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
+//! [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
+//! [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 //! [`usize`]: https://doc.rust-lang.org/std/primitive.usize.html
 //! [`u64`]: https://doc.rust-lang.org/std/primitive.u64.html
 //! [`u32`]: https://doc.rust-lang.org/std/primitive.u32.html
@@ -168,6 +188,7 @@
 //! [`assert_eq_size_ptr`]: macro.assert_eq_size_ptr.html
 //! [`assert_eq_size`]: macro.assert_eq_size.html
 //! [`assert_obj_safe`]: macro.assert_obj_safe.html
+//! [`assert_impl`]: macro.assert_impl.html
 //! [`const_assert`]: macro.const_assert.html
 //! [`const_assert_eq`]: macro.const_assert_eq.html
 
@@ -322,4 +343,40 @@ macro_rules! assert_obj_safe {
         #[allow(dead_code, non_snake_case)]
         fn $label() { assert_obj_safe!($($xs),+); }
     };
+}
+
+/// Asserts at compile-time that the type implements the given traits.
+#[macro_export]
+macro_rules! assert_impl {
+    ($x:ty, $($xs:tt)+) => {
+        _assert_impl!(assert_impl; $x; $($xs)+);
+    };
+    ($label:ident; $x:ty, $($xs:tt)+) => {
+        #[allow(dead_code, non_snake_case)]
+        fn $label() { assert_impl!($x, $($xs)+); }
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! _assert_impl {
+    (
+        $f:ident; $x:ty; $(
+            $y:ident $(< $($args:ty),+ $(,)* >)*
+        ),+
+    ) => {
+        $(_assert_impl!(@single $f; $x; $y $([$($args,)+])*);)+
+    };
+    (@single $f:ident; $x:ty; $y:ident) => {
+        {
+            fn $f<T: ?Sized + $y>() {}
+            $f::<$x>();
+        }
+    };
+    (@single $f:ident; $x:ty; $y:ident [$($args:ty,)+]) => {
+        {
+            fn $f<T: ?Sized + $y < $($args),+ > >() {}
+            $f::<$x>();
+        }
+    }
 }
