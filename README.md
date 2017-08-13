@@ -1,4 +1,4 @@
-# static_assertions [![Crates.io][crate-badge]][crate] [![Build Status][travis-badge]][travis]
+# static_assertions [![Crates.io][crate-badge] ![Downloads][crate-dl]][crate] [![Build Status][travis-badge]][travis]
 
 Rust compile-time assertions to ensure that invariants are met.
 
@@ -66,6 +66,7 @@ This project is released under either:
 at your choosing.
 
 [crate]:       https://crates.io/crates/static_assertions
+[crate-dl]:    https://img.shields.io/crates/d/static_assertions.svg
 [crate-doc]:   https://docs.rs/static_assertions/
 [crate-badge]: https://img.shields.io/crates/v/static_assertions.svg
 
