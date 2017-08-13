@@ -151,7 +151,7 @@
 //! # #[macro_use]
 //! # extern crate static_assertions;
 //! assert_impl!(str; String, Send, Sync, From<&'static str>);
-//! assert_impl!(vec; Box<[u8]>, Into<Vec<u8>>);
+//! assert_impl!(vec; &'static [u8], Into<Vec<u8>>);
 //!
 //! fn main() {
 //!     // Produces a compilation failure:
