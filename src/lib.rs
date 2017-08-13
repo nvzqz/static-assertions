@@ -167,6 +167,7 @@
 //!
 //! - [`assert_eq_size`]
 //! - [`assert_obj_safe`]
+//! - [`assert_impl`]
 //! - [`const_assert`]
 //! - [`const_assert_eq`]
 //!
