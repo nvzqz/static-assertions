@@ -105,7 +105,7 @@
 //! const TWO: usize = 2;
 //! const_assert_eq!(two; TWO * TWO, TWO + TWO, 4);
 //!
-//! // Produces a compilation failure:
+//! // Fails to compile (same label):
 //! // const_assert_eq!(two; TWO, TWO);
 //!
 //! fn main() {
