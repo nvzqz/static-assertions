@@ -4,6 +4,7 @@
 extern crate static_assertions;
 
 assert_impl!(byte; u8, Send, Sync);
+assert_impl!(slice; [u8], Send, Sync, AsRef<[u8]>);
 
 #[cfg(feature = "failure")]
 assert_impl!(ptr; *const u8, Send, Sync);
