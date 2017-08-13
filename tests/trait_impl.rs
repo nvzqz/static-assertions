@@ -4,6 +4,7 @@
 extern crate static_assertions;
 
 assert_impl!(byte; u8, Send, Sync);
+assert_impl!(iter; &[u8], IntoIterator /* TODO: <Item=&u8> */);
 assert_impl!(slice; [u8], Send, Sync, AsRef<[u8]>);
 
 #[cfg(feature = "failure")]
