@@ -99,9 +99,10 @@
 //! # }
 //! ```
 //!
-//! **Limitation:** Due to implementation details, [`assert_eq_size`],
-//! [`const_assert`], and [`const_assert_eq`] can only be used from within the
-//! context of a function.
+//! # Limitations
+//!
+//! Due to implementation details, [`assert_eq_size`], [`const_assert`], and
+//! [`const_assert_eq`] can only be used from within the context of a function.
 //!
 //! [crate]: https://crates.io/crates/static_assertions
 //! [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
