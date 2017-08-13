@@ -351,9 +351,9 @@ macro_rules! assert_impl {
     ($x:ty, $($xs:tt)+) => {
         _assert_impl!(assert_impl; $x; $($xs)+);
     };
-    ($label:ident; $x:ty, $($xs:tt)+) => {
+    ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
-        fn $label() { assert_impl!($x, $($xs)+); }
+        fn $label() { assert_impl!($($xs)+); }
     };
 }
 
