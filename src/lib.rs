@@ -256,8 +256,8 @@ macro_rules! const_assert {
         let _ = [(); 0 - (!($($xs)&&+) as usize)];
     };
     ($label:ident; $($xs:expr),+) => {
-        #[allow(dead_code, non_camel_case_types)]
-        type $label = [(); 0 - (!($($xs)&&+) as usize)];
+        #[allow(dead_code, non_snake_case)]
+        fn $label() { const_assert!($($xs),+); }
     };
 }
 
