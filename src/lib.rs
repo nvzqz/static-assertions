@@ -85,7 +85,7 @@
 //! # }
 //! ```
 //!
-//! As a shorthand for `const_assert!(a == b)`, there's [`const_assert_eq`].
+//! As a shorthand for `const_assert!(a == b)`, there's [`const_assert_eq`]:
 //!
 //! ```
 //! # #[macro_use]
