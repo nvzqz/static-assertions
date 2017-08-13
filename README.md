@@ -2,6 +2,8 @@
 
 Rust compile-time assertions to ensure that invariants are met.
 
+[Documentation][crate-doc]
+
 ## Usage
 
 ### Assert Equal Size
@@ -68,6 +70,7 @@ This project is released under either:
 at your choosing.
 
 [crate]:       https://crates.io/crates/static_assertions
+[crate-doc]:   https://docs.rs/static_assertions/
 [crate-badge]: https://img.shields.io/crates/v/static_assertions.svg
 
 [travis]:       https://travis-ci.org/nvzqz/static-assertions-rs
