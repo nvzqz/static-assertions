@@ -173,10 +173,8 @@ macro_rules! assert_eq_size {
         }
     };
     ($label:ident; $x:ty, $($xs:ty),+) => {
-        #[allow(non_snake_case)]
-        mod $label {
-            fn _impl() { assert_eq_size!($x, $($xs),+) }
-        }
+        #[allow(dead_code, non_snake_case)]
+        fn $label() { assert_eq_size!($x, $($xs),+) }
     };
 }
 
