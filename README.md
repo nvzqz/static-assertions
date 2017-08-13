@@ -4,6 +4,23 @@ Rust compile-time assertions to ensure that invariants are met.
 
 [Documentation][crate-doc]
 
+## Installation
+
+This crate is available [on crates.io][crate] and can be used by adding the
+following to your project's `Cargo.toml`:
+
+```toml
+[dependencies]
+static_assertions = "0.1"
+```
+
+and this to your crate root:
+
+```rust
+#[macro_use]
+extern crate static_assertions;
+```
+
 ## Usage
 
 ### Assert Equal Size
