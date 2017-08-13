@@ -11,18 +11,19 @@ pub extern crate core as _core;
 /// # Example
 ///
 /// ```
-/// #[macro_use]
-/// extern crate static_assertions;
-///
+/// # #[macro_use]
+/// # extern crate static_assertions;
 /// struct Byte(u8);
 ///
-/// fn main() {
-///     assert_eq_size!(Byte, u8);
-///     // assert_eq_size!(Byte, u16); // Fails to compile
+/// # fn main() {
+/// assert_eq_size!(Byte, u8);
 ///
-///     // Supports unlimited arguments:
-///     assert_eq_size!([Byte; 4], [u16; 2], u32);
-/// }
+/// // Supports unlimited arguments:
+/// assert_eq_size!([Byte; 4], [u16; 2], u32);
+///
+/// // Fails to compile:
+/// // assert_eq_size!(Byte, u16);
+/// # }
 /// ```
 #[macro_export]
 macro_rules! assert_eq_size {
