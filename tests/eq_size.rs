@@ -3,6 +3,11 @@
 #[macro_use]
 extern crate static_assertions;
 
+assert_eq_size!(byte; u8, u8, (u8,), [u8; 1]);
+
+#[cfg(feature = "failure")]
+const_assert!(byte; u8, u8);
+
 // Placed in separate module so that DropCounter's fields are private
 mod dc {
     /// A type that acts somewhat of a reference counter.

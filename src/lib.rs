@@ -29,12 +29,18 @@
 //! ```
 //! # #[macro_use]
 //! # extern crate static_assertions;
-//! # fn main() {
-//! assert_eq_size!([u8; 4], (u16, u16), u32);
+//! // Can be declared outside of a function if labeled
+//! assert_eq_size!(bytes; (u8, u8), u16);
 //!
-//! // Produces a compilation failure:
-//! // assert_eq_size!(u32, u8);
-//! # }
+//! // Fails to compile (same label):
+//! // assert_eq_size!(bytes; u8, u8);
+//!
+//! fn main() {
+//!     assert_eq_size!([u8; 4], (u16, u16), u32);
+//!
+//!     // Produces a compilation failure:
+//!     // assert_eq_size!(u32, u8);
+//! }
 //! ```
 //!
 //! Similar to [`assert_eq_size`], there is [`assert_eq_size_val`]. Instead of
@@ -110,11 +116,11 @@
 //!
 //! # Limitations
 //!
-//! Due to implementation details, [`assert_eq_size`] can only be used from
-//! within the context of a function.
+//! Due to implementation details, [`assert_eq_size`], [`const_assert`], and
+//! [`const_assert_eq`] can only be used normally from within the context of a
+//! function.
 //!
-//! This is partially resolved in [`const_assert`] and [`const_assert_eq`] by
-//! requiring a unique label when not inside a function.
+//! To use these macros in other contexts, a unique label must be provided.
 //!
 //! [crate]: https://crates.io/crates/static_assertions
 //! [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
@@ -142,15 +148,20 @@ pub extern crate core as _core;
 /// # extern crate static_assertions;
 /// struct Byte(u8);
 ///
-/// # fn main() {
-/// assert_eq_size!(Byte, u8);
+/// assert_eq_size!(pair; (u16, u16), [u16; 2], [u8; 4]);
 ///
-/// // Supports unlimited arguments:
-/// assert_eq_size!([Byte; 4], [u16; 2], u32);
+/// // Fails to compile (same label):
+/// // assert_eq_size!(pair; u8, u8);
 ///
-/// // Fails to compile:
-/// // assert_eq_size!(Byte, u16);
-/// # }
+/// fn main() {
+///     assert_eq_size!(Byte, u8);
+///
+///     // Supports unlimited arguments:
+///     assert_eq_size!([Byte; 4], [u16; 2], u32);
+///
+///     // Produces a compilation failure:
+///     // assert_eq_size!(Byte, u16);
+/// }
 /// ```
 #[macro_export]
 macro_rules! assert_eq_size {
@@ -160,7 +171,13 @@ macro_rules! assert_eq_size {
             use $crate::_core::mem::{forget, transmute, uninitialized};
             $(forget::<$xs>(transmute(uninitialized::<$x>()));)+
         }
-    }
+    };
+    ($label:ident; $x:ty, $($xs:ty),+) => {
+        #[allow(non_snake_case)]
+        mod $label {
+            fn _impl() { assert_eq_size!($x, $($xs),+) }
+        }
+    };
 }
 
 /// Asserts at compile-time that the values pointed to have equal sizes.
