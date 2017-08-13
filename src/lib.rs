@@ -7,7 +7,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! static_assertions = "0.2.1"
+//! static_assertions = "0.2.2"
 //! ```
 //!
 //! and this to your crate root:
