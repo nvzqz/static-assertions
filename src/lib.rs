@@ -85,6 +85,9 @@
 //! # }
 //! ```
 //!
+//! **Limitation:** Due to implementation details, [`assert_eq_size`] and
+//! [`const_assert`] can only be used from within the context of a function.
+//!
 //! [crate]: https://crates.io/crates/static_assertions
 //! [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
 //! [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
