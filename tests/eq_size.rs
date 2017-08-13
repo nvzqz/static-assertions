@@ -8,6 +8,22 @@ assert_eq_size!(byte; u8, u8, (u8,), [u8; 1]);
 #[cfg(feature = "failure")]
 assert_eq_size!(byte; u8, u8);
 
+mod assoc_type {
+    trait Trait {
+        type AssocItem;
+    }
+
+    impl<T> Trait for T {
+        type AssocItem = Self;
+    }
+
+    struct Value;
+
+    impl Value {
+        assert_eq_size!(test; <Self as Trait>::AssocItem, Self);
+    }
+}
+
 // Placed in separate module so that DropCounter's fields are private
 mod dc {
     /// A type that acts somewhat of a reference counter.
