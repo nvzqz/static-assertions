@@ -69,6 +69,9 @@
 //! # }
 //! ```
 //!
+//! Rather than dereference a pointer to achieve the same effect as
+//! [`assert_eq_size_val`], there is also the option of [`assert_eq_size_ptr`].
+//!
 //! # Assert Constant Expression
 //!
 //! Constant expressions can be ensured to have certain properties via
@@ -111,6 +114,7 @@
 //! [`u64`]: https://doc.rust-lang.org/std/primitive.u64.html
 //! [`u32`]: https://doc.rust-lang.org/std/primitive.u32.html
 //! [`assert_eq_size_val`]: macro.assert_eq_size_val.html
+//! [`assert_eq_size_ptr`]: macro.assert_eq_size_ptr.html
 //! [`assert_eq_size`]: macro.assert_eq_size.html
 //! [`const_assert`]: macro.const_assert.html
 //! [`const_assert_eq`]: macro.const_assert_eq.html
@@ -121,9 +125,6 @@
 pub extern crate core as _core;
 
 /// Asserts at compile-time that the types have equal sizes.
-///
-/// This especially is useful for when coercing pointers between different types
-/// and ensuring the underlying values are the same size.
 ///
 /// # Example
 ///
@@ -153,6 +154,34 @@ macro_rules! assert_eq_size {
     }
 }
 
+/// Asserts at compile-time that the values pointed to have equal sizes.
+///
+/// This especially is useful for when coercing pointers between different types
+/// and ensuring the underlying values are the same size.
+///
+/// # Example
+///
+/// ```
+/// # #[macro_use]
+/// # extern crate static_assertions;
+/// fn operation(x: &(u32, u32), y: &[u16; 4]) {
+///     assert_eq_size_ptr!(x, y);
+/// }
+/// # fn main() {}
+/// ```
+#[macro_export]
+macro_rules! assert_eq_size_ptr {
+    ($x:expr, $($xs:expr),+) => {
+        #[allow(unused_unsafe)]
+        unsafe {
+            use $crate::_core::{mem, ptr};
+            let mut copy = ptr::read($x);
+            $(ptr::write(&mut copy, mem::transmute(ptr::read($xs)));)+
+            mem::forget(copy);
+        }
+    }
+}
+
 /// Asserts at compile-time that the values have equal sizes.
 ///
 /// # Example
@@ -176,13 +205,7 @@ macro_rules! assert_eq_size {
 #[macro_export]
 macro_rules! assert_eq_size_val {
     ($x:expr, $($xs:expr),+) => {
-        #[allow(unused_unsafe)]
-        unsafe {
-            use $crate::_core::{mem, ptr};
-            let mut copy = ptr::read(&$x);
-            $(ptr::write(&mut copy, mem::transmute(ptr::read(&$xs)));)+
-            mem::forget(copy);
-        }
+        assert_eq_size_ptr!(&$x, $(&$xs),+);
     }
 }
 
