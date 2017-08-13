@@ -1,3 +1,100 @@
+//! Compile-time assertions to ensure that invariants are met.
+//!
+//! # Usage
+//!
+//! This crate is available [on crates.io][crate] and can be used by adding the
+//! following to your project's `Cargo.toml`:
+//!
+//! ```toml
+//! [dependencies]
+//! static_assertions = "0.1"
+//! ```
+//!
+//! and this to your crate root:
+//!
+//! ```
+//! #[macro_use]
+//! extern crate static_assertions;
+//! # fn main() {}
+//! ```
+//!
+//! # Assert Equal Size
+//!
+//! When performing operations such as pointer casts or dealing with [`usize`]
+//! versus [`u64`] versus [`u32`], the size of your types matter. This is where
+//! [`assert_eq_size`] comes into play. Types provided as arguments to
+//! [`assert_eq_size`] are ensured to be the same size at compile-time. If the
+//! types differ in size, the code will fail to compile.
+//!
+//! ```
+//! # #[macro_use]
+//! # extern crate static_assertions;
+//! # fn main() {
+//! assert_eq_size!([u8; 4], (u16, u16), u32);
+//!
+//! // Produces a compilation failure:
+//! // assert_eq_size!(u32, u8);
+//! # }
+//! ```
+//!
+//! Similar to [`assert_eq_size`], there is [`assert_eq_size_val`]. Instead of
+//! specifying types to compare, values' sizes can be directly compared against
+//! each other.
+//!
+//! ```
+//! # #[macro_use]
+//! # extern crate static_assertions;
+//! # fn main() {
+//! let x = 42u8;
+//! let y = true;
+//!
+//! assert_eq_size_val!(x, y);
+//! # }
+//! ```
+//! [`assert_eq_size_val`] doesn't consume its arguments and thus works for
+//! non-[`Clone`]able values.
+//!
+//! ```
+//! # #[macro_use]
+//! # extern crate static_assertions;
+//! # fn main() {
+//! struct Buffer([u8; 256]);
+//!
+//! let buf = Buffer([0; 256]);
+//! let val = [0u64; 32];
+//!
+//! assert_eq_size_val!(buf, val);
+//!
+//! // `buf` and `val` can be used here
+//! # }
+//! ```
+//!
+//! # Assert Constant Expression
+//!
+//! Constant expressions can be ensured to have certain properties via
+//! [`const_assert`]. If the expression evaluates to `false`, the file will fail
+//! to compile. This is synonymous to [`static_assert` in C++][static_assert].
+//!
+//! ```
+//! # #[macro_use]
+//! # extern crate static_assertions;
+//! # fn main() {
+//! const NUM: usize = 2;
+//!
+//! const_assert!(NUM * NUM == 4);
+//! # }
+//! ```
+//!
+//! [crate]: https://crates.io/crates/static_assertions
+//! [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
+//! [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
+//! [`usize`]: https://doc.rust-lang.org/std/primitive.usize.html
+//! [`u64`]: https://doc.rust-lang.org/std/primitive.u64.html
+//! [`u32`]: https://doc.rust-lang.org/std/primitive.u32.html
+//! [`assert_eq_size_val`]: macro.assert_eq_size_val.html
+//! [`assert_eq_size`]: macro.assert_eq_size.html
+//! [`const_assert`]: macro.const_assert.html
+
 #![no_std]
 
 #[doc(hidden)]
