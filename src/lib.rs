@@ -85,8 +85,21 @@
 //! # }
 //! ```
 //!
-//! **Limitation:** Due to implementation details, [`assert_eq_size`] and
-//! [`const_assert`] can only be used from within the context of a function.
+//! As a shorthand for `const_assert!(a == b)`, there's [`const_assert_eq`].
+//!
+//! ```
+//! # #[macro_use]
+//! # extern crate static_assertions;
+//! # fn main() {
+//! const NUM: usize = 32;
+//!
+//! const_assert_eq!(NUM + NUM, 64);
+//! # }
+//! ```
+//!
+//! **Limitation:** Due to implementation details, [`assert_eq_size`],
+//! [`const_assert`], and [`const_assert_eq`] can only be used from within the
+//! context of a function.
 //!
 //! [crate]: https://crates.io/crates/static_assertions
 //! [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
@@ -97,6 +110,7 @@
 //! [`assert_eq_size_val`]: macro.assert_eq_size_val.html
 //! [`assert_eq_size`]: macro.assert_eq_size.html
 //! [`const_assert`]: macro.const_assert.html
+//! [`const_assert_eq`]: macro.const_assert_eq.html
 
 #![no_std]
 
@@ -198,4 +212,12 @@ macro_rules! const_assert {
     ($($xs:expr);+ $(;)*) => {
         const_assert!($($xs),+);
     };
+}
+
+/// Asserts at compile-time that the constants are equal in value.
+#[macro_export]
+macro_rules! const_assert_eq {
+    ($x:expr, $y:expr) => {
+        const_assert!($x == $y);
+    }
 }
