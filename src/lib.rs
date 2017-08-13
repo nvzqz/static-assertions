@@ -114,11 +114,43 @@
 //! }
 //! ```
 //!
+//! # Assert Object Safety
+//!
+//! Sometimes changes are made to traits that prevent them from being used in
+//! the context of an object. Such a case would be adding a generic method and
+//! forgetting to add `where Self: Sized` after it. If left unnoticed, that
+//! mistake will end up affecting crate users and break compatibility.
+//!
+//! [`assert_obj_safe`] is here to save you from those troubles:
+//!
+//! ```
+//! # #[macro_use]
+//! # extern crate static_assertions;
+//! assert_obj_safe!(basic; Send, Sync, AsRef<str>);
+//!
+//! trait MySafeTrait {}
+//!
+//! trait MyUnsafeTrait {
+//!     fn generic<T>();
+//! }
+//!
+//! fn main() {
+//!     assert_obj_safe!(MySafeTrait);
+//!
+//!     // Produces a compilation failure:
+//!     // assert_obj_safe!(MyUnsafeTrait);
+//! }
+//! ```
+//!
 //! # Limitations
 //!
-//! Due to implementation details, [`assert_eq_size`], [`const_assert`], and
-//! [`const_assert_eq`] can only be used normally from within the context of a
-//! function.
+//! Due to implementation details, the following can only be used normally from
+//! within the context of a function:
+//!
+//! - [`assert_eq_size`]
+//! - [`assert_obj_safe`]
+//! - [`const_assert`]
+//! - [`const_assert_eq`]
 //!
 //! To use these macros in other contexts, a unique label must be provided.
 //!
@@ -135,6 +167,7 @@
 //! [`assert_eq_size_val`]: macro.assert_eq_size_val.html
 //! [`assert_eq_size_ptr`]: macro.assert_eq_size_ptr.html
 //! [`assert_eq_size`]: macro.assert_eq_size.html
+//! [`assert_obj_safe`]: macro.assert_obj_safe.html
 //! [`const_assert`]: macro.const_assert.html
 //! [`const_assert_eq`]: macro.const_assert_eq.html
 
@@ -273,5 +306,20 @@ macro_rules! const_assert_eq {
     };
     ($label:ident; $x:expr, $($xs:expr),+) => {
         const_assert!($label; $($x == $xs),+);
+    };
+}
+
+/// Asserts at compile-time that the traits are object-safe.
+///
+/// This is useful for when changes are made to a trait that accidentally
+/// prevent it from being used as an object.
+#[macro_export]
+macro_rules! assert_obj_safe {
+    ($($xs:ty),+) => {
+        $(let _: Option<&$xs> = None;)+
+    };
+    ($label:ident; $($xs:ty),+) => {
+        #[allow(dead_code, non_snake_case)]
+        fn $label() { assert_obj_safe!($($xs),+); }
     };
 }
