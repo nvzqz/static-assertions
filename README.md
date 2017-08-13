@@ -1,10 +1,6 @@
-# static_assertions
+# static_assertions [![Crates.io][crate-badge]][crate] [![Build Status][travis-badge]][travis]
 
 Rust compile-time assertions.
-
-[![Crates.io][crate-badge]][crate]
-
-[![Build Status][travis-badge]][travis]
 
 ## Usage
 
