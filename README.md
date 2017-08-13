@@ -2,7 +2,7 @@
 
 Rust compile-time assertions.
 
-[![Build Status](https://travis-ci.org/nvzqz/static-assertions-rs.svg?branch=master)](https://travis-ci.org/nvzqz/static-assertions-rs)
+[![Build Status][travis-badge]][travis]
 
 ## Usage
 
@@ -69,5 +69,8 @@ This project is released under either:
 
 at your choosing.
 
-[license-mit]: https://github.com/nvzqz/static-assertions-rs/blob/master/LICENSE-MIT
+[travis]:       https://travis-ci.org/nvzqz/static-assertions-rs
+[travis-badge]: https://travis-ci.org/nvzqz/static-assertions-rs.svg?branch=master
+
+[license-mit]:    https://github.com/nvzqz/static-assertions-rs/blob/master/LICENSE-MIT
 [license-apache]: https://github.com/nvzqz/static-assertions-rs/blob/master/LICENSE-APACHE
