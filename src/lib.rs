@@ -231,9 +231,9 @@ macro_rules! assert_eq_size {
             $(forget::<$xs>(transmute(uninitialized::<$x>()));)+
         }
     };
-    ($label:ident; $x:ty, $($xs:ty),+) => {
+    ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
-        fn $label() { assert_eq_size!($x, $($xs),+) }
+        fn $label() { assert_eq_size!($($xs)+); }
     };
 }
 
@@ -314,9 +314,9 @@ macro_rules! const_assert {
     ($($xs:expr),+) => {
         let _ = [(); 0 - (!($($xs)&&+) as usize)];
     };
-    ($label:ident; $($xs:expr),+) => {
+    ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
-        fn $label() { const_assert!($($xs),+); }
+        fn $label() { const_assert!($($xs)+); }
     };
 }
 
@@ -340,9 +340,9 @@ macro_rules! assert_obj_safe {
     ($($xs:ty),+) => {
         $(let _: Option<&$xs> = None;)+
     };
-    ($label:ident; $($xs:ty),+) => {
+    ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
-        fn $label() { assert_obj_safe!($($xs),+); }
+        fn $label() { assert_obj_safe!($($xs)+); }
     };
 }
 
