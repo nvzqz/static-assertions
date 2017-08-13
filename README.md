@@ -1,6 +1,6 @@
 # static_assertions [![Crates.io][crate-badge]][crate] [![Build Status][travis-badge]][travis]
 
-Rust compile-time assertions.
+Rust compile-time assertions to ensure that invariants are met.
 
 ## Usage
 
