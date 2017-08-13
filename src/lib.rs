@@ -246,7 +246,7 @@ macro_rules! assert_eq_size_val {
 /// const FIVE: usize = 5;
 /// const_assert!(FIVE - FIVE == 0);
 ///
-/// // Fails to compile:
+/// // Produces a compilation failure:
 /// // const_assert!(1 >= 2);
 /// # }
 /// ```
