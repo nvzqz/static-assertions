@@ -8,6 +8,4 @@ matrix:
     - rust: beta
     - rust: nightly
       env: TEST_FLAGS="--features nightly"
-script:
-  - cargo test $TEST_FLAGS
-  - echo '! cargo test --features failure' | bash
+script: ./ci/travis.sh
