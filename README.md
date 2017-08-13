@@ -11,7 +11,7 @@ following to your project's `Cargo.toml`:
 
 ```toml
 [dependencies]
-static_assertions = "0.1"
+static_assertions = "0.2.0"
 ```
 
 and this to your crate root:
