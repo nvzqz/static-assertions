@@ -78,6 +78,9 @@
 //! [`const_assert`]. If the expression evaluates to `false`, the file will fail
 //! to compile. This is synonymous to [`static_assert` in C++][static_assert].
 //!
+//! As a [limitation](#limitations), a unique label is required if the macro is
+//! used outside of a function.
+//!
 //! ```
 //! # #[macro_use]
 //! # extern crate static_assertions;
@@ -93,19 +96,25 @@
 //! ```
 //! # #[macro_use]
 //! # extern crate static_assertions;
-//! # fn main() {
-//! const NUM: usize = 32;
-//! const_assert_eq!(NUM + NUM, 64);
-//!
 //! const TWO: usize = 2;
-//! const_assert_eq!(TWO * TWO, TWO + TWO, 4);
-//! # }
+//! const_assert_eq!(two; TWO * TWO, TWO + TWO, 4);
+//!
+//! // Produces a compilation failure:
+//! // const_assert_eq!(two; TWO, TWO);
+//!
+//! fn main() {
+//!     const NUM: usize = 32;
+//!     const_assert_eq!(NUM + NUM, 64);
+//! }
 //! ```
 //!
 //! # Limitations
 //!
-//! Due to implementation details, [`assert_eq_size`], [`const_assert`], and
-//! [`const_assert_eq`] can only be used from within the context of a function.
+//! Due to implementation details, [`assert_eq_size`] can only be used from
+//! within the context of a function.
+//!
+//! This is partially resolved in [`const_assert`] and [`const_assert_eq`] by
+//! requiring a unique label when not inside a function.
 //!
 //! [crate]: https://crates.io/crates/static_assertions
 //! [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
@@ -228,15 +237,12 @@ macro_rules! assert_eq_size_val {
 /// ```
 #[macro_export]
 macro_rules! const_assert {
-    ($cond:expr) => {
-        // Causes overflow if condition is false
-        let _ = [(); 0 - (!($cond) as usize)];
-    };
     ($($xs:expr),+) => {
-        const_assert!($($xs)&&+);
+        let _ = [(); 0 - (!($($xs)&&+) as usize)];
     };
-    ($($xs:expr);+ $(;)*) => {
-        const_assert!($($xs),+);
+    ($label:ident; $($xs:expr),+) => {
+        #[allow(dead_code, non_camel_case_types)]
+        type $label = [(); 0 - (!($($xs)&&+) as usize)];
     };
 }
 
@@ -245,5 +251,8 @@ macro_rules! const_assert {
 macro_rules! const_assert_eq {
     ($x:expr, $($xs:expr),+) => {
         const_assert!($($x == $xs),+);
-    }
+    };
+    ($label:ident; $x:expr, $($xs:expr),+) => {
+        const_assert!($label; $($x == $xs),+);
+    };
 }

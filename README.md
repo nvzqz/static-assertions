@@ -45,12 +45,8 @@ const_assert!(1 + 1 == 2);
 // Supports constants
 const FIVE: usize = 5;
 
-// Supports comma and semicolon-separated conditions
+// Supports comma-separated conditions
 const_assert!(4 > 3, 3 + 2 == FIVE);
-const_assert! {
-    FIVE + FIVE == 10;
-    FIVE / FIVE == 1;
-}
 
 // Fails to compile
 const_assert!(2 != 2);

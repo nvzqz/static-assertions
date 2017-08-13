@@ -1,9 +1,15 @@
 #![no_std]
-
+#![deny(dead_code, non_camel_case_types)]
 #![cfg_attr(feature = "const_fn", feature(const_fn))]
 
 #[macro_use]
 extern crate static_assertions;
+
+const_assert!(less_than; 20 < 1000);
+const_assert_eq!(twenty; 20, 30 - 10, 10 + 10, 10 * 2);
+
+#[cfg(feature = "failure")]
+const_assert!(less_than; true);
 
 #[test]
 fn const_assert() {
