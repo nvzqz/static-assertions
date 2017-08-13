@@ -11,11 +11,20 @@ Rust compile-time assertions to ensure that invariants are met.
 Use `assert_eq_size!` to ensure two types are the same size:
 
 ```rust
-assert_eq_size!([u8; 4], u32);
-assert_eq_size!([u8; 8], u64, (u32, u32), (u32, u16, u16), ...);
+// Requires a label if in module scope
+assert_eq_size!(byte; u8, u8);
 
-// Fails to compile
-assert_eq_size!(u16, u64);
+fn func() {
+    // If label-less, must be in a function to work
+    assert_eq_size!([u8; 4], u32);
+
+    // Supports unlimited arguments
+    assert_eq_size!([u8; 8], u64, (u32, u32), (u32, u16, u16), ...);
+
+    // Fails to compile
+    assert_eq_size!(u16, u64);
+}
+
 ```
 
 Use `assert_eq_size_val!` to ensure two values are the same size:
@@ -31,29 +40,32 @@ assert_eq_size_val!(x, 0u8);
 
 _**Note:** Both macros support multiple arguments and are not restricted by the recursion limit._
 
-**Limitation:** Due to implementation details, these macros can only be called
-from within the context of a function. This may change when `mem::size_of`
-becomes a `const fn`.
-
 ### Assert Constant Expression
 
 A constant expression can be ensured to evaluate to `true` at compile-time.
 
-```rust
-const_assert!(1 + 1 == 2);
+The `const_assert` and `const_assert_eq` macros have the same scope and label
+limitations as `assert_eq_size`.
 
+```rust
 // Supports constants
 const FIVE: usize = 5;
 
-// Supports comma-separated conditions
-const_assert!(4 > 3, 3 + 2 == FIVE);
+fn func() {
+    const_assert!(1 + 1 == 2);
 
-// Fails to compile
-const_assert!(2 != 2);
+    // Supports unlimited comma-separated conditions
+    const_assert!(4 > 3, 3 + 2 == FIVE);
+
+    // Fails to compile
+    const_assert!(2 != 2);
+}
 ```
 
-**Limitation:** Due to implementation details, `const_assert!` can only be
-called from within the context of a function.
+### Limitations
+
+See [issue #1](https://github.com/nvzqz/static-assertions-rs/issues/1) to read
+up on current limitations of this crate and how to currently overcome them.
 
 ## License
 
