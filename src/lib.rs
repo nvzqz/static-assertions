@@ -69,6 +69,22 @@ macro_rules! assert_eq_size_val {
 }
 
 /// Asserts at compile-time that the constant expression evaluates to `true`.
+///
+/// # Example
+///
+/// ```
+/// # #[macro_use]
+/// # extern crate static_assertions;
+/// # fn main() {
+/// const_assert!(2 + 2 == 4);
+///
+/// const FIVE: usize = 5;
+/// const_assert!(FIVE - FIVE == 0);
+///
+/// // Fails to compile:
+/// // const_assert!(1 >= 2);
+/// # }
+/// ```
 #[macro_export]
 macro_rules! const_assert {
     ($cond:expr) => {
