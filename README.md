@@ -51,7 +51,7 @@ const FIVE: usize = 5;
 const_assert!(4 > 3, 3 + 2 == FIVE);
 const_assert! {
     FIVE + FIVE == 10;
-    FIVE / FIVE == 0;
+    FIVE / FIVE == 1;
 }
 
 // Fails to compile
