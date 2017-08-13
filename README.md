@@ -2,6 +2,8 @@
 
 Rust compile-time assertions.
 
+[![Crates.io][crate-badge]][crate]
+
 [![Build Status][travis-badge]][travis]
 
 ## Usage
@@ -68,6 +70,9 @@ This project is released under either:
 - [Apache License (Version 2.0)][license-apache]
 
 at your choosing.
+
+[crate]:       https://crates.io/crates/static_assertions
+[crate-badge]: https://img.shields.io/crates/v/static_assertions.svg
 
 [travis]:       https://travis-ci.org/nvzqz/static-assertions-rs
 [travis-badge]: https://travis-ci.org/nvzqz/static-assertions-rs.svg?branch=master
