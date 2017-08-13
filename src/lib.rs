@@ -348,35 +348,20 @@ macro_rules! assert_obj_safe {
 /// Asserts at compile-time that the type implements the given traits.
 #[macro_export]
 macro_rules! assert_impl {
-    ($x:ty, $($xs:tt)+) => {
-        _assert_impl!(assert_impl; $x; $($xs)+);
+    (
+        $x:ty,
+        $(
+            $y:ident
+            $(< $($args:ty),+ $(,)* >)*
+        ),+
+    ) => {
+        $({
+            fn assert_impl<T: ?Sized + $y $(< $($args),+ >)* >() {}
+            assert_impl::<$x>();
+        })+
     };
     ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
         fn $label() { assert_impl!($($xs)+); }
     };
-}
-
-#[doc(hidden)]
-#[macro_export]
-macro_rules! _assert_impl {
-    (
-        $f:ident; $x:ty; $(
-            $y:ident $(< $($args:ty),+ $(,)* >)*
-        ),+
-    ) => {
-        $(_assert_impl!(@single $f; $x; $y $([$($args,)+])*);)+
-    };
-    (@single $f:ident; $x:ty; $y:ident) => {
-        {
-            fn $f<T: ?Sized + $y>() {}
-            $f::<$x>();
-        }
-    };
-    (@single $f:ident; $x:ty; $y:ident [$($args:ty,)+]) => {
-        {
-            fn $f<T: ?Sized + $y < $($args),+ > >() {}
-            $f::<$x>();
-        }
-    }
 }
