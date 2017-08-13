@@ -79,9 +79,9 @@
 //! # #[macro_use]
 //! # extern crate static_assertions;
 //! # fn main() {
-//! const NUM: usize = 2;
+//! const NUM: usize = 32;
 //!
-//! const_assert!(NUM * NUM == 4);
+//! const_assert!(NUM * NUM == 1024);
 //! # }
 //! ```
 //!
@@ -92,8 +92,10 @@
 //! # extern crate static_assertions;
 //! # fn main() {
 //! const NUM: usize = 32;
-//!
 //! const_assert_eq!(NUM + NUM, 64);
+//!
+//! const TWO: usize = 2;
+//! const_assert_eq!(TWO * TWO, TWO + TWO, 4);
 //! # }
 //! ```
 //!
@@ -217,7 +219,7 @@ macro_rules! const_assert {
 /// Asserts at compile-time that the constants are equal in value.
 #[macro_export]
 macro_rules! const_assert_eq {
-    ($x:expr, $y:expr) => {
-        const_assert!($x == $y);
+    ($x:expr, $($xs:expr),+) => {
+        const_assert!($($x == $xs),+);
     }
 }
