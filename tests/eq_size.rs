@@ -5,6 +5,8 @@ extern crate static_assertions;
 
 assert_eq_size!(byte; u8, u8, (u8,), [u8; 1]);
 
+assert_eq_size!(tuple; (u16, u16), 4);
+
 #[cfg(feature = "failure")]
 assert_eq_size!(byte; u8, u8);
 

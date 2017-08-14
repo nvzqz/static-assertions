@@ -220,6 +220,10 @@ pub extern crate core as _core;
 ///
 ///     // Produces a compilation failure:
 ///     // assert_eq_size!(Byte, u16);
+///
+///     // Can also be used to assert number of bytes:
+///     assert_eq_size!(u64, 8);
+///     assert_eq_size!(tuple; (u8, u8), 2);
 /// }
 /// ```
 #[macro_export]
@@ -230,6 +234,9 @@ macro_rules! assert_eq_size {
             use $crate::_core::mem::{forget, transmute, uninitialized};
             $(forget::<$xs>(transmute(uninitialized::<$x>()));)+
         }
+    };
+    ($x:ty, $size:expr) => {
+        assert_eq_size!($x, [u8; $size]);
     };
     ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
