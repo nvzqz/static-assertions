@@ -226,7 +226,7 @@ pub extern crate core as _core;
 /// ```
 #[macro_export]
 macro_rules! assert_eq_size {
-    ($x:ty, $($xs:ty),+) => {
+    ($x:ty, $($xs:ty),+ $(,)*) => {
         #[allow(unknown_lints, forget_copy, unused_unsafe, useless_transmute)]
         unsafe {
             use $crate::_core::mem::{forget, transmute, uninitialized};
@@ -256,7 +256,7 @@ macro_rules! assert_eq_size {
 /// ```
 #[macro_export]
 macro_rules! assert_eq_size_ptr {
-    ($x:expr, $($xs:expr),+) => {
+    ($x:expr, $($xs:expr),+ $(,)*) => {
         #[allow(unknown_lints, forget_copy, unused_unsafe, useless_transmute)]
         unsafe {
             use $crate::_core::{mem, ptr};
@@ -289,7 +289,7 @@ macro_rules! assert_eq_size_ptr {
 /// ```
 #[macro_export]
 macro_rules! assert_eq_size_val {
-    ($x:expr, $($xs:expr),+) => {
+    ($x:expr, $($xs:expr),+ $(,)*) => {
         assert_eq_size_ptr!(&$x, $(&$xs),+);
     }
 }
@@ -313,7 +313,7 @@ macro_rules! assert_eq_size_val {
 /// ```
 #[macro_export]
 macro_rules! const_assert {
-    ($($xs:expr),+) => {
+    ($($xs:expr),+ $(,)*) => {
         #[allow(unknown_lints, eq_op)]
         let _ = [(); 0 - (!($($xs)&&+) as usize)];
     };
@@ -326,10 +326,10 @@ macro_rules! const_assert {
 /// Asserts at compile-time that the constants are equal in value.
 #[macro_export]
 macro_rules! const_assert_eq {
-    ($x:expr, $($xs:expr),+) => {
+    ($x:expr, $($xs:expr),+ $(,)*) => {
         const_assert!($($x == $xs),+);
     };
-    ($label:ident; $x:expr, $($xs:expr),+) => {
+    ($label:ident; $x:expr, $($xs:expr),+ $(,)*) => {
         const_assert!($label; $($x == $xs),+);
     };
 }
@@ -340,7 +340,7 @@ macro_rules! const_assert_eq {
 /// prevent it from being used as an object.
 #[macro_export]
 macro_rules! assert_obj_safe {
-    ($($xs:ty),+) => {
+    ($($xs:ty),+ $(,)*) => {
         $(let _: Option<&$xs> = None;)+
     };
     ($label:ident; $($xs:tt)+) => {
@@ -357,7 +357,7 @@ macro_rules! assert_impl {
         $(
             $y:ident
             $(< $($args:ty),+ $(,)* >)*
-        ),+
+        ),+ $(,)*
     ) => {
         $({
             fn assert_impl<T: ?Sized + $y $(< $($args),+ >)* >() {}
