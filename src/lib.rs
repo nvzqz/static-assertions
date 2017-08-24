@@ -194,8 +194,6 @@
 //! [`const_assert_eq`]: macro.const_assert_eq.html
 
 #![no_std]
-#![cfg_attr(feature = "clippy", feature(plugin))]
-#![cfg_attr(feature = "clippy", plugin(clippy))]
 
 #[doc(hidden)]
 pub extern crate core as _core;
