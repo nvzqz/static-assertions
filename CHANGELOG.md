@@ -4,6 +4,17 @@ All releases of **static_assertions** adhere to [Semantic Versioning][semver].
 
 ---
 
+## [v0.2.3](https://github.com/nvzqz/static-assertions-rs/tree/v0.2.3) (2017-08-24)
+
+- [Changes](https://github.com/nvzqz/static-assertions-rs/compare/v0.2.2...v0.2.3)
+- [Release](https://github.com/nvzqz/static-assertions-rs/releases/tag/v0.2.3)
+
+### Improvements
+- Removed clippy warnings
+- Trailing commas are now allowed
+
+---
+
 ## [v0.2.2](https://github.com/nvzqz/static-assertions-rs/tree/v0.2.2) (2017-08-13)
 
 - [Changes](https://github.com/nvzqz/static-assertions-rs/compare/v0.2.1...v0.2.2)
