@@ -17,3 +17,6 @@ travis-ci = { repository = "nvzqz/static-assertions-rs" }
 const_fn = []
 nightly = ["const_fn"]
 failure = [] # Compiles tests that are expected to fail
+
+[dependencies]
+clippy = { version = "*", optional = true }

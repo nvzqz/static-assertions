@@ -194,6 +194,8 @@
 //! [`const_assert_eq`]: macro.const_assert_eq.html
 
 #![no_std]
+#![cfg_attr(feature = "clippy", feature(plugin))]
+#![cfg_attr(feature = "clippy", plugin(clippy))]
 
 #[doc(hidden)]
 pub extern crate core as _core;
@@ -225,7 +227,10 @@ pub extern crate core as _core;
 #[macro_export]
 macro_rules! assert_eq_size {
     ($x:ty, $($xs:ty),+) => {
+        #[allow(unknown_lints)]
+        #[allow(forget_copy)]
         #[allow(unused_unsafe)]
+        #[allow(useless_transmute)]
         unsafe {
             use $crate::_core::mem::{forget, transmute, uninitialized};
             $(forget::<$xs>(transmute(uninitialized::<$x>()));)+
@@ -255,7 +260,10 @@ macro_rules! assert_eq_size {
 #[macro_export]
 macro_rules! assert_eq_size_ptr {
     ($x:expr, $($xs:expr),+) => {
+        #[allow(unknown_lints)]
+        #[allow(forget_copy)]
         #[allow(unused_unsafe)]
+        #[allow(useless_transmute)]
         unsafe {
             use $crate::_core::{mem, ptr};
             let mut copy = ptr::read($x);
@@ -312,6 +320,8 @@ macro_rules! assert_eq_size_val {
 #[macro_export]
 macro_rules! const_assert {
     ($($xs:expr),+) => {
+        #[allow(unknown_lints)]
+        #[allow(eq_op)]
         let _ = [(); 0 - (!($($xs)&&+) as usize)];
     };
     ($label:ident; $($xs:tt)+) => {
