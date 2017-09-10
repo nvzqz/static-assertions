@@ -18,4 +18,4 @@ assert_fields!(y; _Reused<Send>, inner);
 assert_fields!(z; _Thing::A, x);
 
 #[cfg(feature = "failure")]
-assert_fields!(f; m::_Ty<()>, outer);
+assert_fields!(f; m::_Struct<()>, outer);
