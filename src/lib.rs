@@ -347,6 +347,20 @@ macro_rules! assert_obj_safe {
     };
 }
 
+/// Asserts at compile-time that the type has the given fields.
+///
+/// This is useful for when types have odd fields as a result of `#[cfg]`.
+#[macro_export]
+macro_rules! assert_fields {
+    ($t:path, $($f:ident),+) => {
+        $(let $t { $f: _, .. };)+
+    };
+    ($label:ident; $($xs:tt)+) => {
+        #[allow(dead_code, non_snake_case)]
+        fn $label() { assert_fields!($($xs)+); }
+    };
+}
+
 /// Asserts at compile-time that the type implements the given traits.
 #[macro_export]
 macro_rules! assert_impl {
