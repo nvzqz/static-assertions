@@ -364,15 +364,9 @@ macro_rules! assert_fields {
 /// Asserts at compile-time that the type implements the given traits.
 #[macro_export]
 macro_rules! assert_impl {
-    (
-        $x:ty,
-        $(
-            $y:ident
-            $(< $($args:ty),+ $(,)* >)*
-        ),+ $(,)*
-    ) => {
+    ($x:ty, $($t:path),+ $(,)*) => {
         $({
-            fn assert_impl<T: ?Sized + $y $(< $($args),+ >)* >() {}
+            fn assert_impl<T: ?Sized + $t>() {}
             assert_impl::<$x>();
         })+
     };
