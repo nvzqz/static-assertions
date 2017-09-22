@@ -46,6 +46,7 @@ Initial release
 [Keep a Changelog]:    http://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
+[Unreleased]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.3...HEAD
 [0.2.3]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.0...v0.2.1
