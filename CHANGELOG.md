@@ -13,7 +13,7 @@ field
 - Allow more generics flexibility in `assert_impl`
 
 ## [0.2.3] - 2017-08-24
-### Added
+### Fixed
 - Trailing commas are now allowed
 
 ### Removed
@@ -30,6 +30,8 @@ field
 ## [0.2.0] - 2017-08-12
 ### Added
 - Added `assert_eq_size_ptr` macro
+
+### Fixed
 - Allow `assert_eq_size`, `const_assert`, and `const_assert_eq` in non-function
 contexts via providing a unique label [#1]
 
