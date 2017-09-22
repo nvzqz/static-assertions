@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Added
+- `assert_fields` macro to assert that a struct type or enum variant has a given
+field
+
+### Fixed
+- Allow more generics flexibility in `assert_impl`
 
 ## [0.2.3] - 2017-08-24
 ### Added
