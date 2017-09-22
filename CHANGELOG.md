@@ -1,70 +1,53 @@
-# Change Log
+# Changelog [![Crates.io][crate-badge]][crate]
+All notable changes to this project will be documented in this file.
 
-All releases of **static_assertions** adhere to [Semantic Versioning][semver].
+The format is based on [Keep a Changelog] and this project adheres to
+[Semantic Versioning].
 
----
+## [Unreleased]
 
-## [v0.2.3](https://github.com/nvzqz/static-assertions-rs/tree/v0.2.3) (2017-08-24)
-
-- [Changes](https://github.com/nvzqz/static-assertions-rs/compare/v0.2.2...v0.2.3)
-- [Release](https://github.com/nvzqz/static-assertions-rs/releases/tag/v0.2.3)
-
-### Improvements
-- Removed clippy warnings
+## [0.2.3] - 2017-08-24
+### Added
 - Trailing commas are now allowed
 
----
+### Removed
+- Removed clippy warnings
 
-## [v0.2.2](https://github.com/nvzqz/static-assertions-rs/tree/v0.2.2) (2017-08-13)
-
-- [Changes](https://github.com/nvzqz/static-assertions-rs/compare/v0.2.1...v0.2.2)
-- [Release](https://github.com/nvzqz/static-assertions-rs/releases/tag/v0.2.2)
-
-### New Features
+## [0.2.2] - 2017-08-13
+### Added
 - Added `assert_impl` macro to ensure a type implements a given set of traits
 
----
-
-## [v0.2.1](https://github.com/nvzqz/static-assertions-rs/tree/v0.2.1) (2017-08-13)
-
-- [Changes](https://github.com/nvzqz/static-assertions-rs/compare/v0.2.0...v0.2.1)
-- [Release](https://github.com/nvzqz/static-assertions-rs/releases/tag/v0.2.1)
-
-### New Features
+## [0.2.1] - 2017-08-13
+### Added
 - Added `assert_obj_safe` macro for ensuring that a trait is object-safe
 
----
-
-## [v0.2.0](https://github.com/nvzqz/static-assertions-rs/tree/v0.2.0) (2017-08-12)
-
-- [Changes](https://github.com/nvzqz/static-assertions-rs/compare/v0.1.1...v0.2.0)
-- [Release](https://github.com/nvzqz/static-assertions-rs/releases/tag/v0.2.0)
-
-### New Features
+## [0.2.0] - 2017-08-12
+### Added
 - Added `assert_eq_size_ptr` macro
+- Allow `assert_eq_size`, `const_assert`, and `const_assert_eq` in non-function
+contexts via providing a unique label [#1]
 
-### Improvements
-- Allow `assert_eq_size`, `const_assert`, and `const_assert_eq` in non-function contexts via providing a unique label #1
+### Removed
+- **[Breaking]** Semicolon-separated `assert_eq_size` is no longer allowed
 
-### Changes
-- Semicolon-separated `assert_eq_size` is no longer allowed
-
----
-
-## [v0.1.1](https://github.com/nvzqz/static-assertions-rs/tree/v0.1.1) (2017-08-12)
-
-- [Changes](https://github.com/nvzqz/static-assertions-rs/compare/v0.1.0...v0.1.1)
-- [Release](https://github.com/nvzqz/static-assertions-rs/releases/tag/v0.1.1)
-
-### New Features
+## [0.1.1] - 2017-08-12
+### Added
 - Added `const_assert_eq` macro
 
----
-
-## [v1.0.0](https://github.com/nvzqz/static-assertions-rs/tree/v1.0.0) (2017-08-12)
-
-- [Release](https://github.com/nvzqz/static-assertions-rs/releases/tag/v1.0.0)
+## 0.1.0 - 2017-08-12
 
 Initial release
 
-[semver]: http://semver.org/
+[#1]: https://github.com/nvzqz/static-assertions-rs/issues/1
+
+[crate]:       https://crates.io/crates/static_assertions
+[crate-badge]: https://img.shields.io/crates/v/static_assertions.svg
+
+[Keep a Changelog]:    http://keepachangelog.com/en/1.0.0/
+[Semantic Versioning]: http://semver.org/spec/v2.0.0.html
+
+[0.2.3]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.2...v0.2.3
+[0.2.2]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/nvzqz/static-assertions-rs/compare/v0.1.1...v0.2.0
+[0.1.1]: https://github.com/nvzqz/static-assertions-rs/compare/v0.1.0...v0.1.1
