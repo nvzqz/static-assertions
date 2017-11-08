@@ -227,8 +227,7 @@ macro_rules! assert_eq_size {
     ($x:ty, $($xs:ty),+ $(,)*) => {
         #[allow(unknown_lints, forget_copy, unused_unsafe, useless_transmute)]
         unsafe {
-            use $crate::_core::mem::{forget, transmute, uninitialized};
-            $(forget::<$xs>(transmute(uninitialized::<$x>()));)+
+            $(let _ = $crate::_core::mem::transmute::<$x, $xs>;)+
         }
     };
     ($label:ident; $($xs:tt)+) => {
