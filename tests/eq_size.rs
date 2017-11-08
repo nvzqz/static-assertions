@@ -5,9 +5,6 @@ extern crate static_assertions;
 
 assert_eq_size!(byte; u8, u8, (u8,), [u8; 1]);
 
-#[cfg(feature = "failure")]
-assert_eq_size!(byte; u8, u8);
-
 mod assoc_type {
     trait Trait {
         type AssocItem;
