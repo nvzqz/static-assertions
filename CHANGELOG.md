@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Removed
+- Removed the actual call to `mem::transmute` while still utilizing it for size
+verification ([Simon Sapin], [#5])
+
 ### Added
 - `assert_fields` macro to assert that a struct type or enum variant has a given
 field
@@ -46,7 +50,10 @@ contexts via providing a unique label [#1]
 
 Initial release
 
+[Simon Sapin]: https://github.com/SimonSapin
+
 [#1]: https://github.com/nvzqz/static-assertions-rs/issues/1
+[#5]: https://github.com/nvzqz/static-assertions-rs/pull/5
 
 [crate]:       https://crates.io/crates/static_assertions
 [crate-badge]: https://img.shields.io/crates/v/static_assertions.svg
