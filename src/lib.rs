@@ -225,10 +225,7 @@ pub extern crate core as _core;
 #[macro_export]
 macro_rules! assert_eq_size {
     ($x:ty, $($xs:ty),+ $(,)*) => {
-        #[allow(unknown_lints, forget_copy, unused_unsafe, useless_transmute)]
-        unsafe {
-            $(let _ = $crate::_core::mem::transmute::<$x, $xs>;)+
-        }
+        $(let _ = $crate::_core::mem::transmute::<$x, $xs>;)+
     };
     ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
