@@ -286,7 +286,7 @@ macro_rules! assert_eq_size_val {
 macro_rules! const_assert {
     ($($xs:expr),+ $(,)*) => {
         #[allow(unknown_lints, eq_op)]
-        let _ = [(); 0 - !($($xs)&&+) as usize];
+        let _: [(); 0 - !($($xs)&&+) as usize];
     };
     ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
