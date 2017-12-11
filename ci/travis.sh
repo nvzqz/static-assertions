@@ -2,4 +2,4 @@
 
 set -e -o pipefail
 
-cargo test $TEST_FLAGS
+cargo test

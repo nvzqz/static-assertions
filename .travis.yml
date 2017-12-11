@@ -7,5 +7,4 @@ matrix:
       os: osx
     - rust: beta
     - rust: nightly
-      env: TEST_FLAGS="--features nightly"
 script: ./ci/travis.sh
