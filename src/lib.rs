@@ -1,5 +1,9 @@
 //! Compile-time assertions to ensure that invariants are met.
 //!
+//! _All_ assertions within this crate are performed at **compile-time**. This
+//! allows for finding errors quickly and early when it comes to ensuring
+//! certain features or aspects of a codebase.
+//!
 //! # Usage
 //!
 //! This crate is available [on crates.io][crate] and can be used by adding the
@@ -42,7 +46,7 @@
 #[doc(hidden)]
 pub extern crate core as _core;
 
-/// Asserts that the configuration is set.
+/// Asserts that a given configuration is set.
 ///
 /// # Examples
 ///
@@ -91,7 +95,7 @@ macro_rules! assert_cfg {
     };
 }
 
-/// Asserts at compile-time that the types have equal sizes.
+/// Asserts that types are equal in size.
 ///
 /// When performing operations such as pointer casts or dealing with [`usize`]
 /// versus [`u64`] versus [`u32`], the size of your types matter. This is where
@@ -141,7 +145,7 @@ macro_rules! assert_eq_size {
     };
 }
 
-/// Asserts at compile-time that the values pointed to have equal sizes.
+/// Asserts that values pointed to are equal in size.
 ///
 /// This especially is useful for when coercing pointers between different types
 /// and ensuring the underlying values are the same size.
@@ -188,7 +192,7 @@ macro_rules! assert_eq_size_ptr {
     }
 }
 
-/// Asserts at compile-time that the values have equal sizes.
+/// Asserts that values are equal in size.
 ///
 /// This macro doesn't consume its arguments and thus works for
 /// non-[`Clone`]able values.
@@ -226,7 +230,7 @@ macro_rules! assert_eq_size_val {
     }
 }
 
-/// Asserts at compile-time that the constant expression evaluates to `true`.
+/// Asserts that constant expressions evaluate to `true`.
 ///
 /// There also exists [`const_assert_eq`](macro.const_assert_eq.html) for
 /// validating whether a sequence of expressions are equal to one another.
@@ -275,7 +279,7 @@ macro_rules! const_assert {
     };
 }
 
-/// Asserts at compile-time that the constants are equal in value.
+/// Asserts that constants are equal in value.
 ///
 /// # Examples
 ///
@@ -311,7 +315,7 @@ macro_rules! const_assert_eq {
     };
 }
 
-/// Asserts at compile-time that the traits are object-safe.
+/// Asserts that the traits are object-safe.
 ///
 /// This is useful for when changes are made to a trait that accidentally
 /// prevent it from being used as an object. Such a case would be adding a
@@ -366,7 +370,7 @@ macro_rules! assert_obj_safe {
     };
 }
 
-/// Asserts at compile-time that the type has the given fields.
+/// Asserts that the type has the given fields.
 ///
 /// # Examples
 ///
@@ -410,7 +414,7 @@ macro_rules! assert_fields {
     };
 }
 
-/// Asserts at compile-time that the type implements the given traits.
+/// Asserts that the type implements the given traits.
 ///
 /// # Examples
 ///
