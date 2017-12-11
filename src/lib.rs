@@ -33,6 +33,16 @@
 //! within the context of a function. To use these macros in other contexts, a
 //! unique label must be provided.
 //!
+//! ```compile_fail
+//! # #[macro_use] extern crate static_assertions;
+//! # fn main() {
+//! fn assertion() { /* ... */ }
+//!
+//! const_assert!(assertion; true == true);
+//! //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `assertion` redefined here
+//! # }
+//! ```
+//!
 //! This issue can be followed [here][issue1]. Feedback and potential solutions
 //! are welcome!
 //!
