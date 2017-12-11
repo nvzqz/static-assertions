@@ -40,6 +40,14 @@
 //! const_assert!(true == true);
 //! ```
 //!
+//! This can be fixed via:
+//!
+//! ```
+//! # #[macro_use] extern crate static_assertions;
+//! # fn main() {}
+//! const_assert!(label; true == true);
+//! ```
+//!
 //! This issue can be followed [here][issue1]. Feedback and potential solutions
 //! are welcome!
 //!
