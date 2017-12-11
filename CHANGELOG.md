@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog] and this project adheres to
 verification ([Simon Sapin], [#5])
 
 ### Added
+- `assert_cfg` macro that asserts that the given configuration is set
 - `assert_fields` macro to assert that a struct type or enum variant has a given
 field
 
