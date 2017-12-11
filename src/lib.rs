@@ -456,10 +456,10 @@ macro_rules! assert_fields {
 #[macro_export]
 macro_rules! assert_impl {
     ($x:ty, $($t:path),+ $(,)*) => {
-        $({
-            fn assert_impl<T: ?Sized + $t>() {}
+        {
+            fn assert_impl<T: ?Sized $(+ $t)+>() {}
             assert_impl::<$x>();
-        })+
+        }
     };
     ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
