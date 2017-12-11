@@ -195,6 +195,8 @@
 
 #![no_std]
 
+#![deny(unused_macros)]
+
 #[doc(hidden)]
 pub extern crate core as _core;
 
