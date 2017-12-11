@@ -9,6 +9,7 @@ documentation = "https://docs.rs/static_assertions/"
 categories = ["no-std", "rust-patterns"]
 keywords = ["assert", "static", "testing"]
 description = "Compile-time assertions to ensure that invariants are met."
+include = ["Cargo.toml", "src/**/*.rs", "README.md", "CHANGELOG.md", "LICENSE*"]
 
 [badges]
 travis-ci = { repository = "nvzqz/static-assertions-rs" }
