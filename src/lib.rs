@@ -156,6 +156,25 @@ macro_rules! assert_eq_size {
 /// }
 /// # fn main() {}
 /// ```
+///
+/// Byte arrays of different lengths have different sizes:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// static BYTES: &[u8; 4] = &[
+///     /* ... */
+///     # 0; 4
+/// ];
+///
+/// static TABLE: &[u8; 16] = &[
+///     /* ... */
+///     # 0; 16
+/// ];
+///
+/// assert_eq_size_ptr!(BYTES, TABLE);
+/// # }
+/// ```
 #[macro_export]
 macro_rules! assert_eq_size_ptr {
     ($x:expr, $($xs:expr),+ $(,)*) => {
