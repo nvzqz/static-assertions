@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Added
+- Much better documentation with test examples that are guaranteed to fail at
+compile-time
+
 ### Removed
 - Removed testing features; compile failure tests are now done via doc tests
 
