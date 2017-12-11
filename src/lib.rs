@@ -98,7 +98,7 @@ macro_rules! assert_cfg {
 /// [`assert_eq_size_ptr`](macro.assert_eq_size_ptr.html). Instead of specifying
 /// types to compare, values' sizes can be directly compared against each other.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// # #[macro_use]
@@ -141,7 +141,7 @@ macro_rules! assert_eq_size {
 /// This especially is useful for when coercing pointers between different types
 /// and ensuring the underlying values are the same size.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// # #[macro_use]
@@ -169,7 +169,7 @@ macro_rules! assert_eq_size_ptr {
 /// This macro doesn't consume its arguments and thus works for
 /// non-[`Clone`]able values.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// # #[macro_use]
@@ -207,7 +207,7 @@ macro_rules! assert_eq_size_val {
 /// There also exists [`const_assert_eq`](macro.const_assert_eq.html) for
 /// validating whether a sequence of expressions are equal to one another.
 ///
-/// # Example
+/// # Examples
 ///
 /// Constant expressions can be ensured to have certain properties via this
 /// macro If the expression evaluates to `false`, the file will fail to compile.
@@ -253,7 +253,7 @@ macro_rules! const_assert {
 
 /// Asserts at compile-time that the constants are equal in value.
 ///
-/// # Example
+/// # Examples
 ///
 /// Works as a shorthand for `const_assert!(a == b)`:
 ///
@@ -295,7 +295,7 @@ macro_rules! const_assert_eq {
 /// unnoticed, that mistake will affect crate users and break both forward and
 /// backward compatibility.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// # #[macro_use]
