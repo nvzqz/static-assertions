@@ -457,7 +457,7 @@ macro_rules! assert_fields {
 macro_rules! assert_impl {
     ($x:ty, $($t:path),+ $(,)*) => {
         {
-            fn assert_impl<T: ?Sized $(+ $t)+>() {}
+            fn assert_impl<T>() where T: ?Sized $(+ $t)+ {}
             assert_impl::<$x>();
         }
     };
