@@ -24,8 +24,8 @@
 //!
 //! # Examples
 //!
-//! Thorough examples are provided within the docs for each individual macro.
-//! [Here](macro.const_assert.html#examples) are examples for `const_assert`.
+//! Very thorough examples are provided in the docs for each individual macro.
+//! Failure case examples are also documented.
 //!
 //! # Limitations
 //!
