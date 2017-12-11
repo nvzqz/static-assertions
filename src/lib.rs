@@ -94,7 +94,7 @@ pub extern crate core as _core;
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
 /// # fn main() {
-/// assert_cfg!(all(unix, windows));
+/// assert_cfg!("No, that's not how it works! ಠ_ಠ", all(unix, windows));
 /// # }
 /// ```
 #[macro_export]
