@@ -64,6 +64,15 @@ pub extern crate core as _core;
 ///                 any(    feature = "mysql", feature = "mongodb")));
 /// # fn main() {}
 /// ```
+///
+/// We can't be compiling for both Unix _and_ Windows simultaneously:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// assert_cfg!(all(unix, windows));
+/// # }
+/// ```
 #[macro_export]
 macro_rules! assert_cfg {
     () => {};
@@ -97,16 +106,20 @@ macro_rules! assert_cfg {
 /// // Can be declared outside of a function if labeled
 /// assert_eq_size!(bytes; (u8, u8), u16);
 ///
-/// // Fails to compile (same label):
-/// // assert_eq_size!(bytes; u8, u8);
-///
 /// fn main() {
 ///     // Supports unlimited arguments:
 ///     assert_eq_size!([u8; 4], (u16, u16), u32);
-///
-///     // Produces a compilation failure:
-///     // assert_eq_size!(u32, u8);
 /// }
+/// ```
+///
+/// The following produces a compilation failure because `u32` has 4 times the
+/// size of `u8`:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// assert_eq_size!(u32, u8);
+/// # }
 /// ```
 ///
 /// [`usize`]: https://doc.rust-lang.org/std/primitive.usize.html
@@ -169,9 +182,15 @@ macro_rules! assert_eq_size_ptr {
 ///
 /// assert_eq_size_val!(x, y);
 /// assert_eq_size_val!(x, y, 0u8);
+/// # }
+/// ```
 ///
-/// // Fails to compile:
-/// // assert_eq_size_val!(x, 0u32);
+/// Even though both values are 0, they are of types with different sizes:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// assert_eq_size_val!(0u8, 0u32);
 /// # }
 /// ```
 ///
@@ -207,10 +226,16 @@ macro_rules! assert_eq_size_val {
 /// fn main() {
 ///     const_assert!(2 + 2 == 4);
 ///     const_assert!(FIVE - FIVE == 0);
-///
-///     // Produces a compilation failure:
-///     // const_assert!(1 >= 2);
 /// }
+/// ```
+///
+/// Some expressions are blatantly false:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// const_assert!(1 >= 2);
+/// # }
 /// ```
 ///
 /// [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
@@ -238,13 +263,19 @@ macro_rules! const_assert {
 /// const TWO: usize = 2;
 /// const_assert_eq!(two; TWO * TWO, TWO + TWO, 4);
 ///
-/// // Fails to compile (same label):
-/// // const_assert_eq!(two; TWO, TWO);
-///
 /// fn main() {
 ///     const NUM: usize = 32;
 ///     const_assert_eq!(NUM + NUM, 64);
 /// }
+/// ```
+///
+/// Just because 2 × 2 = 2 + 2 doesn't mean it holds true for other numbers:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// const_assert_eq!(4 + 4, 4 * 4);
+/// # }
 /// ```
 #[macro_export]
 macro_rules! const_assert_eq {
@@ -275,16 +306,22 @@ macro_rules! const_assert_eq {
 ///     fn foo(&self) -> u32;
 /// }
 ///
+/// fn main() {
+///     assert_obj_safe!(MySafeTrait);
+/// }
+/// ```
+///
+/// Generics without `where Self: Sized` are not allowed in object-safe traits:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
 /// trait MyUnsafeTrait {
 ///     fn bar<T>(&self) -> T;
 /// }
 ///
-/// fn main() {
-///     assert_obj_safe!(MySafeTrait);
-///
-///     // Produces a compilation failure:
-///     // assert_obj_safe!(MyUnsafeTrait);
-/// }
+/// # fn main() {
+/// assert_obj_safe!(MyUnsafeTrait);
+/// # }
 /// ```
 #[macro_export]
 macro_rules! assert_obj_safe {
@@ -318,16 +355,19 @@ macro_rules! assert_fields {
 /// Can be used to ensure types implement [`Send`], [`Sync`], and other traits:
 ///
 /// ```
-/// # #[macro_use]
-/// # extern crate static_assertions;
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {}
 /// assert_impl!(str; String, Send, Sync, From<&'static str>);
 /// assert_impl!(vec; &'static [u8], Into<Vec<u8>>);
+/// ```
 ///
-/// fn main() {
-///     // Produces a compilation failure:
-///     // `*const u8` cannot be sent between threads safely
-///     // assert_impl!(*const u8, Send);
-/// }
+/// Raw pointers cannot be sent between threads safely:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// assert_impl!(*const u8, Send);
+/// # }
 /// ```
 ///
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
