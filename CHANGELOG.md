@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Removed
+- Removed testing features; compile failure tests are now done via doc tests
 
 ## [0.2.4] - 2017-12-11
 ### Removed
