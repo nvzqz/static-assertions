@@ -18,6 +18,11 @@
 //! # fn main() {}
 //! ```
 //!
+//! # Examples
+//!
+//! Thorough examples are provided within the docs for each individual macro.
+//! [Here](macro.const_assert.html#examples) are examples for `const_assert`.
+//!
 //! # Limitations
 //!
 //! Due to implementation details, some macros can only be used normally from
