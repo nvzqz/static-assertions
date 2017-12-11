@@ -302,12 +302,20 @@ macro_rules! const_assert_eq {
 /// # extern crate static_assertions;
 /// assert_obj_safe!(basic; Send, Sync, AsRef<str>);
 ///
+/// mod inner {
+///     // Works with traits that are not in the calling module
+///     pub trait BasicTrait {
+///         fn foo(&self);
+///     }
+/// }
+///
 /// trait MySafeTrait {
-///     fn foo(&self) -> u32;
+///     fn bar(&self) -> u32;
 /// }
 ///
 /// fn main() {
 ///     assert_obj_safe!(MySafeTrait);
+///     assert_obj_safe!(inner::BasicTrait);
 /// }
 /// ```
 ///
@@ -316,7 +324,7 @@ macro_rules! const_assert_eq {
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
 /// trait MyUnsafeTrait {
-///     fn bar<T>(&self) -> T;
+///     fn baz<T>(&self) -> T;
 /// }
 ///
 /// # fn main() {
