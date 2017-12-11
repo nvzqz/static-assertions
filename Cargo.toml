@@ -13,7 +13,3 @@ description = "Compile-time assertions to ensure that invariants are met."
 travis-ci = { repository = "nvzqz/static-assertions-rs" }
 
 [features]
-# For testing
-const_fn = []
-nightly = ["const_fn"]
-failure = [] # Compiles tests that are expected to fail
