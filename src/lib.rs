@@ -18,180 +18,17 @@
 //! # fn main() {}
 //! ```
 //!
-//! # Assert Equal Size
-//!
-//! When performing operations such as pointer casts or dealing with [`usize`]
-//! versus [`u64`] versus [`u32`], the size of your types matter. This is where
-//! [`assert_eq_size`] comes into play. Types provided as arguments to
-//! [`assert_eq_size`] are ensured to be the same size at compile-time. If the
-//! types differ in size, the code will fail to compile.
-//!
-//! ```
-//! # #[macro_use]
-//! # extern crate static_assertions;
-//! // Can be declared outside of a function if labeled
-//! assert_eq_size!(bytes; (u8, u8), u16);
-//!
-//! // Fails to compile (same label):
-//! // assert_eq_size!(bytes; u8, u8);
-//!
-//! fn main() {
-//!     assert_eq_size!([u8; 4], (u16, u16), u32);
-//!
-//!     // Produces a compilation failure:
-//!     // assert_eq_size!(u32, u8);
-//! }
-//! ```
-//!
-//! Similar to [`assert_eq_size`], there is [`assert_eq_size_val`]. Instead of
-//! specifying types to compare, values' sizes can be directly compared against
-//! each other.
-//!
-//! ```
-//! # #[macro_use]
-//! # extern crate static_assertions;
-//! # fn main() {
-//! let x = 42u8;
-//! let y = true;
-//!
-//! assert_eq_size_val!(x, y);
-//! # }
-//! ```
-//! [`assert_eq_size_val`] doesn't consume its arguments and thus works for
-//! non-[`Clone`]able values.
-//!
-//! ```
-//! # #[macro_use]
-//! # extern crate static_assertions;
-//! # fn main() {
-//! struct Buffer([u8; 256]);
-//!
-//! let buf = Buffer([0; 256]);
-//! let val = [0u64; 32];
-//!
-//! assert_eq_size_val!(buf, val);
-//!
-//! // `buf` and `val` can be used here
-//! # }
-//! ```
-//!
-//! Rather than dereference a pointer to achieve the same effect as
-//! [`assert_eq_size_val`], there is also the option of [`assert_eq_size_ptr`].
-//!
-//! # Assert Constant Expression
-//!
-//! Constant expressions can be ensured to have certain properties via
-//! [`const_assert`]. If the expression evaluates to `false`, the file will fail
-//! to compile. This is synonymous to [`static_assert` in C++][static_assert].
-//!
-//! As a [limitation](#limitations), a unique label is required if the macro is
-//! used outside of a function.
-//!
-//! ```
-//! # #[macro_use]
-//! # extern crate static_assertions;
-//! # fn main() {
-//! const NUM: usize = 32;
-//!
-//! const_assert!(NUM * NUM == 1024);
-//! # }
-//! ```
-//!
-//! As a shorthand for `const_assert!(a == b)`, there's [`const_assert_eq`]:
-//!
-//! ```
-//! # #[macro_use]
-//! # extern crate static_assertions;
-//! const TWO: usize = 2;
-//! const_assert_eq!(two; TWO * TWO, TWO + TWO, 4);
-//!
-//! // Fails to compile (same label):
-//! // const_assert_eq!(two; TWO, TWO);
-//!
-//! fn main() {
-//!     const NUM: usize = 32;
-//!     const_assert_eq!(NUM + NUM, 64);
-//! }
-//! ```
-//!
-//! # Assert Object Safety
-//!
-//! Sometimes changes are made to traits that prevent them from being used in
-//! the context of an object. Such a case would be adding a generic method and
-//! forgetting to add `where Self: Sized` after it. If left unnoticed, that
-//! mistake will end up affecting crate users and break compatibility.
-//!
-//! [`assert_obj_safe`] is here to save you from those troubles:
-//!
-//! ```
-//! # #[macro_use]
-//! # extern crate static_assertions;
-//! assert_obj_safe!(basic; Send, Sync, AsRef<str>);
-//!
-//! trait MySafeTrait {}
-//!
-//! trait MyUnsafeTrait {
-//!     fn generic<T>();
-//! }
-//!
-//! fn main() {
-//!     assert_obj_safe!(MySafeTrait);
-//!
-//!     // Produces a compilation failure:
-//!     // assert_obj_safe!(MyUnsafeTrait);
-//! }
-//! ```
-//!
-//! # Assert Trait `impl`
-//!
-//! To ensure types implement [`Send`], [`Sync`], and other traits, there's
-//! [`assert_impl`]:
-//!
-//! ```
-//! # #[macro_use]
-//! # extern crate static_assertions;
-//! assert_impl!(str; String, Send, Sync, From<&'static str>);
-//! assert_impl!(vec; &'static [u8], Into<Vec<u8>>);
-//!
-//! fn main() {
-//!     // Produces a compilation failure:
-//!     // `*const u8` cannot be sent between threads safely
-//!     // assert_impl!(*const u8, Send);
-//! }
-//! ```
-//!
 //! # Limitations
 //!
-//! Due to implementation details, the following can only be used normally from
-//! within the context of a function:
+//! Due to implementation details, some macros can only be used normally from
+//! within the context of a function. To use these macros in other contexts, a
+//! unique label must be provided.
 //!
-//! - [`assert_eq_size`]
-//! - [`assert_obj_safe`]
-//! - [`assert_impl`]
-//! - [`const_assert`]
-//! - [`const_assert_eq`]
-//!
-//! To use these macros in other contexts, a unique label must be provided.
-//!
-//! If you want to read up about this and provide feedback, see
-//! [the related issue on GitHub][issue1].
+//! This issue can be followed [here][issue1]. Feedback and potential solutions
+//! are welcome!
 //!
 //! [issue1]: https://github.com/nvzqz/static-assertions-rs/issues/1
 //! [crate]: https://crates.io/crates/static_assertions
-//! [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
-//! [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-//! [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
-//! [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
-//! [`usize`]: https://doc.rust-lang.org/std/primitive.usize.html
-//! [`u64`]: https://doc.rust-lang.org/std/primitive.u64.html
-//! [`u32`]: https://doc.rust-lang.org/std/primitive.u32.html
-//! [`assert_eq_size_val`]: macro.assert_eq_size_val.html
-//! [`assert_eq_size_ptr`]: macro.assert_eq_size_ptr.html
-//! [`assert_eq_size`]: macro.assert_eq_size.html
-//! [`assert_obj_safe`]: macro.assert_obj_safe.html
-//! [`assert_impl`]: macro.assert_impl.html
-//! [`const_assert`]: macro.const_assert.html
-//! [`const_assert_eq`]: macro.const_assert_eq.html
 
 #![no_std]
 
@@ -242,28 +79,39 @@ macro_rules! assert_cfg {
 
 /// Asserts at compile-time that the types have equal sizes.
 ///
+/// When performing operations such as pointer casts or dealing with [`usize`]
+/// versus [`u64`] versus [`u32`], the size of your types matter. This is where
+/// this macro comes into play.
+///
+/// # Alternatives
+///
+/// There are also [`assert_eq_size_val`](macro.assert_eq_size_val.html) and
+/// [`assert_eq_size_ptr`](macro.assert_eq_size_ptr.html). Instead of specifying
+/// types to compare, values' sizes can be directly compared against each other.
+///
 /// # Example
 ///
 /// ```
 /// # #[macro_use]
 /// # extern crate static_assertions;
-/// struct Byte(u8);
-///
-/// assert_eq_size!(pair; (u16, u16), [u16; 2], [u8; 4]);
+/// // Can be declared outside of a function if labeled
+/// assert_eq_size!(bytes; (u8, u8), u16);
 ///
 /// // Fails to compile (same label):
-/// // assert_eq_size!(pair; u8, u8);
+/// // assert_eq_size!(bytes; u8, u8);
 ///
 /// fn main() {
-///     assert_eq_size!(Byte, u8);
-///
 ///     // Supports unlimited arguments:
-///     assert_eq_size!([Byte; 4], [u16; 2], u32);
+///     assert_eq_size!([u8; 4], (u16, u16), u32);
 ///
 ///     // Produces a compilation failure:
-///     // assert_eq_size!(Byte, u16);
+///     // assert_eq_size!(u32, u8);
 /// }
 /// ```
+///
+/// [`usize`]: https://doc.rust-lang.org/std/primitive.usize.html
+/// [`u64`]: https://doc.rust-lang.org/std/primitive.u64.html
+/// [`u32`]: https://doc.rust-lang.org/std/primitive.u32.html
 #[macro_export]
 macro_rules! assert_eq_size {
     ($x:ty, $($xs:ty),+ $(,)*) => {
@@ -305,6 +153,9 @@ macro_rules! assert_eq_size_ptr {
 
 /// Asserts at compile-time that the values have equal sizes.
 ///
+/// This macro doesn't consume its arguments and thus works for
+/// non-[`Clone`]able values.
+///
 /// # Example
 ///
 /// ```
@@ -323,6 +174,8 @@ macro_rules! assert_eq_size_ptr {
 /// // assert_eq_size_val!(x, 0u32);
 /// # }
 /// ```
+///
+/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
 #[macro_export]
 macro_rules! assert_eq_size_val {
     ($x:expr, $($xs:expr),+ $(,)*) => {
@@ -332,21 +185,35 @@ macro_rules! assert_eq_size_val {
 
 /// Asserts at compile-time that the constant expression evaluates to `true`.
 ///
+/// There also exists [`const_assert_eq`](macro.const_assert_eq.html) for
+/// validating whether a sequence of expressions are equal to one another.
+///
 /// # Example
+///
+/// Constant expressions can be ensured to have certain properties via this
+/// macro If the expression evaluates to `false`, the file will fail to compile.
+/// This is synonymous to [`static_assert` in C++][static_assert].
+///
+/// As a [limitation](index.html#limitations), a unique label is required if
+/// the macro is used outside of a function.
 ///
 /// ```
 /// # #[macro_use]
 /// # extern crate static_assertions;
-/// # fn main() {
-/// const_assert!(2 + 2 == 4);
-///
 /// const FIVE: usize = 5;
-/// const_assert!(FIVE - FIVE == 0);
 ///
-/// // Produces a compilation failure:
-/// // const_assert!(1 >= 2);
-/// # }
+/// const_assert!(twenty_five; FIVE * FIVE == 25);
+///
+/// fn main() {
+///     const_assert!(2 + 2 == 4);
+///     const_assert!(FIVE - FIVE == 0);
+///
+///     // Produces a compilation failure:
+///     // const_assert!(1 >= 2);
+/// }
 /// ```
+///
+/// [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
 #[macro_export]
 macro_rules! const_assert {
     ($($xs:expr),+ $(,)*) => {
@@ -360,6 +227,25 @@ macro_rules! const_assert {
 }
 
 /// Asserts at compile-time that the constants are equal in value.
+///
+/// # Example
+///
+/// Works as a shorthand for `const_assert!(a == b)`:
+///
+/// ```
+/// # #[macro_use]
+/// # extern crate static_assertions;
+/// const TWO: usize = 2;
+/// const_assert_eq!(two; TWO * TWO, TWO + TWO, 4);
+///
+/// // Fails to compile (same label):
+/// // const_assert_eq!(two; TWO, TWO);
+///
+/// fn main() {
+///     const NUM: usize = 32;
+///     const_assert_eq!(NUM + NUM, 64);
+/// }
+/// ```
 #[macro_export]
 macro_rules! const_assert_eq {
     ($x:expr, $($xs:expr),+ $(,)*) => {
@@ -373,7 +259,33 @@ macro_rules! const_assert_eq {
 /// Asserts at compile-time that the traits are object-safe.
 ///
 /// This is useful for when changes are made to a trait that accidentally
-/// prevent it from being used as an object.
+/// prevent it from being used as an object. Such a case would be adding a
+/// generic method and forgetting to add `where Self: Sized` after it. If left
+/// unnoticed, that mistake will affect crate users and break both forward and
+/// backward compatibility.
+///
+/// # Example
+///
+/// ```
+/// # #[macro_use]
+/// # extern crate static_assertions;
+/// assert_obj_safe!(basic; Send, Sync, AsRef<str>);
+///
+/// trait MySafeTrait {
+///     fn foo(&self) -> u32;
+/// }
+///
+/// trait MyUnsafeTrait {
+///     fn bar<T>(&self) -> T;
+/// }
+///
+/// fn main() {
+///     assert_obj_safe!(MySafeTrait);
+///
+///     // Produces a compilation failure:
+///     // assert_obj_safe!(MyUnsafeTrait);
+/// }
+/// ```
 #[macro_export]
 macro_rules! assert_obj_safe {
     ($($xs:ty),+ $(,)*) => {
@@ -400,6 +312,26 @@ macro_rules! assert_fields {
 }
 
 /// Asserts at compile-time that the type implements the given traits.
+///
+/// # Examples
+///
+/// Can be used to ensure types implement [`Send`], [`Sync`], and other traits:
+///
+/// ```
+/// # #[macro_use]
+/// # extern crate static_assertions;
+/// assert_impl!(str; String, Send, Sync, From<&'static str>);
+/// assert_impl!(vec; &'static [u8], Into<Vec<u8>>);
+///
+/// fn main() {
+///     // Produces a compilation failure:
+///     // `*const u8` cannot be sent between threads safely
+///     // assert_impl!(*const u8, Send);
+/// }
+/// ```
+///
+/// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
+/// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 #[macro_export]
 macro_rules! assert_impl {
     ($x:ty, $($t:path),+ $(,)*) => {
