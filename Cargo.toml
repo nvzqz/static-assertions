@@ -1,6 +1,6 @@
 [package]
 name = "static_assertions"
-version = "0.2.4"
+version = "0.2.5"
 authors = ["Nikolai Vazquez"]
 license = "MIT/Apache-2.0"
 homepage = "https://github.com/nvzqz/static-assertions-rs"
