@@ -67,7 +67,7 @@ fn test_eq_size() {
     assert_eq_size_val!([0u8; 4], 0u32, (0u16, 0u8, 0u8), (0u16, 0u16));
 
     #[deny(unused_unsafe)]
-    unsafe {
+    {
         assert_eq_size!(u8, u8);
         assert_eq_size_val!(0u8, 0u8);
     }
