@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Changed
+- `assert_eq_size_ptr` wraps its code inside of a closure, ensuring that the
+unsafe code inside never runs
+
 ### Added
 - Much better documentation with test examples that are guaranteed to fail at
 compile-time
