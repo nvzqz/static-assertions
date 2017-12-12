@@ -421,7 +421,8 @@ macro_rules! assert_obj_safe {
 #[macro_export]
 macro_rules! assert_fields {
     ($t:path, $($f:ident),+) => {
-        $(let $t { $f: _, .. };)+
+        #[allow(unknown_lints, unneeded_field_pattern)]
+        { $(let $t { $f: _, .. };)+ }
     };
     ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
