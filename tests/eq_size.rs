@@ -72,6 +72,11 @@ fn test_eq_size() {
         assert_eq_size_val!(0u8, 0u8);
     }
 
+    let x = &mut 0;
+    assert_eq_size_ptr!(x, &0);
+    *x = 20;
+    assert_eq_size_ptr!(x, &0);
+
     // Should fail to compile (un-comment to test manually):
     // assert_eq_size!(u8, u16);
     // assert_eq_size_val!(0u8, 0u16);
