@@ -83,9 +83,9 @@ pub extern crate core as _core;
 /// # #[macro_use]
 /// # extern crate static_assertions;
 /// # #[cfg(target_pointer_width = "0")] // Impossible
-/// assert_cfg!("Must exclusively use MySQL or MongoDB as database back-end",
-///             all(not(all(feature = "mysql", feature = "mongodb")),
-///                 any(    feature = "mysql", feature = "mongodb")));
+/// assert_cfg!(all(not(all(feature = "mysql", feature = "mongodb")),
+///                 any(    feature = "mysql", feature = "mongodb")),
+///             "Must exclusively use MySQL or MongoDB as database back-end");
 /// # fn main() {}
 /// ```
 ///
@@ -94,13 +94,13 @@ pub extern crate core as _core;
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
 /// # fn main() {
-/// assert_cfg!("No, that's not how it works! ಠ_ಠ", all(unix, windows));
+/// assert_cfg!(all(unix, windows), "No, that's not how it works! ಠ_ಠ");
 /// # }
 /// ```
 #[macro_export]
 macro_rules! assert_cfg {
     () => {};
-    ($msg:expr, $($cfg:tt)*) => {
+    ($($cfg:meta)+, $msg:expr) => {
         #[cfg(not($($cfg)*))]
         compile_error!($msg);
     };
