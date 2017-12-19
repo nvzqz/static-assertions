@@ -82,7 +82,7 @@ pub extern crate core as _core;
 /// # #[macro_use] extern crate static_assertions;
 /// # fn main() {}
 /// # #[cfg(any(unix, linux))]
-/// assert_cfg!(any(unix, linux), "There is only support Unix or Linux");
+/// assert_cfg!(any(unix, linux), "There is only support for Unix or Linux");
 ///
 /// // User needs to specify a database back-end
 /// # #[cfg(target_pointer_width = "0")] // Impossible
