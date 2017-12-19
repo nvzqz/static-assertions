@@ -88,7 +88,8 @@ pub extern crate core as _core;
 /// # fn main() {}
 /// ```
 ///
-/// We can't be compiling for both Unix _and_ Windows simultaneously:
+/// Some configurations are impossible. For example, we can't be compiling for
+/// both Unix _and_ Windows simultaneously:
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
