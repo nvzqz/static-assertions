@@ -198,7 +198,7 @@ macro_rules! assert_eq_size {
 macro_rules! assert_eq_size_ptr {
     ($x:expr, $($xs:expr),+ $(,)*) => {
         #[allow(unknown_lints, unsafe_code, forget_copy, useless_transmute)]
-        || unsafe {
+        let _ = || unsafe {
             use $crate::_core::{mem, ptr};
             let mut copy = ptr::read($x);
             $(ptr::write(&mut copy, mem::transmute(ptr::read($xs)));)+
