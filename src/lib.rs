@@ -71,9 +71,8 @@ pub extern crate core as _core;
 /// ```
 /// # #[macro_use]
 /// # extern crate static_assertions;
-/// // We should only be compiling for Unix or Linux
 /// # #[cfg(any(unix, linux))]
-/// assert_cfg!(any(unix, linux));
+/// assert_cfg!(any(unix, linux), "There is only support Unix or Linux");
 /// # fn main() {}
 /// ```
 ///
