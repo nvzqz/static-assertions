@@ -65,27 +65,30 @@ pub extern crate core as _core;
 ///
 /// # Examples
 ///
-/// A project may not support a set of configurations and thus you may want to
-/// report why:
+/// A project will simply fail to compile if the given configuration is not set.
 ///
 /// ```
-/// # #[macro_use]
-/// # extern crate static_assertions;
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {}
+/// // We're not masochists
+/// # #[cfg(not(target_pointer_width = "16"))] // Just in case
+/// assert_cfg!(not(target_pointer_width = "16"));
+/// ```
+///
+/// If a project does not support a set of configurations, you may want to
+/// report why. There is the option of providing a compile error message string:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {}
 /// # #[cfg(any(unix, linux))]
 /// assert_cfg!(any(unix, linux), "There is only support Unix or Linux");
-/// # fn main() {}
-/// ```
 ///
-/// If users need to specify a database back-end:
-///
-/// ```
-/// # #[macro_use]
-/// # extern crate static_assertions;
+/// // User needs to specify a database back-end
 /// # #[cfg(target_pointer_width = "0")] // Impossible
 /// assert_cfg!(all(not(all(feature = "mysql", feature = "mongodb")),
 ///                 any(    feature = "mysql", feature = "mongodb")),
 ///             "Must exclusively use MySQL or MongoDB as database back-end");
-/// # fn main() {}
 /// ```
 ///
 /// Some configurations are impossible. For example, we can't be compiling for
