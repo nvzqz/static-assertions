@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+- Renamed `const_assert!` and `const_assert_eq!` macros to `assert_const!` and
+`assert_const_eq!`
+
 ## [0.2.5] - 2017-12-12
 ### Changed
 - `assert_eq_size_ptr` wraps its code inside of a closure, ensuring that the

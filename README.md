@@ -61,7 +61,7 @@ _**Note:** Both macros support multiple arguments and are not restricted by the 
 
 A constant expression can be ensured to evaluate to `true` at compile-time.
 
-The `const_assert` and `const_assert_eq` macros have the same scope and label
+The `assert_const` and `assert_const_eq` macros have the same scope and label
 limitations as `assert_eq_size`.
 
 ```rust
@@ -69,13 +69,13 @@ limitations as `assert_eq_size`.
 const FIVE: usize = 5;
 
 fn func() {
-    const_assert!(1 + 1 == 2);
+    assert_const!(1 + 1 == 2);
 
     // Supports unlimited comma-separated conditions
-    const_assert!(4 > 3, 3 + 2 == FIVE);
+    assert_const!(4 > 3, 3 + 2 == FIVE);
 
     // Fails to compile
-    const_assert!(2 != 2);
+    assert_const!(2 != 2);
 }
 ```
 

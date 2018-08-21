@@ -37,7 +37,7 @@
 //! # #[macro_use] extern crate static_assertions;
 //! # fn main() {}
 //! // error: expected item after attributes
-//! const_assert!(true == true);
+//! assert_const!(true == true);
 //! ```
 //!
 //! This can be fixed via:
@@ -45,7 +45,7 @@
 //! ```
 //! # #[macro_use] extern crate static_assertions;
 //! # fn main() {}
-//! const_assert!(label; true == true);
+//! assert_const!(label; true == true);
 //! ```
 //!
 //! This issue can be followed [here][issue1]. Feedback and potential solutions
@@ -247,7 +247,7 @@ macro_rules! assert_eq_size_val {
 
 /// Asserts that constant expressions evaluate to `true`.
 ///
-/// There also exists [`const_assert_eq`](macro.const_assert_eq.html) for
+/// There also exists [`assert_const_eq`](macro.assert_const_eq.html) for
 /// validating whether a sequence of expressions are equal to one another.
 ///
 /// # Examples
@@ -264,11 +264,11 @@ macro_rules! assert_eq_size_val {
 /// # extern crate static_assertions;
 /// const FIVE: usize = 5;
 ///
-/// const_assert!(twenty_five; FIVE * FIVE == 25);
+/// assert_const!(twenty_five; FIVE * FIVE == 25);
 ///
 /// fn main() {
-///     const_assert!(2 + 2 == 4);
-///     const_assert!(FIVE - FIVE == 0);
+///     assert_const!(2 + 2 == 4);
+///     assert_const!(FIVE - FIVE == 0);
 /// }
 /// ```
 ///
@@ -277,20 +277,20 @@ macro_rules! assert_eq_size_val {
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
 /// # fn main() {
-/// const_assert!(1 >= 2);
+/// assert_const!(1 >= 2);
 /// # }
 /// ```
 ///
 /// [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
 #[macro_export]
-macro_rules! const_assert {
+macro_rules! assert_const {
     ($($xs:expr),+ $(,)*) => {
         #[allow(unknown_lints, eq_op)]
         let _ = [(); 0 - !($($xs)&&+) as usize];
     };
     ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
-        fn $label() { const_assert!($($xs)+); }
+        fn $label() { assert_const!($($xs)+); }
     };
 }
 
@@ -298,17 +298,17 @@ macro_rules! const_assert {
 ///
 /// # Examples
 ///
-/// Works as a shorthand for `const_assert!(a == b)`:
+/// Works as a shorthand for `assert_const!(a == b)`:
 ///
 /// ```
 /// # #[macro_use]
 /// # extern crate static_assertions;
 /// const TWO: usize = 2;
-/// const_assert_eq!(two; TWO * TWO, TWO + TWO, 4);
+/// assert_const_eq!(two; TWO * TWO, TWO + TWO, 4);
 ///
 /// fn main() {
 ///     const NUM: usize = 32;
-///     const_assert_eq!(NUM + NUM, 64);
+///     assert_const_eq!(NUM + NUM, 64);
 /// }
 /// ```
 ///
@@ -317,16 +317,16 @@ macro_rules! const_assert {
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
 /// # fn main() {
-/// const_assert_eq!(4 + 4, 4 * 4);
+/// assert_const_eq!(4 + 4, 4 * 4);
 /// # }
 /// ```
 #[macro_export]
-macro_rules! const_assert_eq {
+macro_rules! assert_const_eq {
     ($x:expr, $($xs:expr),+ $(,)*) => {
-        const_assert!($($x == $xs),+);
+        assert_const!($($x == $xs),+);
     };
     ($label:ident; $x:expr, $($xs:expr),+ $(,)*) => {
-        const_assert!($label; $($x == $xs),+);
+        assert_const!($label; $($x == $xs),+);
     };
 }
 
