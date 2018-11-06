@@ -51,6 +51,20 @@
 //! This issue can be followed [here][issue1]. Feedback and potential solutions
 //! are welcome!
 //!
+//! # Donate
+//!
+//! This project is made freely available (as in free beer), but unfortunately
+//! not all beer is free! So, if you would like to buy me a beer (or coffee or
+//! *more*), then consider supporting my work that's benefited your project
+//! and thousands of others.
+//!
+//! <a href="https://www.patreon.com/nvzqz">
+//!     <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron!" height="35">
+//! </a>
+//! <a href="https://www.paypal.me/nvzqz">
+//!     <img src="https://buymecoffee.intm.org/img/button-paypal-white.png" alt="Buy me a coffee" height="35">
+//! </a>
+//!
 //! [issue1]: https://github.com/nvzqz/static-assertions-rs/issues/1
 //! [crate]: https://crates.io/crates/static_assertions
 

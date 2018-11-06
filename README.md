@@ -4,6 +4,13 @@ Rust compile-time assertions to ensure that invariants are met.
 
 [Documentation][crate-doc]
 
+<a href="https://www.patreon.com/nvzqz">
+    <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron!" height="35">
+</a>
+<a href="https://www.paypal.me/nvzqz">
+    <img src="https://buymecoffee.intm.org/img/button-paypal-white.png" alt="Buy me a coffee" height="35">
+</a>
+
 ## Installation
 
 This crate is available [on crates.io][crate] and can be used by adding the
