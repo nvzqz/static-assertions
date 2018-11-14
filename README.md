@@ -20,19 +20,21 @@
 
 Rust compile-time assertions to ensure that invariants are met.
 
-[Documentation][crate-doc]
+[Documentation](https://docs.rs/static_assertions/)
 
 ## Installation
 
-This crate is available [on crates.io][crate] and can be used by adding the
-following to your project's `Cargo.toml`:
+This crate is available
+[on crates.io](https://crates.io/crates/static_assertions) and can be used by
+adding the following to your project's
+[`Cargo.toml`](https://doc.rust-lang.org/cargo/reference/manifest.html):
 
 ```toml
 [dependencies]
 static_assertions = "0.2.5"
 ```
 
-and this to your crate root:
+and this to your crate root (`main.rs` or `lib.rs`):
 
 ```rust
 #[macro_use]
@@ -41,61 +43,16 @@ extern crate static_assertions;
 
 ## Usage
 
-### Assert Equal Size
-
-Use `assert_eq_size!` to ensure two types are the same size:
-
-```rust
-// Requires a label if in module scope
-assert_eq_size!(byte; u8, u8);
-
-fn func() {
-    // If label-less, must be in a function to work
-    assert_eq_size!([u8; 4], u32);
-
-    // Supports unlimited arguments
-    assert_eq_size!([u8; 8], u64, (u32, u32), (u32, u16, u16), ...);
-
-    // Fails to compile
-    assert_eq_size!(u16, u64);
-}
-
-```
-
-Use `assert_eq_size_val!` to ensure two values are the same size:
-
-```rust
-let x: u32 = 42;
-let y: u32 = 10;
-assert_eq_size_val!(x, y, [0u8; 4]);
-
-// Fails to compile
-assert_eq_size_val!(x, 0u8);
-```
-
-_**Note:** Both macros support multiple arguments and are not restricted by the recursion limit._
-
-### Assert Constant Expression
-
-A constant expression can be ensured to evaluate to `true` at compile-time.
-
-The `const_assert` and `const_assert_eq` macros have the same scope and label
-limitations as `assert_eq_size`.
-
-```rust
-// Supports constants
-const FIVE: usize = 5;
-
-fn func() {
-    const_assert!(1 + 1 == 2);
-
-    // Supports unlimited comma-separated conditions
-    const_assert!(4 > 3, 3 + 2 == FIVE);
-
-    // Fails to compile
-    const_assert!(2 != 2);
-}
-```
+This crate exposes the following macros:
+- [`assert_cfg!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_cfg.html)
+- [`assert_eq_size!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_eq_size.html)
+- [`assert_eq_size_ptr!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_eq_size_ptr.html)
+- [`assert_eq_size_val!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_eq_size_val.html)
+- [`assert_fields!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_fields.html)
+- [`assert_impl!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_impl.html)
+- [`assert_obj_safe!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_obj_safe.html)
+- [`const_assert!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.const_assert.html)
+- [`const_assert_eq!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.const_assert_eq.html)
 
 ### Limitations
 
@@ -111,16 +68,8 @@ for a complete list of what has changed from one version to another.
 
 This project is released under either:
 
-- [MIT License][license-mit]
+- [MIT License](https://github.com/nvzqz/static-assertions-rs/blob/master/LICENSE-MIT)
 
-- [Apache License (Version 2.0)][license-apache]
+- [Apache License (Version 2.0)](https://github.com/nvzqz/static-assertions-rs/blob/master/LICENSE-APACHE)
 
 at your choosing.
-
-[crate]:       https://crates.io/crates/static_assertions
-[crate-dl]:    https://img.shields.io/crates/d/static_assertions.svg
-[crate-doc]:   https://docs.rs/static_assertions/
-[crate-badge]: https://img.shields.io/crates/v/static_assertions.svg
-
-[license-mit]:    https://github.com/nvzqz/static-assertions-rs/blob/master/LICENSE-MIT
-[license-apache]: https://github.com/nvzqz/static-assertions-rs/blob/master/LICENSE-APACHE
