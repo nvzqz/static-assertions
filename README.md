@@ -31,7 +31,7 @@ adding the following to your project's
 
 ```toml
 [dependencies]
-static_assertions = "0.2.5"
+static_assertions = "0.3.0"
 ```
 
 and this to your crate root (`main.rs` or `lib.rs`):
@@ -44,15 +44,15 @@ extern crate static_assertions;
 ## Usage
 
 This crate exposes the following macros:
-- [`assert_cfg!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_cfg.html)
-- [`assert_eq_size!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_eq_size.html)
-- [`assert_eq_size_ptr!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_eq_size_ptr.html)
-- [`assert_eq_size_val!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_eq_size_val.html)
-- [`assert_fields!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_fields.html)
-- [`assert_impl!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_impl.html)
-- [`assert_obj_safe!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.assert_obj_safe.html)
-- [`const_assert!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.const_assert.html)
-- [`const_assert_eq!`](https://docs.rs/static_assertions/0.2.5/static_assertions/macro.const_assert_eq.html)
+- [`assert_cfg!`](https://docs.rs/static_assertions/0.3.0/static_assertions/macro.assert_cfg.html)
+- [`assert_eq_size!`](https://docs.rs/static_assertions/0.3.0/static_assertions/macro.assert_eq_size.html)
+- [`assert_eq_size_ptr!`](https://docs.rs/static_assertions/0.3.0/static_assertions/macro.assert_eq_size_ptr.html)
+- [`assert_eq_size_val!`](https://docs.rs/static_assertions/0.3.0/static_assertions/macro.assert_eq_size_val.html)
+- [`assert_fields!`](https://docs.rs/static_assertions/0.3.0/static_assertions/macro.assert_fields.html)
+- [`assert_impl!`](https://docs.rs/static_assertions/0.3.0/static_assertions/macro.assert_impl.html)
+- [`assert_obj_safe!`](https://docs.rs/static_assertions/0.3.0/static_assertions/macro.assert_obj_safe.html)
+- [`const_assert!`](https://docs.rs/static_assertions/0.3.0/static_assertions/macro.const_assert.html)
+- [`const_assert_eq!`](https://docs.rs/static_assertions/0.3.0/static_assertions/macro.const_assert_eq.html)
 
 ### Limitations
 
