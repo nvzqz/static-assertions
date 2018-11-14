@@ -1,15 +1,26 @@
-# static_assertions [![Crates.io][crate-badge] ![Downloads][crate-dl]][crate] [![Build Status][travis-badge]][travis] ![rustc 1.24.0](https://img.shields.io/badge/rustc-^1.24.0-blue.svg)
+[![Banner](https://raw.githubusercontent.com/nvzqz/static-assertions-rs/assets/Banner.png)](https://github.com/nvzqz/static-assertions-rs)
+
+<div align="center">
+    <a href="https://crates.io/crates/static_assertions">
+        <img src="https://img.shields.io/crates/v/static_assertions.svg" alt="Crates.io">
+        <img src="https://img.shields.io/crates/d/static_assertions.svg" alt="Downloads">
+    </a>
+    <a href="https://travis-ci.org/nvzqz/static-assertions-rs">
+        <img src="https://travis-ci.org/nvzqz/static-assertions-rs.svg?branch=master" alt="Build Status">
+    </a>
+    <img src="https://img.shields.io/badge/rustc-^1.24.0-blue.svg" alt="rustc ^1.24.0">
+    <br>
+    <a href="https://www.patreon.com/nvzqz">
+        <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron!" height="35">
+    </a>
+    <a href="https://www.paypal.me/nvzqz">
+        <img src="https://buymecoffee.intm.org/img/button-paypal-white.png" alt="Buy me a coffee" height="35">
+    </a>
+</div>
 
 Rust compile-time assertions to ensure that invariants are met.
 
 [Documentation][crate-doc]
-
-<a href="https://www.patreon.com/nvzqz">
-    <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron!" height="35">
-</a>
-<a href="https://www.paypal.me/nvzqz">
-    <img src="https://buymecoffee.intm.org/img/button-paypal-white.png" alt="Buy me a coffee" height="35">
-</a>
 
 ## Installation
 
@@ -110,9 +121,6 @@ at your choosing.
 [crate-dl]:    https://img.shields.io/crates/d/static_assertions.svg
 [crate-doc]:   https://docs.rs/static_assertions/
 [crate-badge]: https://img.shields.io/crates/v/static_assertions.svg
-
-[travis]:       https://travis-ci.org/nvzqz/static-assertions-rs
-[travis-badge]: https://travis-ci.org/nvzqz/static-assertions-rs.svg?branch=master
 
 [license-mit]:    https://github.com/nvzqz/static-assertions-rs/blob/master/LICENSE-MIT
 [license-apache]: https://github.com/nvzqz/static-assertions-rs/blob/master/LICENSE-APACHE

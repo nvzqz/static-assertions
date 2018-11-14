@@ -1,3 +1,5 @@
+//! [![Banner](https://raw.githubusercontent.com/nvzqz/static-assertions-rs/assets/Banner.png)](https://github.com/nvzqz/static-assertions-rs)
+//!
 //! Compile-time assertions to ensure that invariants are met.
 //!
 //! _All_ assertions within this crate are performed at [compile-time]. This
@@ -114,6 +116,9 @@
 //! [crate]: https://crates.io/crates/static_assertions
 //! [compile-time]: https://en.wikipedia.org/wiki/Compile_time
 //! [`Cargo.toml`]: https://doc.rust-lang.org/cargo/reference/manifest.html
+
+#![doc(html_root_url = "https://docs.rs/static_assertions/0.2.5")]
+#![doc(html_logo_url = "https://raw.githubusercontent.com/nvzqz/static-assertions-rs/assets/Icon.png")]
 
 #![no_std]
 
