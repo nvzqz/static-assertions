@@ -43,7 +43,7 @@
 /// # }
 /// ```
 ///
-/// [object]: https://doc.rust-lang.org/book/2018-edition/ch17-02-trait-objects.html
+/// [object]: https://doc.rust-lang.org/book/2018-edition/ch17-02-trait-objects.html#object-safety-is-required-for-trait-objects
 #[macro_export]
 macro_rules! assert_obj_safe {
     ($($xs:ty),+ $(,)*) => {
