@@ -1,20 +1,22 @@
 //! Compile-time assertions to ensure that invariants are met.
 //!
-//! _All_ assertions within this crate are performed at **compile-time**. This
+//! _All_ assertions within this crate are performed at [compile-time]. This
 //! allows for finding errors quickly and early when it comes to ensuring
-//! certain features or aspects of a codebase.
+//! certain features or aspects of a codebase. These macros are especially
+//! important when exposing a public API that requires types to be the same size
+//! or implement certain traits.
 //!
 //! # Usage
 //!
 //! This crate is available [on crates.io][crate] and can be used by adding the
-//! following to your project's `Cargo.toml`:
+//! following to your project's [`Cargo.toml`]:
 //!
 //! ```toml
 //! [dependencies]
 //! static_assertions = "0.2.5"
 //! ```
 //!
-//! and this to your crate root:
+//! and this to your crate root (`main.rs` or `lib.rs`):
 //!
 //! ```
 //! #[macro_use]
@@ -24,8 +26,8 @@
 //!
 //! # Examples
 //!
-//! Very thorough examples are provided in the docs for each individual macro.
-//! Failure case examples are also documented.
+//! Very thorough examples are provided in the docs for
+//! [each individual macro](#macros). Failure case examples are also documented.
 //!
 //! # Limitations
 //!
@@ -67,6 +69,8 @@
 //!
 //! [issue1]: https://github.com/nvzqz/static-assertions-rs/issues/1
 //! [crate]: https://crates.io/crates/static_assertions
+//! [compile-time]: https://en.wikipedia.org/wiki/Compile_time
+//! [`Cargo.toml`]: https://doc.rust-lang.org/cargo/reference/manifest.html
 
 #![no_std]
 
