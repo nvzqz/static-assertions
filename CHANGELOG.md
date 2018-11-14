@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Removed
 - No need to use `macro!(label; ...)` syntax when compiling on nightly Rust and
-enabling the `nightly` feature flag.
+enabling the `nightly` feature flag
 
 ## [0.2.5] - 2017-12-12
 ### Changed
