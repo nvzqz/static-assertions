@@ -2,9 +2,6 @@
 
 Rust compile-time assertions to ensure that invariants are met.
 
-See [`CHANGELOG.md`](https://github.com/nvzqz/static-assertions-rs/blob/master/CHANGELOG.md)
-for a complete list of what has changed from one version to another.
-
 [Documentation][crate-doc]
 
 <a href="https://www.patreon.com/nvzqz">
@@ -93,6 +90,11 @@ fn func() {
 
 See [issue #1](https://github.com/nvzqz/static-assertions-rs/issues/1) to read
 up on current limitations of this crate and how to currently overcome them.
+
+## Changes
+
+See [`CHANGELOG.md`](https://github.com/nvzqz/static-assertions-rs/blob/master/CHANGELOG.md)
+for a complete list of what has changed from one version to another.
 
 ## License
 

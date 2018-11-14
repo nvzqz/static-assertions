@@ -91,6 +91,11 @@
 //! }
 //! ```
 //!
+//! # Changes
+//!
+//! See [`CHANGELOG.md`](https://github.com/nvzqz/static-assertions-rs/blob/master/CHANGELOG.md)
+//! for a complete list of what has changed from one version to another.
+//!
 //! # Donate
 //!
 //! This project is made freely available (as in free beer), but unfortunately
