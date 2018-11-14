@@ -1,4 +1,4 @@
-# static_assertions [![Crates.io][crate-badge] ![Downloads][crate-dl]][crate] [![Build Status][travis-badge]][travis]
+# static_assertions [![Crates.io][crate-badge] ![Downloads][crate-dl]][crate] [![Build Status][travis-badge]][travis] ![rustc 1.24.0](https://img.shields.io/badge/rustc-^1.24.0-blue.svg)
 
 Rust compile-time assertions to ensure that invariants are met.
 

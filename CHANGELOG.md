@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Changed
+- Bumped minimum supported (automatically tested) Rust version to 1.24.0
+
 ### Removed
 - No need to use `macro!(label; ...)` syntax when compiling on nightly Rust and
 enabling the `nightly` feature flag.
