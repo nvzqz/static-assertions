@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 ## [Unreleased]
 ### Changed
 - Bumped minimum supported (automatically tested) Rust version to 1.24.0
+- Moved message parameter for `assert_cfg!()` to last argument position, making
+it consistent with other macros
 
 ### Removed
 - No need to use `macro!(label; ...)` syntax when compiling on nightly Rust and
