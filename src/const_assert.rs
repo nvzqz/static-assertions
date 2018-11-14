@@ -1,23 +1,38 @@
 /// Asserts that constant expressions evaluate to `true`.
 ///
+/// Constant expressions can be ensured to have certain properties via this
+/// macro If the expression evaluates to `false`, the file will fail to compile.
+/// This is synonymous to [`static_assert` in C++][static_assert].
+///
+/// # Alternatives
+///
 /// There also exists [`const_assert_eq`](macro.const_assert_eq.html) for
 /// validating whether a sequence of expressions are equal to one another.
 ///
 /// # Examples
 ///
-/// Constant expressions can be ensured to have certain properties via this
-/// macro If the expression evaluates to `false`, the file will fail to compile.
-/// This is synonymous to [`static_assert` in C++][static_assert].
+/// On stable Rust, using the macro requires a unique “label” when used in a
+/// module scope:
 ///
-/// As a [limitation](index.html#limitations), a unique label is required if
-/// the macro is used outside of a function.
-///
-/// ```
+#[cfg_attr(feature = "nightly", doc = "```ignore")]
+#[cfg_attr(not(feature = "nightly"), doc = "```")]
 /// # #[macro_use]
 /// # extern crate static_assertions;
+/// # fn main() {}
+/// const_assert!(meaning_of_life; 42 == !!42);
+/// ```
+///
+/// The [labeling limitation](index.html#limitations) is not necessary if
+/// compiling on nightly Rust with the `nightly` feature enabled:
+///
+#[cfg_attr(feature = "nightly", doc = "```")]
+#[cfg_attr(not(feature = "nightly"), doc = "```ignore")]
+/// #![feature(underscore_const_names)]
+/// # #[macro_use] extern crate static_assertions;
+///
 /// const FIVE: usize = 5;
 ///
-/// const_assert!(twenty_five; FIVE * FIVE == 25);
+/// const_assert!(FIVE * FIVE == 25);
 ///
 /// fn main() {
 ///     const_assert!(2 + 2 == 4);
@@ -37,6 +52,24 @@
 /// [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
 #[macro_export]
 macro_rules! const_assert {
+    ($($xs:tt)+) => { _const_assert!($($xs)+); };
+}
+
+#[doc(hidden)]
+#[cfg(feature = "nightly")]
+#[macro_export]
+#[allow(dead_code)]
+macro_rules! _const_assert {
+    ($($xs:expr),+ $(,)*) => {
+        #[allow(unknown_lints, eq_op)]
+        const _: [(); 0 - !($($xs)&&+) as usize] = [];
+    };
+}
+
+#[doc(hidden)]
+#[cfg(not(feature = "nightly"))]
+#[macro_export]
+macro_rules! _const_assert {
     ($($xs:expr),+ $(,)*) => {
         #[allow(unknown_lints, eq_op)]
         let _ = [(); 0 - !($($xs)&&+) as usize];
@@ -53,7 +86,8 @@ macro_rules! const_assert {
 ///
 /// Works as a shorthand for `const_assert!(a == b)`:
 ///
-/// ```
+#[cfg_attr(feature = "nightly", doc = "```ignore")]
+#[cfg_attr(not(feature = "nightly"), doc = "```")]
 /// # #[macro_use]
 /// # extern crate static_assertions;
 /// const TWO: usize = 2;

@@ -2,4 +2,4 @@
 
 set -e -o pipefail
 
-cargo test
+cargo test $FEATURES

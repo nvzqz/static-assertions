@@ -44,14 +44,52 @@
 //!
 //! This can be fixed via:
 //!
-//! ```
+#![cfg_attr(feature = "nightly", doc = "```ignore")]
+#![cfg_attr(not(feature = "nightly"), doc = "```")]
 //! # #[macro_use] extern crate static_assertions;
 //! # fn main() {}
 //! const_assert!(label; true == true);
 //! ```
 //!
-//! This issue can be followed [here][issue1]. Feedback and potential solutions
-//! are welcome!
+//! This can be followed at [issue #1][issue1].
+//!
+//! ## Labeling Limitation Fix
+//!
+//!  The labeling workaround is **not
+//! necessary** (and is <span style="color:red">r<strong>emoved</strong></span>)
+//! when compiling on nightly Rust with the `nightly` feature flag enabled. This
+//! can be done by having the following in your project's [`Cargo.toml`]:
+//!
+//! ```toml
+//! [dependencies.static_assertions]
+//! version  = "0.2.5"
+//! features = ["nightly"]
+//! ```
+//!
+//! To compile with nightly Rust, run the following in your
+//! [shell](https://en.wikipedia.org/wiki/Shell_(computing)) or
+//! [command prompt](https://en.wikipedia.org/wiki/Command_Prompt) of choice:
+//!
+//! ```sh
+//! rustup install nightly
+//! cargo +nightly build
+//! ```
+//!
+//! Notice that this also requires enabling the
+//! [`underscore_const_names`](https://github.com/rust-lang/rust/issues/54912)
+//! nightly Rust feature:
+//!
+#![cfg_attr(feature = "nightly", doc = "```")]
+#![cfg_attr(not(feature = "nightly"), doc = "```ignore")]
+//! #![feature(underscore_const_names)]
+//! # #[macro_use] extern crate static_assertions;
+//!
+//! const_assert!(true != false);
+//!
+//! fn main() {
+//!     const_assert!(false != true);
+//! }
+//! ```
 //!
 //! # Donate
 //!

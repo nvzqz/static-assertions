@@ -1,25 +1,39 @@
 /// Asserts that types are equal in size.
 ///
 /// When performing operations such as pointer casts or dealing with [`usize`]
-/// versus [`u64`] versus [`u32`], the size of your types matter. This is where
+/// versus [`u64`] versus [`u32`], the size of your types matter. That is where
 /// this macro comes into play.
 ///
 /// # Alternatives
 ///
-/// There are also [`assert_eq_size_val`](macro.assert_eq_size_val.html) and
+/// There also exists [`assert_eq_size_val`](macro.assert_eq_size_val.html) and
 /// [`assert_eq_size_ptr`](macro.assert_eq_size_ptr.html). Instead of specifying
 /// types to compare, values' sizes can be directly compared against each other.
 ///
 /// # Examples
 ///
-/// ```
-/// # #[macro_use]
-/// # extern crate static_assertions;
-/// // Can be declared outside of a function if labeled
+/// On stable Rust, using the macro requires a unique “label” when used in a
+/// module scope:
+///
+#[cfg_attr(feature = "nightly", doc = "```ignore")]
+#[cfg_attr(not(feature = "nightly"), doc = "```")]
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {}
 /// assert_eq_size!(bytes; (u8, u8), u16);
+/// ```
+///
+/// The [labeling limitation](index.html#limitations) is not necessary if
+/// compiling on nightly Rust with the `nightly` feature enabled:
+///
+#[cfg_attr(feature = "nightly", doc = "```")]
+#[cfg_attr(not(feature = "nightly"), doc = "```ignore")]
+/// #![feature(underscore_const_names)]
+/// # #[macro_use] extern crate static_assertions;
+///
+/// assert_eq_size!(u32, [u16; 2]);
 ///
 /// fn main() {
-///     // Supports unlimited arguments:
+///     // Supports unlimited arguments without hitting recursion limit
 ///     assert_eq_size!([u8; 4], (u16, u16), u32);
 /// }
 /// ```
@@ -39,6 +53,24 @@
 /// [`u32`]: https://doc.rust-lang.org/std/primitive.u32.html
 #[macro_export]
 macro_rules! assert_eq_size {
+    ($($xs:tt)+) => { _assert_eq_size!($($xs)+); };
+}
+
+#[doc(hidden)]
+#[cfg(feature = "nightly")]
+#[macro_export]
+macro_rules! _assert_eq_size {
+    ($x:ty, $($xs:ty),+ $(,)*) => {
+        const _: fn() -> () = || {
+            $(let _ = $crate::_core::mem::transmute::<$x, $xs>;)+
+        };
+    };
+}
+
+#[doc(hidden)]
+#[cfg(not(feature = "nightly"))]
+#[macro_export]
+macro_rules! _assert_eq_size {
     ($x:ty, $($xs:ty),+ $(,)*) => {
         $(let _ = $crate::_core::mem::transmute::<$x, $xs>;)+
     };

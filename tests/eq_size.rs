@@ -1,10 +1,19 @@
 #![no_std]
 #![deny(unsafe_code)]
+#![cfg_attr(feature = "nightly", feature(underscore_const_names))]
 
 #[macro_use]
 extern crate static_assertions;
 
-assert_eq_size!(byte; u8, u8, (u8,), [u8; 1]);
+#[cfg(not(feature = "nightly"))]
+mod stable {
+    assert_eq_size!(byte; u8, u8, (u8,), [u8; 1]);
+}
+
+#[cfg(feature = "nightly")]
+mod nightly {
+    assert_eq_size!(u8, u8, (u8,), [u8; 1]);
+}
 
 mod assoc_type {
     trait Trait {
@@ -15,8 +24,10 @@ mod assoc_type {
         type AssocItem = Self;
     }
 
+    #[cfg(not(feature = "nightly"))]
     struct Value;
 
+    #[cfg(not(feature = "nightly"))]
     impl Value {
         assert_eq_size!(test; <Self as Trait>::AssocItem, Self);
     }
@@ -49,6 +60,7 @@ mod dc {
 use dc::*;
 
 /// A type that panics on drop.
+#[allow(dead_code)]
 struct PanicDrop<T>(T);
 
 impl<T> Drop for PanicDrop<T> {

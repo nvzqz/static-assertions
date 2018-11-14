@@ -8,9 +8,13 @@
 ///
 /// # Examples
 ///
-/// ```
-/// # #[macro_use]
-/// # extern crate static_assertions;
+/// When exposing a public API, it's important that types don't lose trait
+/// `impl`s across compatible crate versions.
+///
+#[cfg_attr(feature = "nightly", doc = "```ignore")]
+#[cfg_attr(not(feature = "nightly"), doc = "```")]
+/// # #[macro_use] extern crate static_assertions;
+/// // Requires a unique label in module scope
 /// assert_obj_safe!(basic; Send, Sync, AsRef<str>);
 ///
 /// mod inner {
@@ -30,7 +34,34 @@
 /// }
 /// ```
 ///
-/// Generics without `where Self: Sized` are not allowed in object-safe traits:
+/// The [labeling limitation](index.html#limitations) is not necessary if
+/// compiling on nightly Rust with the `nightly` feature enabled:
+///
+#[cfg_attr(feature = "nightly", doc = "```")]
+#[cfg_attr(not(feature = "nightly"), doc = "```ignore")]
+/// #![feature(underscore_const_names)]
+/// # #[macro_use] extern crate static_assertions;
+///
+/// use std::fmt;
+///
+/// assert_obj_safe!(fmt::Write);
+///
+/// fn main() {
+///     assert_obj_safe!(fmt::Debug);
+/// }
+/// ```
+///
+/// Raw pointers cannot be sent between threads safely:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// assert_impl!(*const u8, Send);
+/// # }
+/// ```
+///
+/// Generics without `where Self: Sized` are not allowed in
+/// [object-safe][object] trait methods:
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
@@ -46,6 +77,22 @@
 /// [object]: https://doc.rust-lang.org/book/2018-edition/ch17-02-trait-objects.html#object-safety-is-required-for-trait-objects
 #[macro_export]
 macro_rules! assert_obj_safe {
+    ($($xs:tt)+) => { _assert_obj_safe!($($xs)+); };
+}
+
+#[doc(hidden)]
+#[cfg(feature = "nightly")]
+#[macro_export]
+macro_rules! _assert_obj_safe {
+    ($($xs:ty),+ $(,)*) => {
+        $(const _: Option<&$xs> = None;)+
+    };
+}
+
+#[doc(hidden)]
+#[cfg(not(feature = "nightly"))]
+#[macro_export]
+macro_rules! _assert_obj_safe {
     ($($xs:ty),+ $(,)*) => {
         $(let _: &$xs;)+
     };
