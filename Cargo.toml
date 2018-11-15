@@ -1,6 +1,6 @@
 [package]
 name = "static_assertions"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Nikolai Vazquez"]
 license = "MIT/Apache-2.0"
 readme = "README.md"

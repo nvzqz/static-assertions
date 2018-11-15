@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+
+## [0.3.1] - 2018-11-15
 ### Fixed
 - Macros that refer to other internal macros can now be imported when compiling
 for Rust 2018 ([issue #10](https://github.com/nvzqz/static-assertions-rs/issues/10))
@@ -90,7 +92,8 @@ Initial release
 [Keep a Changelog]:    http://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.5...v0.3.0
 [0.2.5]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.3...v0.2.4
