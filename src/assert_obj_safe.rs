@@ -8,8 +8,8 @@
 ///
 /// # Examples
 ///
-/// When exposing a public API, it's important that types don't lose trait
-/// `impl`s across compatible crate versions.
+/// When exposing a public API, it's important that traits that could previously
+/// use dynamic dispatch can still do so in future compatible crate versions.
 ///
 #[cfg_attr(feature = "nightly", doc = "```ignore")]
 #[cfg_attr(not(feature = "nightly"), doc = "```")]
