@@ -51,14 +51,14 @@
 /// assert_fields!(Range<u32>, middle);
 /// # }
 /// ```
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_fields {
     ($($xs:tt)+) => { _assert_fields!($($xs)+); };
 }
 
 #[doc(hidden)]
 #[cfg(feature = "nightly")]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! _assert_fields {
     ($t:path, $($f:ident),+) => {
         #[allow(unknown_lints, unneeded_field_pattern)]
@@ -70,7 +70,7 @@ macro_rules! _assert_fields {
 
 #[doc(hidden)]
 #[cfg(not(feature = "nightly"))]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! _assert_fields {
     ($t:path, $($f:ident),+) => {
         #[allow(unknown_lints, unneeded_field_pattern)]

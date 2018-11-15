@@ -51,14 +51,14 @@
 /// [`usize`]: https://doc.rust-lang.org/std/primitive.usize.html
 /// [`u64`]: https://doc.rust-lang.org/std/primitive.u64.html
 /// [`u32`]: https://doc.rust-lang.org/std/primitive.u32.html
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_eq_size {
     ($($xs:tt)+) => { _assert_eq_size!($($xs)+); };
 }
 
 #[doc(hidden)]
 #[cfg(feature = "nightly")]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! _assert_eq_size {
     ($x:ty, $($xs:ty),+ $(,)*) => {
         const _: fn() -> () = || {
@@ -69,7 +69,7 @@ macro_rules! _assert_eq_size {
 
 #[doc(hidden)]
 #[cfg(not(feature = "nightly"))]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! _assert_eq_size {
     ($x:ty, $($xs:ty),+ $(,)*) => {
         $(let _ = $crate::_core::mem::transmute::<$x, $xs>;)+
@@ -158,7 +158,7 @@ macro_rules! assert_eq_size_ptr {
 /// ```
 ///
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_eq_size_val {
     ($x:expr, $($xs:expr),+ $(,)*) => {
         assert_eq_size_ptr!(&$x, $(&$xs),+);

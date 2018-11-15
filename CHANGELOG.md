@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Fixed
+- Macros that refer to other internal macros can now be imported when compiling
+for Rust 2018 ([issue #10](https://github.com/nvzqz/static-assertions-rs/issues/10))
 
 ## [0.3.0] - 2018-11-14
 ### Changed

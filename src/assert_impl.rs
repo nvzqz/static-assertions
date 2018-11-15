@@ -43,14 +43,14 @@
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 /// [blanket]: https://doc.rust-lang.org/book/second-edition/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_impl {
     ($($xs:tt)+) => { _assert_impl!($($xs)+); };
 }
 
 #[doc(hidden)]
 #[cfg(feature = "nightly")]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! _assert_impl {
     ($x:ty, $($t:path),+ $(,)*) => {
         const _: fn() -> () = || {
@@ -62,7 +62,7 @@ macro_rules! _assert_impl {
 
 #[doc(hidden)]
 #[cfg(not(feature = "nightly"))]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! _assert_impl {
     ($x:ty, $($t:path),+ $(,)*) => {
         {

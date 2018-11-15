@@ -75,14 +75,14 @@
 /// ```
 ///
 /// [object]: https://doc.rust-lang.org/book/2018-edition/ch17-02-trait-objects.html#object-safety-is-required-for-trait-objects
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_obj_safe {
     ($($xs:tt)+) => { _assert_obj_safe!($($xs)+); };
 }
 
 #[doc(hidden)]
 #[cfg(feature = "nightly")]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! _assert_obj_safe {
     ($($xs:ty),+ $(,)*) => {
         $(const _: Option<&$xs> = None;)+
@@ -91,7 +91,7 @@ macro_rules! _assert_obj_safe {
 
 #[doc(hidden)]
 #[cfg(not(feature = "nightly"))]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! _assert_obj_safe {
     ($($xs:ty),+ $(,)*) => {
         $(let _: &$xs;)+

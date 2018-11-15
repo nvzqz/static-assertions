@@ -50,14 +50,14 @@
 /// ```
 ///
 /// [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! const_assert {
     ($($xs:tt)+) => { _const_assert!($($xs)+); };
 }
 
 #[doc(hidden)]
 #[cfg(feature = "nightly")]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 #[allow(dead_code)]
 macro_rules! _const_assert {
     ($($xs:expr),+ $(,)*) => {
@@ -68,7 +68,7 @@ macro_rules! _const_assert {
 
 #[doc(hidden)]
 #[cfg(not(feature = "nightly"))]
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! _const_assert {
     ($($xs:expr),+ $(,)*) => {
         #[allow(unknown_lints, eq_op)]
@@ -107,7 +107,7 @@ macro_rules! _const_assert {
 /// const_assert_eq!(4 + 4, 4 * 4);
 /// # }
 /// ```
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! const_assert_eq {
     ($x:expr, $($xs:expr),+ $(,)*) => {
         const_assert!($($x == $xs),+);
