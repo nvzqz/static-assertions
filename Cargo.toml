@@ -3,6 +3,7 @@ name = "static_assertions"
 version = "0.3.0"
 authors = ["Nikolai Vazquez"]
 license = "MIT/Apache-2.0"
+readme = "README.md"
 homepage = "https://github.com/nvzqz/static-assertions-rs"
 repository = "https://github.com/nvzqz/static-assertions-rs"
 documentation = "https://docs.rs/static_assertions/"
