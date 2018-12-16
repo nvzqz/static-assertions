@@ -11,6 +11,35 @@
 ///
 /// # Examples
 ///
+/// Some expressions are blatantly false:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// const_assert!(1 >= 2);
+/// # }
+/// ```
+///
+/// Inputs are type-checked as booleans:
+///
+/// ```compile_fail
+#[cfg_attr(feature = "nightly", doc = "#![feature(underscore_const_names)]")]
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// const_assert!(!0);
+/// # }
+/// ```
+///
+/// Despite this being a macro, we see this produces a type error:
+///
+/// ```txt
+///   | const_assert!(!0);
+///   |               ^^ expected bool, found integral variable
+///   |
+///   = note: expected type `bool`
+///              found type `{integer}`
+/// ```
+///
 /// On stable Rust, using the macro requires a unique “label” when used in a
 /// module scope:
 ///
@@ -40,15 +69,6 @@
 /// }
 /// ```
 ///
-/// Some expressions are blatantly false:
-///
-/// ```compile_fail
-/// # #[macro_use] extern crate static_assertions;
-/// # fn main() {
-/// const_assert!(1 >= 2);
-/// # }
-/// ```
-///
 /// [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
 #[macro_export(local_inner_macros)]
 macro_rules! const_assert {
@@ -62,7 +82,7 @@ macro_rules! const_assert {
 macro_rules! _const_assert {
     ($($xs:expr),+ $(,)*) => {
         #[allow(unknown_lints, eq_op)]
-        const _: [(); 0 - !($($xs)&&+) as usize] = [];
+        const _: [(); 0 - !($({ const B: bool = $xs; B })&&+) as usize] = [];
     };
 }
 
@@ -72,7 +92,7 @@ macro_rules! _const_assert {
 macro_rules! _const_assert {
     ($($xs:expr),+ $(,)*) => {
         #[allow(unknown_lints, eq_op)]
-        let _ = [(); 0 - !($($xs)&&+) as usize];
+        let _ = [(); 0 - !($({ const B: bool = $xs; B })&&+) as usize];
     };
     ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
