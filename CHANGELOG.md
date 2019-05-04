@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Fixed
+- `const_assert!` now only takes `bool` values whereas integer (or other type)
+values could previously be passed
 
 ## [0.3.1] - 2018-11-15
 ### Fixed
