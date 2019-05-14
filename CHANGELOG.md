@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+
+## [0.3.2] - 2019-05-15
 ### Added
 - A `assert_eq_type!` macro that allows for checking whether inputs are the same
 concrete type
@@ -101,7 +103,8 @@ Initial release
 [Keep a Changelog]:    http://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.5...v0.3.0
 [0.2.5]: https://github.com/nvzqz/static-assertions-rs/compare/v0.2.4...v0.2.5
