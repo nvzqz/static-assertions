@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Added
+- A `assert_eq_type!` macro that allows for checking whether inputs are the same
+concrete type
+
 ### Fixed
 - `const_assert!` now only takes `bool` values whereas integer (or other type)
 values could previously be passed

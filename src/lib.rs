@@ -129,6 +129,7 @@ pub extern crate core as _core;
 
 mod assert_cfg;
 mod assert_eq_size;
+mod assert_eq_type;
 mod assert_fields;
 mod assert_impl;
 mod assert_obj_safe;
