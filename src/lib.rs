@@ -132,5 +132,6 @@ mod assert_eq_size;
 mod assert_eq_type;
 mod assert_fields;
 mod assert_impl;
+mod assert_ne_type;
 mod assert_obj_safe;
 mod const_assert;
