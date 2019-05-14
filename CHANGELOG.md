@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 ### Added
 - A `assert_eq_type!` macro that allows for checking whether inputs are the same
 concrete type
+- A `assert_ne_type!` macro for checking whether inputs all refer to different
+types
 
 ### Fixed
 - `const_assert!` now only takes `bool` values whereas integer (or other type)
