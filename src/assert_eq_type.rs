@@ -47,7 +47,7 @@ macro_rules! assert_eq_type {
 #[macro_export(local_inner_macros)]
 macro_rules! _assert_eq_type {
     ($x:ty, $($xs:ty),+ $(,)*) => {
-        const _: fn() = {
+        const _: fn() = || {
             fn assert_eq_type_gen<T>(a: T) -> T { a }
             $({
                 fn assert_eq_type(a: $xs) -> $x { assert_eq_type_gen(a) }
