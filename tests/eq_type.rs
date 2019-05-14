@@ -17,3 +17,8 @@ mod stable {
 mod nightly {
     assert_eq_type!(super::X, u8, (super::X));
 }
+
+#[allow(dead_code)]
+fn test() {
+    assert_eq_type!([u8], [u8]);
+}
