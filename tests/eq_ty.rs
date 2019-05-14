@@ -5,6 +5,7 @@
 #[macro_use]
 extern crate static_assertions;
 
+#[allow(dead_code)]
 type X = u8;
 
 #[cfg(not(feature = "nightly"))]
