@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Added
+- `const_assert_ne!` macro counterpart to `const_assert_eq!`
 
 ## [0.3.2] - 2019-05-15
 ### Added

@@ -136,3 +136,39 @@ macro_rules! const_assert_eq {
         const_assert!($label; $($x == $xs),+);
     };
 }
+
+/// Asserts that constants are _not_ equal in value.
+///
+/// # Examples
+///
+/// Works as a shorthand for `const_assert!(a != b)`:
+///
+#[cfg_attr(feature = "nightly", doc = "```ignore")]
+#[cfg_attr(not(feature = "nightly"), doc = "```")]
+/// # #[macro_use]
+/// # extern crate static_assertions;
+/// const_assert_ne!(nums; 1, 2, 3, 4);
+///
+/// fn main() {
+///     const NUM: usize = 32;
+///     const_assert_ne!(NUM * NUM, 64);
+/// }
+/// ```
+///
+/// The magic number 2, where 2 × 2 = 2 + 2:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// const_assert_ne!(2 + 2, 2 * 2);
+/// # }
+/// ```
+#[macro_export(local_inner_macros)]
+macro_rules! const_assert_ne {
+    ($x:expr, $($xs:expr),+ $(,)*) => {
+        const_assert!($($x != $xs),+);
+    };
+    ($label:ident; $x:expr, $($xs:expr),+ $(,)*) => {
+        const_assert!($label; $($x != $xs),+);
+    };
+}
