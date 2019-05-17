@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog] and this project adheres to
 ### Added
 - `const_assert_ne!` macro counterpart to `const_assert_eq!`
 
+### Fixed
+- `assert_eq_type!` would pass when types can coerce via `Deref`, such as with
+  `str` and `String`
+
 ## [0.3.2] - 2019-05-15
 ### Added
 - A `assert_eq_type!` macro that allows for checking whether inputs are the same

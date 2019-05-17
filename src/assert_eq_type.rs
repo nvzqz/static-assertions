@@ -28,13 +28,13 @@
 /// assert_eq_type!(u8, A, B);
 /// ```
 ///
-/// The following produces a compilation failure because `usize` and `u64` do
+/// The following produces a compilation failure because `str` and `String` do
 /// not refer to the same type:
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
 /// # fn main() {
-/// assert_eq_type!(usize, u64);
+/// assert_eq_type!(str, String);
 /// # }
 /// ```
 #[macro_export(local_inner_macros)]
@@ -50,7 +50,9 @@ macro_rules! _assert_eq_type {
         const _: fn() = || {
             fn assert_eq_type_gen<T: ?Sized>(a: &T) -> &T { a }
             $({
-                fn assert_eq_type(a: &$xs) -> &$x { assert_eq_type_gen(a) }
+                // Test both ways to ensure that `Deref` coercions don't pass
+                fn assert_eq_type0(a: &$xs) -> &$x { assert_eq_type_gen(a) }
+                fn assert_eq_type1(a: &$x) -> &$xs { assert_eq_type_gen(a) }
             })+
         };
     };
@@ -63,7 +65,9 @@ macro_rules! _assert_eq_type {
     ($x:ty, $($xs:ty),+ $(,)*) => { {
         fn assert_eq_type_gen<T: ?Sized>(a: &T) -> &T { a }
         $({
-            fn assert_eq_type(a: &$xs) -> &$x { assert_eq_type_gen(a) }
+            // Test both ways to ensure that `Deref` coercions don't pass
+            fn assert_eq_type0(a: &$xs) -> &$x { assert_eq_type_gen(a) }
+            fn assert_eq_type1(a: &$x) -> &$xs { assert_eq_type_gen(a) }
         })+
     } };
     ($label:ident; $($xs:tt)+) => {
