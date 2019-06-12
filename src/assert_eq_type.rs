@@ -28,13 +28,13 @@
 /// assert_eq_type!(u8, A, B);
 /// ```
 ///
-/// The following produces a compilation failure because `str` and `String` do
+/// The following produces a compilation failure because `String` and `str` do
 /// not refer to the same type:
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
 /// # fn main() {
-/// assert_eq_type!(str, String);
+/// assert_eq_type!(String, str);
 /// # }
 /// ```
 #[macro_export(local_inner_macros)]
@@ -47,14 +47,10 @@ macro_rules! assert_eq_type {
 #[macro_export(local_inner_macros)]
 macro_rules! _assert_eq_type {
     ($x:ty, $($xs:ty),+ $(,)*) => {
-        const _: fn() = || {
-            fn assert_eq_type_gen<T: ?Sized>(a: &T) -> &T { a }
-            $({
-                // Test both ways to ensure that `Deref` coercions don't pass
-                fn assert_eq_type0(a: &$xs) -> &$x { assert_eq_type_gen(a) }
-                fn assert_eq_type1(a: &$x) -> &$xs { assert_eq_type_gen(a) }
-            })+
-        };
+        const _: fn() = || { $( {
+            struct Type<A: ?Sized>(A);
+            fn assert_eq_type(x: &Type<$x>) -> &Type<$xs> { x }
+        } )+ };
     };
 }
 
@@ -62,14 +58,10 @@ macro_rules! _assert_eq_type {
 #[cfg(not(feature = "nightly"))]
 #[macro_export(local_inner_macros)]
 macro_rules! _assert_eq_type {
-    ($x:ty, $($xs:ty),+ $(,)*) => { {
-        fn assert_eq_type_gen<T: ?Sized>(a: &T) -> &T { a }
-        $({
-            // Test both ways to ensure that `Deref` coercions don't pass
-            fn assert_eq_type0(a: &$xs) -> &$x { assert_eq_type_gen(a) }
-            fn assert_eq_type1(a: &$x) -> &$xs { assert_eq_type_gen(a) }
-        })+
-    } };
+    ($x:ty, $($xs:ty),+ $(,)*) => { $( {
+        struct Type<A: ?Sized>(A);
+        fn assert_eq_type(x: &Type<$x>) -> &Type<$xs> { x }
+    } )+ };
     ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
         fn $label() { assert_eq_type!($($xs)+); }
