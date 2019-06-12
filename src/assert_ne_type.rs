@@ -29,7 +29,9 @@
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
 /// # fn main() {
-/// assert_ne_type!(std::os::raw::c_uchar, u8);
+/// assert_ne_type!(std::os::raw::c_uchar, u8, u32);
+/// assert_ne_type!(std::os::raw::c_uchar, u32, u8);
+/// assert_ne_type!(u32, std::os::raw::c_uchar, u8);
 /// # }
 /// ```
 #[macro_export(local_inner_macros)]
