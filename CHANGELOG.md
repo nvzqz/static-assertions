@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Fixed
+- `assert_eq_type!` now works with types involving lifetimes.
 
 ## [0.3.3] - 2019-06-12
 ### Added

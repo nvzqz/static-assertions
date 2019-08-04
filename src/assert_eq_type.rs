@@ -28,6 +28,18 @@
 /// assert_eq_type!(u8, A, B);
 /// ```
 ///
+/// This macro can also be used to compare types that involve lifetimes. Just
+/// use `'static` in that case:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions;
+/// # fn main() {
+/// type Buf<'a> = &'a [u8];
+///
+/// assert_eq_type!(Buf<'static>, &'static [u8]);
+/// # }
+/// ```
+///
 /// The following produces a compilation failure because `String` and `str` do
 /// not refer to the same type:
 ///
@@ -48,8 +60,14 @@ macro_rules! assert_eq_type {
 macro_rules! _assert_eq_type {
     ($x:ty, $($xs:ty),+ $(,)*) => {
         const _: fn() = || { $( {
-            struct Type<A: ?Sized>(A);
-            fn assert_eq_type(x: &Type<$x>) -> &Type<$xs> { x }
+            trait TypeEq {
+                type This: ?Sized;
+            }
+            impl<T: ?Sized> TypeEq for T {
+                type This = Self;
+            }
+            fn assert_eq_type<T: ?Sized, U: ?Sized>() where T: TypeEq<This = U> {}
+            assert_eq_type::<$x, $xs>();
         } )+ };
     };
 }
@@ -59,8 +77,14 @@ macro_rules! _assert_eq_type {
 #[macro_export(local_inner_macros)]
 macro_rules! _assert_eq_type {
     ($x:ty, $($xs:ty),+ $(,)*) => { $( {
-        struct Type<A: ?Sized>(A);
-        fn assert_eq_type(x: &Type<$x>) -> &Type<$xs> { x }
+        trait TypeEq {
+            type This: ?Sized;
+        }
+        impl<T: ?Sized> TypeEq for T {
+            type This = Self;
+        }
+        fn assert_eq_type<T: ?Sized, U: ?Sized>() where T: TypeEq<This = U> {}
+        assert_eq_type::<$x, $xs>();
     } )+ };
     ($label:ident; $($xs:tt)+) => {
         #[allow(dead_code, non_snake_case)]
