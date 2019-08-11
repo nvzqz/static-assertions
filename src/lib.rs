@@ -37,7 +37,8 @@
 //! within the context of a function. To use these macros in other contexts, a
 //! unique label must be provided.
 //!
-//! ```compile_fail
+#![cfg_attr(feature = "nightly", doc = "```ignore")]
+#![cfg_attr(not(feature = "nightly"), doc = "```compile_fail")]
 //! # #[macro_use] extern crate static_assertions;
 //! # fn main() {}
 //! // error: expected item after attributes
