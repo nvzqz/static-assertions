@@ -1,11 +1,11 @@
-/// Asserts that the type does **not** implement all of the given traits.
+/// Asserts that the type does **not** implement _all_ of the given traits.
 ///
-/// This can be used to ensure types implement auto traits such as [`Send`] and
-/// [`Sync`], as well as traits with [blanket `impl`s][blanket].
+/// This can be used to ensure types do not implement auto traits such as
+/// [`Send`] and [`Sync`], as well as traits with [blanket `impl`s][blanket].
 ///
 /// Note that the combination of all provided traits is required to not be
 /// implemented. If you want to check that none of multiple traits are
-/// implemented you should invoke [`assert_not_impl_any`] instead.
+/// implemented you should invoke [`assert_not_impl_any!`] instead.
 ///
 /// # Examples
 ///
@@ -65,21 +65,21 @@
 ///
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
-/// [`assert_not_impl_any`]: macro.assert_not_impl_any.html
+/// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
 /// [blanket]: https://doc.rust-lang.org/book/second-edition/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
 #[macro_export(local_inner_macros)]
 macro_rules! assert_not_impl_all {
     ($($xs:tt)+) => { _assert_not_impl_all!($($xs)+); };
 }
 
-/// Asserts that the type does **not** implement any of the given traits.
+/// Asserts that the type does **not** implement _any_ of the given traits.
 ///
-/// This can be used to ensure types implement auto traits such as [`Send`] and
-/// [`Sync`], as well as traits with [blanket `impl`s][blanket].
+/// This can be used to ensure types do not implement auto traits such as
+/// [`Send`] and [`Sync`], as well as traits with [blanket `impl`s][blanket].
 ///
 /// The result of the macro fails to compile if any of the provided individual
 /// traits are implemented for the type. If you want to check that a combination
-/// of traits is not implemented you should invoke [`assert_not_impl_all`]
+/// of traits is not implemented you should invoke [`assert_not_impl_all!`]
 /// instead. For single traits both macros behave the same.
 ///
 /// # Examples
@@ -121,7 +121,7 @@ macro_rules! assert_not_impl_all {
 ///
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
-/// [`assert_not_impl_all`]: macro.assert_not_impl_all.html
+/// [`assert_not_impl_all!`]: macro.assert_not_impl_all.html
 /// [blanket]: https://doc.rust-lang.org/book/second-edition/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
 #[macro_export(local_inner_macros)]
 macro_rules! assert_not_impl_any {
