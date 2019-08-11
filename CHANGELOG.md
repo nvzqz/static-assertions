@@ -5,8 +5,12 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+### Added
+- `assert_not_impl_all!` and `assert_not_impl_any!` macro counterparts to
+`assert_impl!`
+
 ### Fixed
-- `assert_eq_type!` now works with types involving lifetimes.
+- `assert_eq_type!` now works with types involving lifetimes
 
 ## [0.3.3] - 2019-06-12
 ### Added
