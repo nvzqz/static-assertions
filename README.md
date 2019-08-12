@@ -52,6 +52,8 @@ This crate exposes the following macros:
 - [`assert_ne_type!`](https://docs.rs/static_assertions/0.3.4/static_assertions/macro.assert_ne_type.html)
 - [`assert_fields!`](https://docs.rs/static_assertions/0.3.4/static_assertions/macro.assert_fields.html)
 - [`assert_impl_all!`](https://docs.rs/static_assertions/0.3.4/static_assertions/macro.assert_impl_all.html)
+- [`assert_not_impl_all!`](https://docs.rs/static_assertions/0.3.4/static_assertions/macro.assert_not_impl_all.html)
+- [`assert_not_impl_any!`](https://docs.rs/static_assertions/0.3.4/static_assertions/macro.assert_not_impl_any.html)
 - [`assert_obj_safe!`](https://docs.rs/static_assertions/0.3.4/static_assertions/macro.assert_obj_safe.html)
 - [`const_assert!`](https://docs.rs/static_assertions/0.3.4/static_assertions/macro.const_assert.html)
 - [`const_assert_eq!`](https://docs.rs/static_assertions/0.3.4/static_assertions/macro.const_assert_eq.html)
