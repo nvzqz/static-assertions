@@ -1,14 +1,5 @@
 /// Asserts that the type implements _all_ of the given traits.
 ///
-/// This is an alias for [`assert_impl_all!`](macro.assert_impl_all.html).
-#[deprecated(since = "0.3.4", note = "please use `assert_impl_all!` instead")]
-#[macro_export(local_inner_macros)]
-macro_rules! assert_impl {
-    ($($xs:tt)+) => { _assert_impl_all!($($xs)+); };
-}
-
-/// Asserts that the type implements _all_ of the given traits.
-///
 /// This can be used to ensure types implement auto traits such as [`Send`] and
 /// [`Sync`], as well as traits with [blanket `impl`s][blanket].
 ///
