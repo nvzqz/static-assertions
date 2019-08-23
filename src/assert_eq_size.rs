@@ -12,14 +12,11 @@
 ///
 /// # Examples
 ///
-///
+/// These three types, despite being very different, all have the same size:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// assert_eq_size!([u8; 4], (u16, u16), u32);
-/// ```
-///
-/// ```
 /// ```
 ///
 /// The following example fails to compile because `u32` has 4 times the size of
