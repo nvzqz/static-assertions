@@ -12,91 +12,53 @@
 ///
 /// # Examples
 ///
-/// On stable Rust, using the macro requires a unique “label” when used in a
-/// module scope:
 ///
-#[cfg_attr(feature = "nightly", doc = "```ignore")]
-#[cfg_attr(not(feature = "nightly"), doc = "```")]
-/// # #[macro_use] extern crate static_assertions;
-/// # fn main() {}
-/// assert_eq_size!(bytes; (u8, u8), u16);
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_eq_size!([u8; 4], (u16, u16), u32);
 /// ```
 ///
-/// The [labeling limitation](index.html#limitations) is not necessary if
-/// compiling on nightly Rust with the `nightly` feature enabled:
-///
-#[cfg_attr(feature = "nightly", doc = "```")]
-#[cfg_attr(not(feature = "nightly"), doc = "```ignore")]
-/// #![feature(underscore_const_names)]
-/// # #[macro_use] extern crate static_assertions;
-///
-/// assert_eq_size!(u32, [u16; 2]);
-///
-/// fn main() {
-///     // Supports unlimited arguments without hitting recursion limit
-///     assert_eq_size!([u8; 4], (u16, u16), u32);
-/// }
+/// ```
 /// ```
 ///
-/// The following produces a compilation failure because `u32` has 4 times the
-/// size of `u8`:
+/// The following example fails to compile because `u32` has 4 times the size of
+/// `u8`:
 ///
 /// ```compile_fail
-/// # #[macro_use] extern crate static_assertions;
-/// # fn main() {
+/// # #[macro_use] extern crate static_assertions; fn main() {}
 /// assert_eq_size!(u32, u8);
-/// # }
 /// ```
 ///
 /// [`usize`]: https://doc.rust-lang.org/std/primitive.usize.html
 /// [`u64`]: https://doc.rust-lang.org/std/primitive.u64.html
 /// [`u32`]: https://doc.rust-lang.org/std/primitive.u32.html
-#[macro_export(local_inner_macros)]
+#[macro_export]
 macro_rules! assert_eq_size {
-    ($($xs:tt)+) => { _assert_eq_size!($($xs)+); };
-}
-
-#[doc(hidden)]
-#[cfg(feature = "nightly")]
-#[macro_export(local_inner_macros)]
-macro_rules! _assert_eq_size {
-    ($x:ty, $($xs:ty),+ $(,)*) => {
+    ($x:ty, $($xs:ty),+ $(,)?) => {
         const _: fn() -> () = || {
             $(let _ = $crate::_core::mem::transmute::<$x, $xs>;)+
         };
     };
 }
 
-#[doc(hidden)]
-#[cfg(not(feature = "nightly"))]
-#[macro_export(local_inner_macros)]
-macro_rules! _assert_eq_size {
-    ($x:ty, $($xs:ty),+ $(,)*) => {
-        $(let _ = $crate::_core::mem::transmute::<$x, $xs>;)+
-    };
-    ($label:ident; $($xs:tt)+) => {
-        #[allow(dead_code, non_snake_case)]
-        fn $label() { assert_eq_size!($($xs)+); }
-    };
-}
-
 /// Asserts that values pointed to are equal in size.
+///
+/// # Examples
 ///
 /// This especially is useful for when coercing pointers between different types
 /// and ensuring the underlying values are the same size.
 ///
-/// # Examples
-///
 /// ```
-/// # #[macro_use]
-/// # extern crate static_assertions;
+/// # #[macro_use] extern crate static_assertions; fn main() {}
 /// fn operation(x: &(u32, u32), y: &[u16; 4]) {
 ///     assert_eq_size_ptr!(x, y);
+///     // ...
 /// }
-/// # fn main() {}
 /// ```
 ///
-/// Byte arrays of different lengths have different sizes:
+/// The following example fails to compile because byte arrays of different
+/// lengths have different sizes:
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions;
@@ -112,11 +74,10 @@ macro_rules! _assert_eq_size {
 /// ];
 ///
 /// assert_eq_size_ptr!(BYTES, TABLE);
-/// # }
 /// ```
 #[macro_export]
 macro_rules! assert_eq_size_ptr {
-    ($x:expr, $($xs:expr),+ $(,)*) => {
+    ($x:expr, $($xs:expr),+ $(,)?) => {
         #[allow(unknown_lints, unsafe_code, forget_copy, useless_transmute)]
         let _ = || unsafe {
             use $crate::_core::{mem, ptr};
@@ -135,8 +96,7 @@ macro_rules! assert_eq_size_ptr {
 /// # Examples
 ///
 /// ```
-/// # #[macro_use]
-/// # extern crate static_assertions;
+/// # #[macro_use] extern crate static_assertions;
 /// # fn main() {
 /// struct Byte(u8);
 ///
@@ -158,9 +118,9 @@ macro_rules! assert_eq_size_ptr {
 /// ```
 ///
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-#[macro_export(local_inner_macros)]
+#[macro_export]
 macro_rules! assert_eq_size_val {
-    ($x:expr, $($xs:expr),+ $(,)*) => {
+    ($x:expr, $($xs:expr),+ $(,)?) => {
         assert_eq_size_ptr!(&$x, $(&$xs),+);
     }
 }
