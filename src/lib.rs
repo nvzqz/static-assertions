@@ -34,7 +34,7 @@
 //! # Changes
 //!
 //! See [`CHANGELOG.md`](https://github.com/nvzqz/static-assertions-rs/blob/master/CHANGELOG.md)
-//! for a complete list of what has changed from one version to another.
+//! for an exhaustive list of what has changed from one version to another.
 //!
 //! # Donate
 //!
