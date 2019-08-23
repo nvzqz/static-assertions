@@ -4,11 +4,11 @@
 #[macro_use]
 extern crate static_assertions;
 
-assert_eq_type!([u8], [u8]);
+assert_type_eq_all!([u8], [u8]);
 
 #[allow(dead_code)]
 type X = u8;
 
 mod m {
-    assert_eq_type!(super::X, u8, (super::X));
+    assert_type_eq_all!(super::X, u8, (super::X));
 }

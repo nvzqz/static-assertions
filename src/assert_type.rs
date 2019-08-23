@@ -1,4 +1,4 @@
-/// Asserts that types are equal.
+/// Asserts that _all_ types in a list are equal to each other.
 ///
 /// # Examples
 ///
@@ -10,7 +10,7 @@
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// use std::os::raw::c_float;
 ///
-/// assert_eq_type!(c_float, f32);
+/// assert_type_eq_all!(c_float, f32);
 /// ```
 ///
 /// This macro can also be used to compare types that involve lifetimes! Just
@@ -21,7 +21,7 @@
 /// # fn main() {
 /// type Buf<'a> = &'a [u8];
 ///
-/// assert_eq_type!(Buf<'static>, &'static [u8]);
+/// assert_type_eq_all!(Buf<'static>, &'static [u8]);
 /// # }
 /// ```
 ///
@@ -30,7 +30,7 @@
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_eq_type!(String, str);
+/// assert_type_eq_all!(String, str);
 /// ```
 ///
 /// This should also work the other way around, regardless of [`Deref`]
@@ -38,13 +38,13 @@
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_eq_type!(str, String);
+/// assert_type_eq_all!(str, String);
 /// ```
 ///
 /// [`c_float`]: https://doc.rust-lang.org/std/os/raw/type.c_float.html
 /// [`Deref`]: https://doc.rust-lang.org/std/ops/trait.Deref.html
 #[macro_export]
-macro_rules! assert_eq_type {
+macro_rules! assert_type_eq_all {
     ($x:ty, $($xs:ty),+ $(,)*) => {
         const _: fn() = || { $({
             trait TypeEq {
@@ -53,13 +53,13 @@ macro_rules! assert_eq_type {
             impl<T: ?Sized> TypeEq for T {
                 type This = Self;
             }
-            fn assert_eq_type<T: ?Sized, U: ?Sized>() where T: TypeEq<This = U> {}
-            assert_eq_type::<$x, $xs>();
+            fn assert_type_eq_all<T: ?Sized, U: ?Sized>() where T: TypeEq<This = U> {}
+            assert_type_eq_all::<$x, $xs>();
         })+ };
     };
 }
 
-/// Asserts that types are _not_ equal.
+/// Asserts that _all_ types are **not** equal to each other.
 ///
 /// # Examples
 ///
@@ -67,7 +67,7 @@ macro_rules! assert_eq_type {
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_ne_type!([u8], [u16], str);
+/// assert_type_ne_all!([u8], [u16], str);
 /// ```
 ///
 /// The following example fails to compile because [`c_uchar`] is a type alias
@@ -77,13 +77,13 @@ macro_rules! assert_eq_type {
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// use std::os::raw::c_uchar;
 ///
-/// assert_ne_type!(c_uchar, u8, u32);
+/// assert_type_ne_all!(c_uchar, u8, u32);
 /// ```
 ///
 /// [`c_uchar`]: https://doc.rust-lang.org/std/os/raw/type.c_uchar.html
 /// [`u8`]: https://doc.rust-lang.org/std/primitive.u8.html
 #[macro_export]
-macro_rules! assert_ne_type {
+macro_rules! assert_type_ne_all {
     ($x:ty, $($y:ty),+ $(,)?) => {
         const _: fn() = || {
             trait MutuallyExclusive {}

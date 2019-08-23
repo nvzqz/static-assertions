@@ -4,4 +4,4 @@
 #[macro_use]
 extern crate static_assertions;
 
-assert_ne_type!(u8, u16, u32);
+assert_type_ne_all!(u8, u16, u32);
