@@ -1,41 +1,34 @@
 #![no_std]
 #![deny(unsafe_code)]
-#![cfg_attr(feature = "nightly", feature(underscore_const_names))]
 
 #[macro_use]
 extern crate static_assertions;
 
-#[cfg(not(feature = "nightly"))]
-mod stable {
-    assert_eq_size!(byte; u8, u8, (u8,), [u8; 1]);
-}
-
-#[cfg(feature = "nightly")]
-mod nightly {
-    assert_eq_size!(u8, u8, (u8,), [u8; 1]);
-}
+assert_eq_size!(u8, u8, (u8,), [u8; 1]);
 
 mod assoc_type {
     trait Trait {
-        type AssocItem;
+        type AssocItem: ?Sized;
     }
 
-    impl<T> Trait for T {
+    impl<T: ?Sized> Trait for T {
         type AssocItem = Self;
     }
 
-    #[cfg(not(feature = "nightly"))]
+    #[allow(dead_code)]
     struct Value;
 
-    #[cfg(not(feature = "nightly"))]
-    impl Value {
-        assert_eq_size!(test; <Self as Trait>::AssocItem, Self);
-    }
+    assert_eq_size!(<Value as Trait>::AssocItem, Value);
+
+    // TODO: Is this possible?
+    // pub fn test<T: Trait>() {
+    //     assert_eq_size!(<T as Trait>::AssocItem, T);
+    // }
 }
 
 // Placed in separate module so that DropCounter's fields are private
 mod dc {
-    /// A type that acts somewhat of a reference counter.
+    /// A type that acts like somewhat of a reference counter.
     pub struct DropCounter<'a> {
         count: &'a mut i32
     }
@@ -43,7 +36,7 @@ mod dc {
     impl<'a> DropCounter<'a> {
         pub fn new(count: &'a mut i32) -> DropCounter<'a> {
             *count += 1;
-            DropCounter { count: count }
+            DropCounter { count }
         }
 
         pub fn count(&self) -> i32 {
