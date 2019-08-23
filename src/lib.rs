@@ -31,69 +31,6 @@
 //! Very thorough examples are provided in the docs for
 //! [each individual macro](#macros). Failure case examples are also documented.
 //!
-//! # Limitations
-//!
-//! Due to implementation details, some macros can only be used normally from
-//! within the context of a function. To use these macros in other contexts, a
-//! unique label must be provided.
-//!
-#![cfg_attr(feature = "nightly", doc = "```ignore")]
-#![cfg_attr(not(feature = "nightly"), doc = "```compile_fail")]
-//! # #[macro_use] extern crate static_assertions;
-//! # fn main() {}
-//! // error: expected item after attributes
-//! const_assert!(true == true);
-//! ```
-//!
-//! This can be fixed via:
-//!
-#![cfg_attr(feature = "nightly", doc = "```ignore")]
-#![cfg_attr(not(feature = "nightly"), doc = "```")]
-//! # #[macro_use] extern crate static_assertions;
-//! # fn main() {}
-//! const_assert!(label; true == true);
-//! ```
-//!
-//! This can be followed at [issue #1][issue1].
-//!
-//! ## Labeling Limitation Fix
-//!
-//!  The labeling workaround is **not
-//! necessary** (and is <span style="color:red">r<strong>emoved</strong></span>)
-//! when compiling on nightly Rust with the `nightly` feature flag enabled. This
-//! can be done by having the following in your project's [`Cargo.toml`]:
-//!
-//! ```toml
-//! [dependencies.static_assertions]
-//! version  = "0.3.4"
-//! features = ["nightly"]
-//! ```
-//!
-//! To compile with nightly Rust, run the following in your
-//! [shell](https://en.wikipedia.org/wiki/Shell_(computing)) or
-//! [command prompt](https://en.wikipedia.org/wiki/Command_Prompt) of choice:
-//!
-//! ```sh
-//! rustup install nightly
-//! cargo +nightly build
-//! ```
-//!
-//! Notice that this also requires enabling the
-//! [`underscore_const_names`](https://github.com/rust-lang/rust/issues/54912)
-//! nightly Rust feature:
-//!
-#![cfg_attr(feature = "nightly", doc = "```")]
-#![cfg_attr(not(feature = "nightly"), doc = "```ignore")]
-//! #![feature(underscore_const_names)]
-//! # #[macro_use] extern crate static_assertions;
-//!
-//! const_assert!(true != false);
-//!
-//! fn main() {
-//!     const_assert!(false != true);
-//! }
-//! ```
-//!
 //! # Changes
 //!
 //! See [`CHANGELOG.md`](https://github.com/nvzqz/static-assertions-rs/blob/master/CHANGELOG.md)
