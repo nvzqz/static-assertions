@@ -13,8 +13,8 @@
 /// assert_impl_all!(&str: Into<String>);
 /// ```
 ///
-/// Raw pointers do not implement [`Send`] nor [`Sync`] because they cannot be
-/// sent between threads safely:
+/// The following example fails to compile because raw pointers do not implement
+/// [`Send`] since they cannot be moved between threads safely:
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -61,7 +61,7 @@ macro_rules! assert_impl_all {
 /// assert_not_impl_all!(u32: Into<u64>);
 /// ```
 ///
-/// `Cell<u32>` is not both `Sync` and `Send`:
+/// The following compiles because [`Cell`] is not both [`Sync`] _and_ [`Send`]:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -69,7 +69,8 @@ macro_rules! assert_impl_all {
 ///
 /// assert_not_impl_all!(Cell<u32>: Sync, Send);
 /// ```
-/// But it is `Send`, so this fails to compile:
+///
+/// But it is [`Send`], so this fails to compile:
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -80,6 +81,7 @@ macro_rules! assert_impl_all {
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 /// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
+/// [`Cell`]: https://doc.rust-lang.org/std/cell/struct.Cell.html
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
 #[macro_export]
 macro_rules! assert_not_impl_all {
