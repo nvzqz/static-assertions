@@ -4,25 +4,26 @@
 #[macro_use]
 extern crate static_assertions;
 
-mod m {
-    pub struct _Struct<T: ?Sized> { pub nul: (), pub inner: T }
-}
-
-use m::_Struct as _Reused;
-
 #[allow(dead_code)]
-enum _Thing {
+enum Foo {
     A { x: u8, y: u8 },
     B(u8),
 }
 
-assert_fields!(m::_Struct<str>, inner, nul);
-
-assert_fields!(_Reused<dyn Send>, inner);
-
-assert_fields!(_Thing::A, x);
-assert_fields!(_Thing::A, x, x);
-assert_fields!(_Thing::A, x, y, x);
+assert_fields!(Foo::A: x);
+assert_fields!(Foo::A: x, x);
+assert_fields!(Foo::A: x, y, x);
 
 // TODO: Make tuple field access possible
-// assert_fields!(_Thing::B, 0);
+// assert_fields!(Foo::B, 0);
+
+mod m {
+    #[allow(dead_code)]
+    pub struct Bar<T: ?Sized> { pub nul: (), pub inner: T }
+}
+
+#[allow(dead_code)]
+use m::Bar as Baz;
+
+assert_fields!(m::Bar<str>: inner, nul);
+assert_fields!(Baz<dyn Send>: inner, nul);

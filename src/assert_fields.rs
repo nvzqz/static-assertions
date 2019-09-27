@@ -20,7 +20,7 @@
 /// }
 ///
 /// // Always have `val2` regardless of OS
-/// assert_fields!(Ty, val2);
+/// assert_fields!(Ty: val2);
 /// ```
 ///
 /// This macro even works with `enum` variants:
@@ -36,7 +36,7 @@
 ///     Ptr(*const u8),
 /// }
 ///
-/// assert_fields!(Data::Val, id, bytes);
+/// assert_fields!(Data::Val: id, bytes);
 /// ```
 ///
 /// The following example fails to compile because [`Range`] does not have a field named `middle`:
@@ -45,13 +45,13 @@
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// use std::ops::Range;
 ///
-/// assert_fields!(Range<u32>, middle);
+/// assert_fields!(Range<u32>: middle);
 /// ```
 ///
 /// [`Range`]: https://doc.rust-lang.org/std/ops/struct.Range.html
 #[macro_export]
 macro_rules! assert_fields {
-    ($t:ident::$v:ident, $($f:ident),+) => {
+    ($t:ident::$v:ident: $($f:ident),+) => {
         #[allow(unknown_lints, unneeded_field_pattern)]
         const _: fn() = || {
             #[allow(dead_code, unreachable_patterns)]
@@ -63,7 +63,7 @@ macro_rules! assert_fields {
             }
         };
     };
-    ($t:path, $($f:ident),+) => {
+    ($t:path: $($f:ident),+) => {
         #[allow(unknown_lints, unneeded_field_pattern)]
         const _: fn() = || {
             $(let $t { $f: _, .. };)+
