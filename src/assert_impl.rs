@@ -28,7 +28,7 @@
 #[macro_export]
 macro_rules! assert_impl_all {
     ($type:ty: $($trait:path),+ $(,)?) => {
-        const _: fn() -> () = || {
+        const _: fn() = || {
             fn assert_impl_all<T: ?Sized $(+ $trait)+>() {}
             assert_impl_all::<$type>();
         };
@@ -86,7 +86,7 @@ macro_rules! assert_impl_all {
 #[macro_export]
 macro_rules! assert_not_impl_all {
     ($x:ty: $($t:path),+ $(,)?) => {
-        const _: fn() -> () = || {
+        const _: fn() = || {
             #[allow(dead_code)]
             struct Invalid;
             trait AmbiguousIfImpl<A> { fn some_item() {} }
@@ -141,7 +141,7 @@ macro_rules! assert_not_impl_all {
 #[macro_export]
 macro_rules! assert_not_impl_any {
     ($x:ty: $($t:path),+ $(,)?) => {
-        const _: fn() -> () = || {
+        const _: fn() = || {
             trait AmbiguousIfImpl<A> { fn some_item() {} }
 
             impl<T: ?Sized> AmbiguousIfImpl<()> for T {}

@@ -53,7 +53,7 @@
 macro_rules! assert_fields {
     ($t:ident::$v:ident, $($f:ident),+) => {
         #[allow(unknown_lints, unneeded_field_pattern)]
-        const _: fn() -> () = || {
+        const _: fn() = || {
             #[allow(dead_code, unreachable_patterns)]
             fn assert(value: $t) {
                 match value {
@@ -65,7 +65,7 @@ macro_rules! assert_fields {
     };
     ($t:path, $($f:ident),+) => {
         #[allow(unknown_lints, unneeded_field_pattern)]
-        const _: fn() -> () = || {
+        const _: fn() = || {
             $(let $t { $f: _, .. };)+
         };
     };

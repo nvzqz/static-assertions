@@ -33,7 +33,7 @@
 #[macro_export]
 macro_rules! assert_eq_size {
     ($x:ty, $($xs:ty),+ $(,)?) => {
-        const _: fn() -> () = || {
+        const _: fn() = || {
             $(let _ = $crate::_core::mem::transmute::<$x, $xs>;)+
         };
     };
