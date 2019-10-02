@@ -50,10 +50,17 @@ macro_rules! assert_type_eq_all {
             trait TypeEq {
                 type This: ?Sized;
             }
+
             impl<T: ?Sized> TypeEq for T {
                 type This = Self;
             }
-            fn assert_type_eq_all<T: ?Sized, U: ?Sized>() where T: TypeEq<This = U> {}
+
+            fn assert_type_eq_all<T, U>()
+            where
+                T: ?Sized + TypeEq<This = U>,
+                U: ?Sized,
+            {}
+
             assert_type_eq_all::<$x, $xs>();
         })+ };
     };
