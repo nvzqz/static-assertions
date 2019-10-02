@@ -1,6 +1,6 @@
 // FIXME: Link below is required to render in index
-/// Asserts that the traits are
-/// [object-safe](https://doc.rust-lang.org/book/ch17-02-trait-objects.html#object-safety-is-required-for-trait-objects).
+/// Asserts that the traits support dynamic dispatch
+/// ([object-safety](https://doc.rust-lang.org/book/ch17-02-trait-objects.html#object-safety-is-required-for-trait-objects)).
 ///
 /// This is useful for when changes are made to a trait that accidentally
 /// prevent it from being used as an [object]. Such a case would be adding a
