@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ## [Unreleased]
 
+## [1.0.0]: - 2019-10-02
+### Added
+- `assert_eq_align!` macro
+
+### Removed
+- **[breaking]** Labels from macros that needed them 🎉
+  - Made possible by [`const _`] in Rust 1.37
+- **[breaking]** `assert_impl!` macro
+
+### Fixed
+- `assert_fields!` now works for `enum` types with multiple variants
+
+### Changed
+- **[breaking]** `const_assert!` macro to only take one expression
+  - Reasoning: when custom error messages are added in the future (via
+    [`assert!`]), having the macro allow for multiple comma-separated
+    expressions may lead to ambiguity
+- **[breaking]** Trait assertions to use `Type: Trait` syntax
+- **[breaking]** Field assertions to use `Type: field1, field2` syntax
+- **[breaking]** Renamed `assert_{ne,eq}_type!` to `assert_type_{ne,eq}_all!`
+
 ## [0.3.4] - 2019-06-12
 ### Changed
 - Aliased `assert_impl!` to `assert_impl_all!` and deprecated `assert_impl!`
@@ -114,6 +135,9 @@ Initial release
 
 [Simon Sapin]: https://github.com/SimonSapin
 
+[`assert!`]: https://doc.rust-lang.org/stable/std/macro.assert.html
+[`const _`]: https://github.com/rust-lang/rfcs/blob/master/text/2526-const-wildcard.md
+
 [#1]: https://github.com/nvzqz/static-assertions-rs/issues/1
 [#5]: https://github.com/nvzqz/static-assertions-rs/pull/5
 
@@ -123,7 +147,8 @@ Initial release
 [Keep a Changelog]:    http://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.4...HEAD
+[Unreleased]: https://github.com/nvzqz/static-assertions-rs/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.4...v1.0.0
 [0.3.4]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.1...v0.3.2

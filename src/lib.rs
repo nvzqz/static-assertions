@@ -1,8 +1,8 @@
 //! [![Banner](https://raw.githubusercontent.com/nvzqz/static-assertions-rs/assets/Banner.png)](https://github.com/nvzqz/static-assertions-rs)
 //!
-//! Compile-time assertions to ensure that invariants are met.
+//! Assertions to ensure correct assumptions about constants, types, and more.
 //!
-//! _All_ assertions within this crate are performed at [compile-time]. This
+//! _All_ checks provided by this crate are performed at [compile-time]. This
 //! allows for finding errors quickly and early when it comes to ensuring
 //! certain features or aspects of a codebase. These macros are especially
 //! important when exposing a public API that requires types to be the same size
@@ -15,7 +15,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! static_assertions = "0.3.4"
+//! static_assertions = "1.0.0"
 //! ```
 //!
 //! and this to your crate root (`main.rs` or `lib.rs`):
@@ -24,6 +24,15 @@
 //! #[macro_use]
 //! extern crate static_assertions;
 //! # fn main() {}
+//! ```
+//!
+//! When using [Rust 2018 edition][2018], the following shorthand can help if
+//! having `#[macro_use]` is undesirable.
+//!
+//! ```edition2018
+//! extern crate static_assertions as sa;
+//!
+//! sa::const_assert!(true);
 //! ```
 //!
 //! # Examples
@@ -50,12 +59,13 @@
 //!     <img src="https://buymecoffee.intm.org/img/button-paypal-white.png" alt="Buy me a coffee" height="35">
 //! </a>
 //!
-//! [issue1]: https://github.com/nvzqz/static-assertions-rs/issues/1
+//! [Rust 1.37]: https://blog.rust-lang.org/2019/08/15/Rust-1.37.0.html
+//! [2018]: https://blog.rust-lang.org/2018/12/06/Rust-1.31-and-rust-2018.html#rust-2018
 //! [crate]: https://crates.io/crates/static_assertions
 //! [compile-time]: https://en.wikipedia.org/wiki/Compile_time
 //! [`Cargo.toml`]: https://doc.rust-lang.org/cargo/reference/manifest.html
 
-#![doc(html_root_url = "https://docs.rs/static_assertions/0.3.4")]
+#![doc(html_root_url = "https://docs.rs/static_assertions/1.0.0")]
 #![doc(html_logo_url = "https://raw.githubusercontent.com/nvzqz/static-assertions-rs/assets/Icon.png")]
 
 #![no_std]
