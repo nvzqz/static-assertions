@@ -79,6 +79,7 @@ mod assert_cfg;
 mod assert_eq_align;
 mod assert_eq_size;
 mod assert_fields;
+mod assert_field_offsets;
 mod assert_impl;
 mod assert_obj_safe;
 mod assert_type;
