@@ -29,6 +29,7 @@
 macro_rules! assert_impl_all {
     ($type:ty: $($trait:path),+ $(,)?) => {
         const _: fn() = || {
+            // Only callable when `$type` implements all traits in `$($trait)+`.
             fn assert_impl_all<T: ?Sized $(+ $trait)+>() {}
             assert_impl_all::<$type>();
         };
@@ -87,13 +88,24 @@ macro_rules! assert_impl_all {
 macro_rules! assert_not_impl_all {
     ($x:ty: $($t:path),+ $(,)?) => {
         const _: fn() = || {
-            #[allow(dead_code)]
-            struct Invalid;
-            trait AmbiguousIfImpl<A> { fn some_item() {} }
+            // Generic trait with a blanket impl over `()` for all types.
+            trait AmbiguousIfImpl<A> {
+                // Required for actually being able to reference the trait.
+                fn some_item() {}
+            }
 
             impl<T: ?Sized> AmbiguousIfImpl<()> for T {}
+
+            // Used for the specialized impl when *all* traits in
+            // `$($t)+` are implemented.
+            #[allow(dead_code)]
+            struct Invalid;
+
             impl<T: ?Sized $(+ $t)+> AmbiguousIfImpl<Invalid> for T {}
 
+            // If there is only one specialized trait impl, type inference with
+            // `_` can be resolved and this can compile. Fails to compile if
+            // `$x` implements `AmbiguousIfImpl<Invalid>`.
             let _ = <$x as AmbiguousIfImpl<_>>::some_item;
         };
     };
@@ -142,15 +154,27 @@ macro_rules! assert_not_impl_all {
 macro_rules! assert_not_impl_any {
     ($x:ty: $($t:path),+ $(,)?) => {
         const _: fn() = || {
-            trait AmbiguousIfImpl<A> { fn some_item() {} }
+            // Generic trait with a blanket impl over `()` for all types.
+            trait AmbiguousIfImpl<A> {
+                // Required for actually being able to reference the trait.
+                fn some_item() {}
+            }
 
             impl<T: ?Sized> AmbiguousIfImpl<()> for T {}
+
+            // Creates multiple scoped `Invalid` types for each trait `$t`, over
+            // which a specialized `AmbiguousIfImpl<Invalid>` is implemented for
+            // every type that implements `$t`.
             $({
                 #[allow(dead_code)]
                 struct Invalid;
+
                 impl<T: ?Sized + $t> AmbiguousIfImpl<Invalid> for T {}
             })+
 
+            // If there is only one specialized trait impl, type inference with
+            // `_` can be resolved and this can compile. Fails to compile if
+            // `$x` implements any `AmbiguousIfImpl<Invalid>`.
             let _ = <$x as AmbiguousIfImpl<_>>::some_item;
         };
     };
