@@ -1,3 +1,63 @@
+/// Asserts that the type implements exactly one in a set of traits.
+///
+/// This is achieved by combining [`assert_impl_any!`] with
+/// [`assert_not_impl_all!`].
+///
+/// # Examples
+///
+/// Given some type `Foo`, it is expected to implement either `Snap`, `Crackle`,
+/// or `Pop`:
+///
+/// ```compile_fail
+/// # use static_assertions::assert_impl_one; fn main() {}
+/// struct Foo;
+///
+/// trait Snap {}
+/// trait Crackle {}
+/// trait Pop {}
+///
+/// assert_impl_one!(Foo: Snap, Crackle, Pop);
+/// ```
+///
+/// If _only_ `Crackle` is implemented, the assertion passes:
+///
+/// ```
+/// # use static_assertions::assert_impl_one; fn main() {}
+/// # struct Foo;
+/// # trait Snap {}
+/// # trait Crackle {}
+/// # trait Pop {}
+/// impl Crackle for Foo {}
+///
+/// assert_impl_one!(Foo: Snap, Crackle, Pop);
+/// ```
+///
+/// If `Snap` or `Pop` is _also_ implemented, the assertion fails:
+///
+/// ```compile_fail
+/// # use static_assertions::assert_impl_one; fn main() {}
+/// # struct Foo;
+/// # trait Snap {}
+/// # trait Crackle {}
+/// # trait Pop {}
+/// # impl Crackle for Foo {}
+/// impl Pop for Foo {}
+///
+/// assert_impl_one!(Foo: Snap, Crackle, Pop);
+/// ```
+///
+/// [`assert_impl_any!`]:     macro.assert_impl_any.html
+/// [`assert_not_impl_all!`]: macro.assert_not_impl_all.html
+#[macro_export(local_inner_macros)]
+macro_rules! assert_impl_one {
+    ($type:ty: $t:path, $($ts:path),+ $(,)?) => {
+        assert_impl_any!($type: $t, $($ts),+);
+        // FIXME: Only works against the first trait; needs to check all
+        // subsequent traits against one another.
+        $(assert_not_impl_all!($type: $t, $ts);)+
+    };
+}
+
 /// Asserts that the type implements _all_ of the given traits.
 ///
 /// See [`assert_not_impl_all!`] for achieving the opposite effect.
@@ -66,40 +126,7 @@ macro_rules! assert_impl_all {
 /// assert_impl_any!(*const u8: Send, Sync);
 /// ```
 ///
-/// ## Mutually Exclusive Trait Implementations
-///
-/// By using `assert_impl_any!` in combination with [`assert_not_impl_all!`],
-/// one can assert that a type implements one in a set of traits but not all:
-///
-/// ```
-/// # #[macro_use] extern crate static_assertions; fn main() {}
-/// struct Foo;
-///
-/// trait Bar {}
-/// trait Baz {}
-///
-/// impl Bar for Foo {}
-///
-/// assert_impl_any!(Foo: Bar, Baz);
-/// assert_not_impl_all!(Foo: Bar, Baz);
-/// ```
-///
-/// If `Baz` is implemented, the assertion fails:
-///
-/// ```compile_fail
-/// # #[macro_use] extern crate static_assertions; fn main() {}
-/// # struct Foo;
-/// # trait Bar {}
-/// # impl Bar for Foo {}
-/// # trait Baz {}
-/// impl Baz for Foo {}
-///
-/// assert_impl_any!(Foo: Bar, Baz);
-/// assert_not_impl_all!(Foo: Bar, Baz);
-/// ```
-///
 /// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
-/// [`assert_not_impl_all!`]: macro.assert_not_impl_all.html
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 #[macro_export]
@@ -194,42 +221,9 @@ macro_rules! assert_impl_any {
 /// assert_not_impl_all!(Cell<u32>: Send);
 /// ```
 ///
-/// ## Mutually Exclusive Trait Implementations
-///
-/// By using `assert_not_impl_all!` in combination with [`assert_impl_any!`],
-/// one can assert that a type implements one in a set of traits but not all:
-///
-/// ```
-/// # #[macro_use] extern crate static_assertions; fn main() {}
-/// struct Foo;
-///
-/// trait Bar {}
-/// trait Baz {}
-///
-/// impl Bar for Foo {}
-///
-/// assert_impl_any!(Foo: Bar, Baz);
-/// assert_not_impl_all!(Foo: Bar, Baz);
-/// ```
-///
-/// If `Baz` is implemented, the assertion fails:
-///
-/// ```compile_fail
-/// # #[macro_use] extern crate static_assertions; fn main() {}
-/// # struct Foo;
-/// # trait Bar {}
-/// # impl Bar for Foo {}
-/// # trait Baz {}
-/// impl Baz for Foo {}
-///
-/// assert_impl_any!(Foo: Bar, Baz);
-/// assert_not_impl_all!(Foo: Bar, Baz);
-/// ```
-///
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 /// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
-/// [`assert_impl_any!`]: macro.assert_impl_any.html
 /// [`Cell`]: https://doc.rust-lang.org/std/cell/struct.Cell.html
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
 #[macro_export]
