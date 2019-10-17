@@ -36,6 +36,121 @@ macro_rules! assert_impl_all {
     };
 }
 
+/// Asserts that the type implements _any_ of the given traits.
+///
+/// See [`assert_not_impl_any!`] for achieving the opposite effect.
+///
+/// # Examples
+///
+/// `u8` cannot be converted from `u16`, but it can be converted into `u16`:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_impl_any!(u8: From<u16>, Into<u16>);
+/// ```
+///
+/// The unit type cannot be converted from `u8` or `u16`, but it does implement
+/// [`Send`]:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_impl_any!((): From<u8>, From<u16>, Send);
+/// ```
+///
+/// The following example fails to compile because raw pointers do not implement
+/// [`Send`] or [`Sync`] since they cannot be moved or shared between threads
+/// safely:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_impl_any!(*const u8: Send, Sync);
+/// ```
+///
+/// ## Mutually Exclusive Trait Implementations
+///
+/// By using `assert_impl_any!` in combination with [`assert_not_impl_all!`],
+/// one can assert that a type implements one in a set of traits but not all:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// struct Foo;
+///
+/// trait Bar {}
+/// trait Baz {}
+///
+/// impl Bar for Foo {}
+///
+/// assert_impl_any!(Foo: Bar, Baz);
+/// assert_not_impl_all!(Foo: Bar, Baz);
+/// ```
+///
+/// If `Baz` is implemented, the assertion fails:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// # struct Foo;
+/// # trait Bar {}
+/// # impl Bar for Foo {}
+/// # trait Baz {}
+/// impl Baz for Foo {}
+///
+/// assert_impl_any!(Foo: Bar, Baz);
+/// assert_not_impl_all!(Foo: Bar, Baz);
+/// ```
+///
+/// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
+/// [`assert_not_impl_all!`]: macro.assert_not_impl_all.html
+/// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
+/// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
+#[macro_export]
+macro_rules! assert_impl_any {
+    ($x:ty: $($t:path),+ $(,)?) => {
+        const _: fn() = || {
+            use $crate::_core::marker::PhantomData;
+            use $crate::_core::ops::Deref;
+
+            // Fallback to use as the first iterative assignment to `previous`.
+            let previous = AssertImplAnyFallback;
+            struct AssertImplAnyFallback;
+
+            // Ensures that blanket traits can't impersonate the method.
+            struct AssertImplAnyToken;
+
+            $(let previous = {
+                struct Wrapper<T, N>(PhantomData<T>, N);
+
+                // If the method for this wrapper can't be called then the
+                // compiler will insert a deref and try again. This forwards the
+                // compiler's next attempt to the previous wrapper.
+                impl<T, N> Deref for Wrapper<T, N> {
+                    type Target = N;
+
+                    fn deref(&self) -> &Self::Target {
+                        &self.1
+                    }
+                }
+
+                // This impl is bounded on the `$t` trait, so the method can
+                // only be called if `$x` implements `$t`. This is why a new
+                // `Wrapper` is defined for each `previous`.
+                impl<T: $t, N> Wrapper<T, N> {
+                    fn _static_assertions_impl_any(&self) -> AssertImplAnyToken {
+                        AssertImplAnyToken
+                    }
+                }
+
+                Wrapper::<$x, _>(PhantomData, previous)
+            };)+
+
+            // Attempt to find the method that can actually be called. The found
+            // method must return a type that implements the sealed `Token`
+            // trait, this ensures that blanket trait methods can't cause this
+            // macro to compile.
+            let _: AssertImplAnyToken = previous._static_assertions_impl_any();
+        };
+    };
+}
+
 /// Asserts that the type does **not** implement _all_ of the given traits.
 ///
 /// This can be used to ensure types do not implement auto traits such as
@@ -79,9 +194,42 @@ macro_rules! assert_impl_all {
 /// assert_not_impl_all!(Cell<u32>: Send);
 /// ```
 ///
+/// ## Mutually Exclusive Trait Implementations
+///
+/// By using `assert_not_impl_all!` in combination with [`assert_impl_any!`],
+/// one can assert that a type implements one in a set of traits but not all:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// struct Foo;
+///
+/// trait Bar {}
+/// trait Baz {}
+///
+/// impl Bar for Foo {}
+///
+/// assert_impl_any!(Foo: Bar, Baz);
+/// assert_not_impl_all!(Foo: Bar, Baz);
+/// ```
+///
+/// If `Baz` is implemented, the assertion fails:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// # struct Foo;
+/// # trait Bar {}
+/// # impl Bar for Foo {}
+/// # trait Baz {}
+/// impl Baz for Foo {}
+///
+/// assert_impl_any!(Foo: Bar, Baz);
+/// assert_not_impl_all!(Foo: Bar, Baz);
+/// ```
+///
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 /// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
+/// [`assert_impl_any!`]: macro.assert_impl_any.html
 /// [`Cell`]: https://doc.rust-lang.org/std/cell/struct.Cell.html
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
 #[macro_export]

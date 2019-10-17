@@ -16,3 +16,7 @@ assert_impl_all!(&'static [u8]: IntoIterator<Item=&'static u8>);
 assert_impl_all!(Range<u8>: Iterator<Item=u8>);
 assert_impl_all!([u8]: Send, Sync, AsRef<[u8]>);
 assert_impl_all!(str: Send, Sync, AsRef<[u8]>,);
+
+assert_impl_any!((): Send, Sync);
+assert_impl_any!((): Send, From<u8>);
+assert_impl_any!((): From<u8>, From<u16>, Send);
