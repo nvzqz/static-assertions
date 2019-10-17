@@ -3,8 +3,6 @@ matrix:
   include:
     - rust: 1.37.0
     - rust: stable
-    - rust: stable
-      os: osx
     - rust: beta
     - rust: nightly
       env: FEATURES="--features nightly"
