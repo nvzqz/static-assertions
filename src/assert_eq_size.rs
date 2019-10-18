@@ -115,7 +115,7 @@ macro_rules! assert_eq_size_ptr {
 /// ```
 ///
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_eq_size_val {
     ($x:expr, $($xs:expr),+ $(,)?) => {
         assert_eq_size_ptr!(&$x, $(&$xs),+);

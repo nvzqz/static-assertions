@@ -75,7 +75,7 @@ macro_rules! const_assert {
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// const_assert_eq!(4 + 4, 4 * 4);
 /// ```
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! const_assert_eq {
     ($x:expr, $y:expr $(,)?) => {
         const_assert!($x == $y);
@@ -101,7 +101,7 @@ macro_rules! const_assert_eq {
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// const_assert_ne!(2 + 2, 2 * 2);
 /// ```
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! const_assert_ne {
     ($x:expr, $y:expr $(,)?) => {
         const_assert!($x != $y);

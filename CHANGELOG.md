@@ -10,6 +10,11 @@ The format is based on [Keep a Changelog] and this project adheres to
 - `assert_impl_one!` macro
   - Made possible by `assert_impl_any!`
 
+### Fixed
+- `assert_eq_size_val!`, `const_assert_eq!`, and `const_assert_ne!` to export
+their local inner macros. Not having this prevented them from working when
+`use`d or called directly via `static_assertions::macro!(...)`.
+
 ## [1.0.0]: - 2019-10-02
 ### Added
 - `assert_eq_align!` macro
