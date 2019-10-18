@@ -159,8 +159,17 @@ macro_rules! assert_impl_any {
             let previous = AssertImplAnyFallback;
             struct AssertImplAnyFallback;
 
-            // Ensures that blanket traits can't impersonate the method.
-            struct AssertImplAnyToken;
+            // Ensures that blanket traits can't impersonate the method. This
+            // prevents a false positive attack where---if a blanket trait is in
+            // scope that has `_static_assertions_impl_any`---the macro will
+            // compile when it shouldn't.
+            //
+            // See https://github.com/nvzqz/static-assertions-rs/issues/19 for
+            // more info.
+            struct ActualAssertImplAnyToken;
+            trait AssertImplAnyToken {}
+            impl AssertImplAnyToken for ActualAssertImplAnyToken {}
+            fn assert_impl_any_token<T: AssertImplAnyToken>(_: T) {}
 
             $(let previous = {
                 struct Wrapper<T, N>(PhantomData<T>, N);
@@ -180,8 +189,8 @@ macro_rules! assert_impl_any {
                 // only be called if `$x` implements `$t`. This is why a new
                 // `Wrapper` is defined for each `previous`.
                 impl<T: $t, N> Wrapper<T, N> {
-                    fn _static_assertions_impl_any(&self) -> AssertImplAnyToken {
-                        AssertImplAnyToken
+                    fn _static_assertions_impl_any(&self) -> ActualAssertImplAnyToken {
+                        ActualAssertImplAnyToken
                     }
                 }
 
@@ -192,7 +201,7 @@ macro_rules! assert_impl_any {
             // method must return a type that implements the sealed `Token`
             // trait, this ensures that blanket trait methods can't cause this
             // macro to compile.
-            let _: AssertImplAnyToken = previous._static_assertions_impl_any();
+            assert_impl_any_token(previous._static_assertions_impl_any());
         };
     };
 }
