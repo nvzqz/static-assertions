@@ -12,8 +12,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Fixed
 - `assert_eq_size_val!`, `const_assert_eq!`, and `const_assert_ne!` to export
-their local inner macros. Not having this prevented them from working when
-`use`d or called directly via `static_assertions::macro!(...)`.
+  their local inner macros. Not having this prevented them from working when
+  `use`d or called directly via `static_assertions::macro!(...)`
 
 ### Removed
 - Unused `_assert_obj_safe!` from pre-1.0
@@ -46,7 +46,7 @@ their local inner macros. Not having this prevented them from working when
 ### Added
 - `assert_impl_all!` as replacement to `assert_impl!`
 - `assert_not_impl_all!` and `assert_not_impl_any!` macro counterparts to
-`assert_impl_all!`
+  `assert_impl_all!`
 
 ### Fixed
 - `assert_eq_type!` now works with types involving lifetimes
@@ -62,38 +62,39 @@ their local inner macros. Not having this prevented them from working when
 ## [0.3.2] - 2019-05-15
 ### Added
 - A `assert_eq_type!` macro that allows for checking whether inputs are the same
-concrete type
+  concrete type
 - A `assert_ne_type!` macro for checking whether inputs all refer to different
-types
+  types
 
 ### Fixed
 - `const_assert!` now only takes `bool` values whereas integer (or other type)
-values could previously be passed
+  values could previously be passed
 
 ## [0.3.1] - 2018-11-15
 ### Fixed
 - Macros that refer to other internal macros can now be imported when compiling
-for Rust 2018 ([issue #10](https://github.com/nvzqz/static-assertions-rs/issues/10))
+  for Rust 2018 ([issue
+  #10](https://github.com/nvzqz/static-assertions-rs/issues/10))
 
 ## [0.3.0] - 2018-11-14
 ### Changed
 - Bumped minimum supported (automatically tested) Rust version to 1.24.0
 - Moved message parameter for `assert_cfg!()` to last argument position, making
-it consistent with other macros
+  it consistent with other macros
 
 ### Removed
 - No need to use `macro!(label; ...)` syntax when compiling on nightly Rust and
-enabling the `nightly` feature flag
+  enabling the `nightly` feature flag
 
 ## [0.2.5] - 2017-12-12
 ### Changed
 - `assert_eq_size_ptr` wraps its code inside of a closure, ensuring that the
-unsafe code inside never runs
+  unsafe code inside never runs
 - Clippy no longer warns about `unneeded_field_pattern` within `assert_fields`
 
 ### Added
 - Much better documentation with test examples that are guaranteed to fail at
-compile-time
+  compile-time
 
 ### Removed
 - Removed testing features; compile failure tests are now done via doc tests
@@ -101,12 +102,12 @@ compile-time
 ## [0.2.4] - 2017-12-11
 ### Removed
 - Removed the actual call to `mem::transmute` while still utilizing it for size
-verification ([Simon Sapin], [#5])
+  verification ([Simon Sapin], [#5])
 
 ### Added
 - `assert_cfg` macro that asserts that the given configuration is set
 - `assert_fields` macro to assert that a struct type or enum variant has a given
-field
+  field
 
 ### Fixed
 - Allow more generics flexibility in `assert_impl`
@@ -132,7 +133,7 @@ field
 
 ### Fixed
 - Allow `assert_eq_size`, `const_assert`, and `const_assert_eq` in non-function
-contexts via providing a unique label [#1]
+  contexts via providing a unique label [#1]
 
 ### Removed
 - **[Breaking]** Semicolon-separated `assert_eq_size` is no longer allowed
