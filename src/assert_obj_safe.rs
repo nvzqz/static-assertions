@@ -74,25 +74,3 @@ macro_rules! assert_obj_safe {
         $(const _: Option<&$xs> = None;)+
     };
 }
-
-#[doc(hidden)]
-#[cfg(feature = "nightly")]
-#[macro_export]
-macro_rules! _assert_obj_safe {
-    ($($xs:ty),+ $(,)?) => {
-        $(const _: Option<&$xs> = None;)+
-    };
-}
-
-#[doc(hidden)]
-#[cfg(not(feature = "nightly"))]
-#[macro_export]
-macro_rules! _assert_obj_safe {
-    ($($xs:ty),+ $(,)?) => {
-        $(let _: &$xs;)+
-    };
-    ($label:ident; $($xs:tt)+) => {
-        #[allow(dead_code, non_snake_case)]
-        fn $label() { assert_obj_safe!($($xs)+); }
-    };
-}
