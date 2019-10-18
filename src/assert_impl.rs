@@ -52,10 +52,16 @@
 macro_rules! assert_impl_one {
     ($type:ty: $t:path, $($ts:path),+ $(,)?) => {
         assert_impl_any!($type: $t, $($ts),+);
-        // FIXME: Only works against the first trait; needs to check all
-        // subsequent traits against one another.
-        $(assert_not_impl_all!($type: $t, $ts);)+
+        assert_impl_one!(_priv $type: $t, $($ts),+);
     };
+    // Expands into all combinations of trait pairs to ensure `$type` does not
+    // implement any pair of traits.
+    (_priv $type:ty: $t:path, $($ts:path),+) => {
+        $(assert_not_impl_all!($type: $t, $ts);)+
+        assert_impl_one!(_priv $type: $($ts),+);
+    };
+    // Finished passing along pairs, nothing to do.
+    (_priv $type:ty: $t:path) => {};
 }
 
 /// Asserts that the type implements _all_ of the given traits.
