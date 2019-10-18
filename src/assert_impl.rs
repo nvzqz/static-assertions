@@ -48,20 +48,33 @@
 ///
 /// [`assert_impl_any!`]:     macro.assert_impl_any.html
 /// [`assert_not_impl_all!`]: macro.assert_not_impl_all.html
-#[macro_export(local_inner_macros)]
+#[macro_export]
 macro_rules! assert_impl_one {
-    ($type:ty: $t:path, $($ts:path),+ $(,)?) => {
-        assert_impl_any!($type: $t, $($ts),+);
-        assert_impl_one!(_priv $type: $t, $($ts),+);
+    ($x:ty: $($t:path),+ $(,)?) => {
+        const _: fn() = || {
+            // Generic trait that must be implemented for `$x` exactly once.
+            trait AmbiguousIfMoreThanOne<A> {
+                // Required for actually being able to reference the trait.
+                fn some_item() {}
+            }
+
+            // Creates multiple scoped `Token` types for each trait `$t`, over
+            // which a specialized `AmbiguousIfMoreThanOne<Token>` is
+            // implemented for every type that implements `$t`.
+            $({
+                #[allow(dead_code)]
+                struct Token;
+
+                impl<T: ?Sized + $t> AmbiguousIfMoreThanOne<Token> for T {}
+            })+
+
+            // If there is only one specialized trait impl, type inference with
+            // `_` can be resolved and this can compile. Fails to compile if
+            // `$x` implements more than one `AmbiguousIfMoreThanOne<Token>` or
+            // does not implement any at all.
+            let _ = <$x as AmbiguousIfMoreThanOne<_>>::some_item;
+        };
     };
-    // Expands into all combinations of trait pairs to ensure `$type` does not
-    // implement any pair of traits.
-    (_priv $type:ty: $t:path, $($ts:path),+) => {
-        $(assert_not_impl_all!($type: $t, $ts);)+
-        assert_impl_one!(_priv $type: $($ts),+);
-    };
-    // Finished passing along pairs, nothing to do.
-    (_priv $type:ty: $t:path) => {};
 }
 
 /// Asserts that the type implements _all_ of the given traits.
