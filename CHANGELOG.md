@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 ## [Unreleased]
 ### Added
 - `assert_impl_any!` macro
+- `assert_impl_one!` macro
+  - Made possible by `assert_impl_any!`
 
 ## [1.0.0]: - 2019-10-02
 ### Added
