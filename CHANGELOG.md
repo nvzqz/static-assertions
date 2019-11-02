@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog] and this project adheres to
 - `assert_impl_any!` macro
 - `assert_impl_one!` macro
   - Made possible by `assert_impl_any!`
+- `assert_super_trait_all!` macro
 
 ### Fixed
 - `assert_eq_size_val!`, `const_assert_eq!`, and `const_assert_ne!` to export
