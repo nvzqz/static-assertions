@@ -44,21 +44,21 @@ extern crate static_assertions;
 ## Usage
 
 This crate exposes the following macros:
-- [`assert_cfg!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_cfg.html)
-- [`assert_eq_align!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_align.html)
-- [`assert_eq_size!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_size.html)
-- [`assert_eq_size_ptr!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_size_ptr.html)
-- [`assert_eq_size_val!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_size_val.html)
-- [`assert_fields!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_fields.html)
-- [`assert_impl_all!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_impl_all.html)
-- [`assert_not_impl_all!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_not_impl_all.html)
-- [`assert_not_impl_any!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_not_impl_any.html)
-- [`assert_obj_safe!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_obj_safe.html)
-- [`assert_type_eq_all!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_type_eq_all.html)
-- [`assert_type_ne_all!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_type_ne_all.html)
-- [`const_assert!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.const_assert.html)
-- [`const_assert_eq!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.const_assert_eq.html)
-- [`const_assert_ne!`](https://docs.rs/static_assertions/1.0.0/static_assertions/macro.const_assert_ne.html)
+- [`assert_cfg!`]
+- [`assert_eq_align!`]
+- [`assert_eq_size!`]
+- [`assert_eq_size_ptr!`]
+- [`assert_eq_size_val!`]
+- [`assert_fields!`]
+- [`assert_impl_all!`]
+- [`assert_not_impl_all!`]
+- [`assert_not_impl_any!`]
+- [`assert_obj_safe!`]
+- [`assert_type_eq_all!`]
+- [`assert_type_ne_all!`]
+- [`const_assert!`]
+- [`const_assert_eq!`]
+- [`const_assert_ne!`]
 
 ## Changes
 
@@ -74,3 +74,21 @@ This project is released under either:
 - [Apache License (Version 2.0)](https://github.com/nvzqz/static-assertions-rs/blob/master/LICENSE-APACHE)
 
 at your choosing.
+
+[new issue]: https://github.com/nvzqz/static-assertions-rs/issues/new
+
+[`assert_cfg!`]:          https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_cfg.html
+[`assert_eq_align!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_align.html
+[`assert_eq_size!`]:      https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_size.html
+[`assert_eq_size_ptr!`]:  https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_size_ptr.html
+[`assert_eq_size_val!`]:  https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_size_val.html
+[`assert_fields!`]:       https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_fields.html
+[`assert_impl_all!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_impl_all.html
+[`assert_not_impl_all!`]: https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_not_impl_all.html
+[`assert_not_impl_any!`]: https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_not_impl_any.html
+[`assert_obj_safe!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_obj_safe.html
+[`assert_type_eq_all!`]:  https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_type_eq_all.html
+[`assert_type_ne_all!`]:  https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_type_ne_all.html
+[`const_assert!`]:        https://docs.rs/static_assertions/1.0.0/static_assertions/macro.const_assert.html
+[`const_assert_eq!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.const_assert_eq.html
+[`const_assert_ne!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.const_assert_ne.html
