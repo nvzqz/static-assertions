@@ -6,4 +6,4 @@ matrix:
     - rust: beta
     - rust: nightly
       env: FEATURES="--features nightly"
-script: ./ci/travis.sh
+script: cargo test $FEATURES
