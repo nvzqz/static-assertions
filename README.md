@@ -90,18 +90,25 @@ This crate exposes the following macros:
     assert_impl_all!(Foo: Send, Sync);
     ```
 
+- **Q:** How can I contribute?
+
+  **A:** A couple of ways! You can:
+
+  - Attempt coming up with some form of static analysis that you'd like to see
+    implemented. Create a [new issue] and describe how you'd imagine your
+    assertion to work, with example code to demonstrate.
+
+  - Implement your own static assertion and create a [pull request].
+
+  - Give feedback. What are some pain points? Where is it unpleasant?
+
+  - Write docs. If you're familiar with how this library works, sharing your
+    knowledge with the rest its users would be great!
+
 - **Q:** Will this affect my compiled binary?
 
   **A:** Nope! There is zero runtime cost to using this because all checks are
   at compile-time, and so no code is emitted to run.
-
-- **Q:** How can I contribute?
-
-  **A:** A couple of ways!
-
-  You can try to come up with some form of static analysis that you'd like to
-  see implemented. Create a [new issue] and describe how you'd imagine your
-  assertion to work, with example code to demonstrate.
 
 - **Q:** Will this affect my compile times?
 
@@ -150,7 +157,8 @@ This project is released under either:
 
 at your choosing.
 
-[new issue]: https://github.com/nvzqz/static-assertions-rs/issues/new
+[new issue]:    https://github.com/nvzqz/static-assertions-rs/issues/new
+[pull request]: https://github.com/nvzqz/static-assertions-rs/pulls
 
 [`assert_cfg!`]:          https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_cfg.html
 [`assert_eq_align!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_align.html
