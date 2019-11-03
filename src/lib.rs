@@ -81,6 +81,6 @@ mod assert_eq_size;
 mod assert_fields;
 mod assert_impl;
 mod assert_obj_safe;
-mod assert_super_trait;
+mod assert_trait;
 mod assert_type;
 mod const_assert;
