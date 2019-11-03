@@ -1,5 +1,16 @@
 //! [![Banner](https://raw.githubusercontent.com/nvzqz/static-assertions-rs/assets/Banner.png)](https://github.com/nvzqz/static-assertions-rs)
 //!
+//! <div align="center">
+//!     <a href="https://crates.io/crates/static_assertions">
+//!         <img src="https://img.shields.io/crates/d/static_assertions.svg" alt="Downloads">
+//!     </a>
+//!     <a href="https://travis-ci.org/nvzqz/static-assertions-rs">
+//!         <img src="https://travis-ci.org/nvzqz/static-assertions-rs.svg?branch=master" alt="Build Status">
+//!     </a>
+//!     <img src="https://img.shields.io/badge/rustc-^1.37.0-blue.svg" alt="rustc ^1.37.0">
+//!     <br><br>
+//! </div>
+//!
 //! Assertions to ensure correct assumptions about constants, types, and more.
 //!
 //! _All_ checks provided by this crate are performed at [compile-time]. This
