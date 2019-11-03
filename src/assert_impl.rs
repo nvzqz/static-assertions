@@ -1,7 +1,10 @@
 /// Asserts that the type implements exactly one in a set of traits.
 ///
-/// This is achieved by combining [`assert_impl_any!`] with
-/// [`assert_not_impl_all!`].
+/// Related:
+/// - [`assert_impl_any!`]
+/// - [`assert_impl_all!`]
+/// - [`assert_not_impl_all!`]
+/// - [`assert_not_impl_any!`]
 ///
 /// # Examples
 ///
@@ -47,7 +50,9 @@
 /// ```
 ///
 /// [`assert_impl_any!`]:     macro.assert_impl_any.html
+/// [`assert_impl_all!`]:     macro.assert_impl_all.html
 /// [`assert_not_impl_all!`]: macro.assert_not_impl_all.html
+/// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
 #[macro_export]
 macro_rules! assert_impl_one {
     ($x:ty: $($t:path),+ $(,)?) => {
