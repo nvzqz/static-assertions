@@ -40,10 +40,13 @@
 macro_rules! assert_trait_sub_all {
     ($sub:path: $($super:path),+ $(,)?) => {
         const _: () = {
+            // One scope per super-trait.
             $({
                 #[allow(non_camel_case_types)]
                 trait __Impl_Implication: $super {}
 
+                // Can only be implemented for `$sub` types if `$super` is
+                // also implemented.
                 impl<T: $sub> __Impl_Implication for T {}
             })+
         };
