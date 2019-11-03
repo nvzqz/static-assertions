@@ -26,7 +26,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! static_assertions = "1.0.0"
+//! static_assertions = "1.1.0"
 //! ```
 //!
 //! and this to your crate root (`main.rs` or `lib.rs`):
@@ -76,7 +76,7 @@
 //! [compile-time]: https://en.wikipedia.org/wiki/Compile_time
 //! [`Cargo.toml`]: https://doc.rust-lang.org/cargo/reference/manifest.html
 
-#![doc(html_root_url = "https://docs.rs/static_assertions/1.0.0")]
+#![doc(html_root_url = "https://docs.rs/static_assertions/1.1.0")]
 #![doc(html_logo_url = "https://raw.githubusercontent.com/nvzqz/static-assertions-rs/assets/Icon.png")]
 
 #![no_std]

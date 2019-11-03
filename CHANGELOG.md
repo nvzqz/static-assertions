@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning].
 
 ## [Unreleased]
+
+## [1.1.0] - 2019-11-03
 ### Added
 - `assert_impl_any!` macro
 - `assert_impl_one!` macro
@@ -162,7 +164,8 @@ Initial release
 [Keep a Changelog]:    http://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/nvzqz/static-assertions-rs/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/nvzqz/static-assertions-rs/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/nvzqz/static-assertions-rs/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.4...v1.0.0
 [0.3.4]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/nvzqz/static-assertions-rs/compare/v0.3.2...v0.3.3

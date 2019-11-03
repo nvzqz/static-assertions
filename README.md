@@ -33,7 +33,7 @@ adding the following to your project's
 
 ```toml
 [dependencies]
-static_assertions = "1.0.0"
+static_assertions = "1.1.0"
 ```
 
 and this to your crate root (`main.rs` or `lib.rs`):
@@ -53,9 +53,13 @@ This crate exposes the following macros:
 - [`assert_eq_size_val!`]
 - [`assert_fields!`]
 - [`assert_impl_all!`]
+- [`assert_impl_any!`]
+- [`assert_impl_one!`]
 - [`assert_not_impl_all!`]
 - [`assert_not_impl_any!`]
 - [`assert_obj_safe!`]
+- [`assert_trait_sub_all!`]
+- [`assert_trait_super_all!`]
 - [`assert_type_eq_all!`]
 - [`assert_type_ne_all!`]
 - [`const_assert!`]
@@ -119,7 +123,7 @@ This crate exposes the following macros:
 
   ```toml
   [dev-dependencies]
-  static_assertions = "1.0.0"
+  static_assertions = "1.1.0"
   ```
 
   and then assertions can be conditionally run behind `#[cfg(test)]`:
@@ -163,18 +167,22 @@ at your choosing.
 [pull request]: https://github.com/nvzqz/static-assertions-rs/pulls
 [docs]:         https://docs.rs/static_assertions
 
-[`assert_cfg!`]:          https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_cfg.html
-[`assert_eq_align!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_align.html
-[`assert_eq_size!`]:      https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_size.html
-[`assert_eq_size_ptr!`]:  https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_size_ptr.html
-[`assert_eq_size_val!`]:  https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_size_val.html
-[`assert_fields!`]:       https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_fields.html
-[`assert_impl_all!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_impl_all.html
-[`assert_not_impl_all!`]: https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_not_impl_all.html
-[`assert_not_impl_any!`]: https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_not_impl_any.html
-[`assert_obj_safe!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_obj_safe.html
-[`assert_type_eq_all!`]:  https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_type_eq_all.html
-[`assert_type_ne_all!`]:  https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_type_ne_all.html
-[`const_assert!`]:        https://docs.rs/static_assertions/1.0.0/static_assertions/macro.const_assert.html
-[`const_assert_eq!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.const_assert_eq.html
-[`const_assert_ne!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.const_assert_ne.html
+[`assert_cfg!`]:             https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_cfg.html
+[`assert_eq_align!`]:        https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_eq_align.html
+[`assert_eq_size!`]:         https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_eq_size.html
+[`assert_eq_size_ptr!`]:     https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_eq_size_ptr.html
+[`assert_eq_size_val!`]:     https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_eq_size_val.html
+[`assert_fields!`]:          https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_fields.html
+[`assert_impl_all!`]:        https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_impl_all.html
+[`assert_impl_any!`]:        https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_impl_any.html
+[`assert_impl_one!`]:        https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_impl_one.html
+[`assert_not_impl_all!`]:    https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_not_impl_all.html
+[`assert_not_impl_any!`]:    https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_not_impl_any.html
+[`assert_obj_safe!`]:        https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_obj_safe.html
+[`assert_trait_sub_all!`]:   https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_trait_sub_all.html
+[`assert_trait_super_all!`]: https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_trait_super_all.html
+[`assert_type_eq_all!`]:     https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_type_eq_all.html
+[`assert_type_ne_all!`]:     https://docs.rs/static_assertions/1.1.0/static_assertions/macro.assert_type_ne_all.html
+[`const_assert!`]:           https://docs.rs/static_assertions/1.1.0/static_assertions/macro.const_assert.html
+[`const_assert_eq!`]:        https://docs.rs/static_assertions/1.1.0/static_assertions/macro.const_assert_eq.html
+[`const_assert_ne!`]:        https://docs.rs/static_assertions/1.1.0/static_assertions/macro.const_assert_ne.html
