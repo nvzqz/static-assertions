@@ -20,7 +20,7 @@ The format is based on [Keep a Changelog] and this project adheres to
 ### Removed
 - Unused `_assert_obj_safe!` from pre-1.0
 
-## [1.0.0]: - 2019-10-02
+## [1.0.0] - 2019-10-02
 ### Added
 - `assert_eq_align!` macro
 
