@@ -8,7 +8,6 @@ The format is based on [Keep a Changelog] and this project adheres to
 ### Added
 - `assert_impl_any!` macro
 - `assert_impl_one!` macro
-  - Made possible by `assert_impl_any!`
 - `assert_trait_sub_all!` macro
 - `assert_trait_super_all!` macro
 
