@@ -132,7 +132,7 @@ This crate exposes the following macros:
   [tracking issue](https://github.com/rust-lang/rust/issues/54912)
   and
   [issue #1](https://github.com/nvzqz/static-assertions-rs/issues/1)
-  fore more info.
+  for more info.
 
 ## Changes
 
