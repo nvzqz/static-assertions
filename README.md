@@ -60,6 +60,80 @@ This crate exposes the following macros:
 - [`const_assert_eq!`]
 - [`const_assert_ne!`]
 
+## FAQ
+
+- **Q:** When would I want to use this?
+
+  **A:** This library is useful for when wanting to ensure properties of
+  constants, types, and traits.
+
+  Basic examples:
+
+  - With the release of 1.39, `str::len` can be called in a `const`
+    context. Using [`const_assert!`], one can check that a string generated from
+    elsewhere is of a given size:
+
+    ```rust
+    const DATA: &str = include_str!("path/to/string.txt");
+
+    const_assert!(DATA.len() < 512);
+    ```
+
+  - Have a type that absolutely must implement certain traits? With
+    [`assert_impl_all!`], one can ensure this:
+
+    ```rust
+    struct Foo {
+        value: // ...
+    }
+
+    assert_impl_all!(Foo: Send, Sync);
+    ```
+
+- **Q:** Will this affect my compiled binary?
+
+  **A:** Nope! There is zero runtime cost to using this because all checks are
+  at compile-time, and so no code is emitted to run.
+
+- **Q:** How can I contribute?
+
+  **A:** A couple of ways!
+
+  You can try to come up with some form of static analysis that you'd like to
+  see implemented. Create a [new issue] and describe how you'd imagine your
+  assertion to work, with example code to demonstrate.
+
+- **Q:** Will this affect my compile times?
+
+  **A:** Likely not by anything perceivable. If this is a concern, this library
+  can be put in `dev-dependencies`:
+
+  ```toml
+  [dev-dependencies]
+  static_assertions = "1.0.0"
+  ```
+
+  and then assertions can be conditionally run behind `#[cfg(test)]`:
+
+  ```rust
+  #[cfg(test)]
+  const_assert_eq!(MEANING_OF_LIFE, 42);
+  ```
+
+  However, the assertions will only be checked when running `cargo test`. This
+  somewhat defeats the purpose of catching false static conditions up-front with
+  a compilation failure.
+
+- **Q:** What is `const _`?
+
+  **A:** It's a way of creating an unnamed constant. This is used so that macros
+  can be called from a global scope. This library makes use of the side effects
+  of evaluating the `const` expression. See the feature's
+  [tracking issue](https://github.com/rust-lang/rust/issues/54912)
+  and
+  [issue #1](https://github.com/nvzqz/static-assertions-rs/issues/1)
+  fore more info.
+
 ## Changes
 
 See [`CHANGELOG.md`](https://github.com/nvzqz/static-assertions-rs/blob/master/CHANGELOG.md)
