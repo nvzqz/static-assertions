@@ -18,9 +18,11 @@
     </a>
 </div>
 
-Rust compile-time assertions to ensure that invariants are met.
+Compile-time assertions for Rust, brought to you by
+[Nikolai Vazquez](https://twitter.com/NikolaiVazquez).
 
-[Documentation](https://docs.rs/static_assertions/)
+This library lets you ensure correct assumptions about constants, types, and
+more. See the [docs] and [FAQ](#faq) for more info!
 
 ## Installation
 
@@ -159,6 +161,7 @@ at your choosing.
 
 [new issue]:    https://github.com/nvzqz/static-assertions-rs/issues/new
 [pull request]: https://github.com/nvzqz/static-assertions-rs/pulls
+[docs]:         https://docs.rs/static_assertions
 
 [`assert_cfg!`]:          https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_cfg.html
 [`assert_eq_align!`]:     https://docs.rs/static_assertions/1.0.0/static_assertions/macro.assert_eq_align.html
