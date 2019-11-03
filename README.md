@@ -127,8 +127,9 @@ This crate exposes the following macros:
 - **Q:** What is `const _`?
 
   **A:** It's a way of creating an unnamed constant. This is used so that macros
-  can be called from a global scope. This library makes use of the side effects
-  of evaluating the `const` expression. See the feature's
+  can be called from a global scope without requiring a scope-unique label. This
+  library makes use of the side effects of evaluating the `const` expression.
+  See the feature's
   [tracking issue](https://github.com/rust-lang/rust/issues/54912)
   and
   [issue #1](https://github.com/nvzqz/static-assertions-rs/issues/1)
