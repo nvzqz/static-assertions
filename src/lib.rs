@@ -46,6 +46,20 @@
 //! sa::const_assert!(true);
 //! ```
 //!
+//! ## Procedural Extensions
+//!
+//! As an extension crate [`proc_static_assertions`] adds a number of new
+//! assertions to this. These are implemented as [procedural macros], hence the
+//! "proc" prefix. As a result, they have a bit more visibility over what's
+//! being asserted over than normal macros would.
+//!
+//! It can be enabled via the `proc` feature flag in your [`Cargo.toml`]:
+//!
+//! ```toml
+//! [dependencies]
+//! static_assertions = { version = "1.1.0", features = ["proc"] }
+//! ```
+//!
 //! # Examples
 //!
 //! Very thorough examples are provided in the docs for
@@ -70,6 +84,8 @@
 //!     <img src="https://buymecoffee.intm.org/img/button-paypal-white.png" alt="Buy me a coffee" height="35">
 //! </a>
 //!
+//! [`proc_static_assertions`]: https://docs.rs/proc_static_assertions
+//! [procedural macros]: https://doc.rust-lang.org/book/ch19-06-macros.html#procedural-macros-for-generating-code-from-attributes
 //! [Rust 1.37]: https://blog.rust-lang.org/2019/08/15/Rust-1.37.0.html
 //! [2018]: https://blog.rust-lang.org/2018/12/06/Rust-1.31-and-rust-2018.html#rust-2018
 //! [crate]: https://crates.io/crates/static_assertions
@@ -82,6 +98,11 @@
 #![no_std]
 
 #![deny(unused_macros)]
+
+#[cfg(feature = "proc_static_assertions")]
+extern crate proc_static_assertions;
+#[cfg(feature = "proc_static_assertions")]
+pub use proc_static_assertions::assert;
 
 #[doc(hidden)]
 pub extern crate core as _core;
