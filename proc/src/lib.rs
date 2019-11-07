@@ -47,7 +47,7 @@
 //!
 //! and this to your crate root (`main.rs` or `lib.rs`):
 //!
-//! ```
+//! ```ignore
 //! #[macro_use]
 //! extern crate static_assertions;
 //! ```
