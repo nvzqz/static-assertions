@@ -52,7 +52,33 @@
 macro_rules! const_assert {
     ($x:expr $(,)?) => {
         #[allow(unknown_lints, eq_op)]
-        const _: [(); 0 - !{ const ASSERT: bool = $x; ASSERT } as usize] = [];
+        const _: () = {
+            #[derive(Copy, Clone)]
+            struct True;
+            #[derive(Copy, Clone)]
+            struct False;
+
+            trait ToBool {
+                type Value;
+                fn to_bool(_: Self) -> Self::Value;
+            }
+            impl ToBool for [(); 0] {
+                type Value = False;
+                fn to_bool(_: Self) -> Self::Value {
+                    False
+                }
+            }
+            impl ToBool for [(); 1] {
+                type Value = True;
+                fn to_bool(_: Self) -> Self::Value {
+                    True
+                }
+            }
+            fn const_assert() {
+                const ASSERT: bool = $x;
+                let _: True = ToBool::to_bool([(); ASSERT as usize]);
+            }
+        };
     };
 }
 
