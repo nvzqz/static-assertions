@@ -54,3 +54,13 @@ assert_impl!(Test: !(Copy) && Clone);
 assert_impl!(Test: !(!Clone));
 assert_impl!(Test: !(Copy) && !(!Clone));
 assert_impl!(Test: !(Copy && Clone));
+assert_impl!(str: !Copy && !Clone);
+
+#[derive(Clone)]
+struct Box<T>(T);
+
+assert_impl!(for(T: Clone) Box<T>: Clone);
+assert_impl!(for(T: Clone + Send) Box<T>: Clone && Send);
+assert_impl!(for(T) PhantomData<T>: Clone);
+assert_impl!(for(T: Copy) T: Clone);
+assert_impl!(for(T: ?Sized) T: Clone || !Clone);

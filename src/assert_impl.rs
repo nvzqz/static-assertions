@@ -267,12 +267,14 @@ macro_rules! assert_not_impl_any {
 ///
 /// ```skip
 /// assert_impl!(<type>: <trait_expr>);
+/// assert_impl!(for(<type>: <bounds>) <type>: <trait_expr>);
 /// ```
 /// where
 /// - `<type>` is a type (that must not depend on a generic parameter)
 /// - `<trait_expr>` is an expression made out of trait names, combined with
 ///     `!` for negation, `&&` for conjunction, `||` for disjunction and
 ///     parentheses for grouping.
+/// - `<bounds>` is a trait bounds expression.
 ///
 /// For technical reasons, traits like `Into<u8>` that are not a single identifier
 /// must be surrounded by parentheses.
@@ -293,7 +295,7 @@ macro_rules! assert_not_impl_any {
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// # struct Cell<T> { x: *mut T }
+/// # struct Cell<T>(*mut T);
 /// # unsafe impl<T> Send for Cell<T> {}
 /// assert_impl!(Cell<u32>: Send && !Sync);
 /// ```
@@ -303,6 +305,14 @@ macro_rules! assert_not_impl_any {
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// assert_impl!(&'static mut u8: !Copy);
+/// ```
+///
+/// Check that a type is always [`Clone`] even when its parameter isn't:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// # type Rc<T> = core::marker::PhantomData<T>;
+/// assert_impl!(for(T) Rc<T>: Clone);
 /// ```
 ///
 /// The following example fails to compile since `u64` cannot be converted into
@@ -315,6 +325,7 @@ macro_rules! assert_not_impl_any {
 ///
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
+/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
 #[macro_export(local_inner_macros)]
 macro_rules! assert_impl {
@@ -387,13 +398,30 @@ macro_rules! assert_impl {
         // which returns `False`.
         Wrapper::<$ty>(PhantomData).does_impl()
     }};
-    ($ty:ty: $($rest:tt)*) => {
+
+    (@body(for($($generic:tt)*) $ty:ty: $($rest:tt)*)) => {{
+        fn assert_impl<$($generic)*>() {
+            // Construct an expression using True/False and the operators above, that
+            // corresponds to the provided expression.
+            let _: True = assert_impl!(@boolexpr($ty,) $($rest)*);
+        }
+    }};
+    (@body($ty:ty: $($rest:tt)*)) => {{
+        fn assert_impl() {
+            // Construct an expression using True/False and the operators above, that
+            // corresponds to the provided expression.
+            let _: True = assert_impl!(@boolexpr($ty,) $($rest)*);
+        }
+    }};
+
+    ($($rest:tt)*) => {
         const _: () = {
             #[allow(unused_imports)]
             use $crate::_core::marker::PhantomData;
             #[allow(unused_imports)]
             use $crate::_core::ops::Deref;
 
+            // Setup the boolean types
             #[derive(Copy, Clone)]
             struct True;
             #[derive(Copy, Clone)]
@@ -410,6 +438,7 @@ macro_rules! assert_impl {
                 fn or<T>(self, other: T) -> T { other }
             }
 
+            // Base struct that indicates a type does not implement a given trait.
             struct Base;
             impl Base {
                 fn does_impl(&self) -> False {
@@ -418,11 +447,8 @@ macro_rules! assert_impl {
             }
             static BASE: Base = Base;
 
-            let _: fn() = || {
-                // Construct an expression using True/False and the operators above, that
-                // corresponds to the provided expression.
-                let _: True = assert_impl!(@boolexpr($ty,) $($rest)*);
-            };
+            // Actual test
+            assert_impl!(@body($($rest)*))
         };
     };
 }
