@@ -400,11 +400,8 @@ macro_rules! does_impl {
     };
 
     (@base($ty:ty, $($args:tt)*) $($trait:tt)*) => {{
-        // Base case: returns whether `ty` implements `trait`.
+        // Base case: computes whether `ty` implements `trait`.
         struct Wrapper<T: ?Sized>(PhantomData<T>);
-
-        impl<T: ?Sized> DoesntImpl for Wrapper<T> {}
-
         impl<T: ?Sized + $($trait)*> Wrapper<T> {
             const DOES_IMPL: True = True;
         }
@@ -425,6 +422,7 @@ macro_rules! does_impl {
         trait DoesntImpl {
             const DOES_IMPL: False = False;
         }
+        impl<T: ?Sized> DoesntImpl for T {}
 
         // Construct an expression using True/False and their operators, that corresponds to
         // the provided expression.
