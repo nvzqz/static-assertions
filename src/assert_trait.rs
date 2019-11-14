@@ -148,7 +148,7 @@ macro_rules! assert_trait_sub_any {
             use $crate::_core::marker::PhantomData;
             use $crate::_core::ops::Deref;
 
-            fn forall<T: $sub>() {
+            fn for_all<T: $sub>() {
                 // Fallback to use as the first iterative assignment to `previous`.
                 let previous = AssertImplAnyFallback;
                 struct AssertImplAnyFallback;
