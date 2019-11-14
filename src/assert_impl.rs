@@ -329,51 +329,74 @@ macro_rules! assert_not_impl_any {
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
 #[macro_export(local_inner_macros)]
 macro_rules! assert_impl {
+    (for($($generic:tt)*) $ty:ty: $($rest:tt)*) => {
+        const _: () = {
+            fn assert_impl<$($generic)*>() {
+                // Construct an expression using True/False and their operators, that corresponds to
+                // the provided expression.
+                let _: $crate::True = $crate::does_impl!($ty: $($rest)*);
+            }
+        };
+    };
+    ($ty:ty: $($rest:tt)*) => {
+        // Construct an expression using True/False and their operators, that corresponds to
+        // the provided expression.
+        const _: $crate::True = $crate::does_impl!($ty: $($rest)*);
+    };
+}
+
+/// Returns `True` or `False` depending on whether the given type implements the given trait
+/// boolean expression. Can be used in const contexts if it doesn't depend on outer generic
+/// parameters.
+/// This is the core of `assert_impl`.
+#[doc(hidden)]
+#[macro_export(local_inner_macros)]
+macro_rules! does_impl {
     (@boolexpr($($args:tt)*) ($($expr:tt)*)) => {
-        assert_impl!(@boolexpr($($args)*) $($expr)*)
+        does_impl!(@boolexpr($($args)*) $($expr)*)
     };
     (@boolexpr($($args:tt)*) !($($expr:tt)*)) => {
-        assert_impl!(@boolexpr($($args)*) $($expr)*).not()
+        does_impl!(@boolexpr($($args)*) $($expr)*).not()
     };
     (@boolexpr($($args:tt)*) ($($left:tt)*) || $($right:tt)*) => {{
-        let left = assert_impl!(@boolexpr($($args)*) $($left)*);
-        let right = assert_impl!(@boolexpr($($args)*) $($right)*);
+        let left = does_impl!(@boolexpr($($args)*) $($left)*);
+        let right = does_impl!(@boolexpr($($args)*) $($right)*);
         left.or(right)
     }};
     (@boolexpr($($args:tt)*) ($($left:tt)*) && $($right:tt)*) => {{
-        let left = assert_impl!(@boolexpr($($args)*) $($left)*);
-        let right = assert_impl!(@boolexpr($($args)*) $($right)*);
+        let left = does_impl!(@boolexpr($($args)*) $($left)*);
+        let right = does_impl!(@boolexpr($($args)*) $($right)*);
         left.and(right)
     }};
     (@boolexpr($($args:tt)*) !($($left:tt)*) || $($right:tt)*) => {{
-        assert_impl!(@boolexpr($($args)*) (!($($left)*)) || $($right)*)
+        does_impl!(@boolexpr($($args)*) (!($($left)*)) || $($right)*)
     }};
     (@boolexpr($($args:tt)*) !($($left:tt)*) && $($right:tt)*) => {{
-        assert_impl!(@boolexpr($($args)*) (!($($left)*)) && $($right)*)
+        does_impl!(@boolexpr($($args)*) (!($($left)*)) && $($right)*)
     }};
     (@boolexpr($($args:tt)*) !$left:ident || $($right:tt)*) => {{
-        assert_impl!(@boolexpr($($args)*) !($left) || $($right)*)
+        does_impl!(@boolexpr($($args)*) !($left) || $($right)*)
     }};
     (@boolexpr($($args:tt)*) !$left:ident && $($right:tt)*) => {{
-        assert_impl!(@boolexpr($($args)*) !($left) && $($right)*)
+        does_impl!(@boolexpr($($args)*) !($left) && $($right)*)
     }};
     (@boolexpr($($args:tt)*) $left:ident || $($right:tt)*) => {
-        assert_impl!(@boolexpr($($args)*) ($left) || $($right)*)
+        does_impl!(@boolexpr($($args)*) ($left) || $($right)*)
     };
     (@boolexpr($($args:tt)*) $left:ident && $($right:tt)*) => {{
-        assert_impl!(@boolexpr($($args)*) ($left) && $($right)*)
+        does_impl!(@boolexpr($($args)*) ($left) && $($right)*)
     }};
     (@boolexpr($($args:tt)*) !$expr:ident) => {
-        assert_impl!(@boolexpr($($args)*) !($expr))
+        does_impl!(@boolexpr($($args)*) !($expr))
     };
     (@boolexpr($($args:tt)*) !$expr:path) => {
-        assert_impl!(@boolexpr($($args)*) !($expr))
+        does_impl!(@boolexpr($($args)*) !($expr))
     };
     (@boolexpr($($args:tt)*) $expr:ident) => {
-        assert_impl!(@base($($args)*) $expr)
+        does_impl!(@base($($args)*) $expr)
     };
     (@boolexpr($($args:tt)*) $expr:path) => {
-        assert_impl!(@base($($args)*) $expr)
+        does_impl!(@base($($args)*) $expr)
     };
 
     (@base($ty:ty, $($args:tt)*) $($trait:tt)*) => {{
@@ -391,34 +414,20 @@ macro_rules! assert_impl {
         &<Wrapper<$ty>>::DOES_IMPL
     }};
 
-    (@body(for($($generic:tt)*) $ty:ty: $($rest:tt)*)) => {{
-        fn assert_impl<$($generic)*>() {
-            // Construct an expression using True/False and their operators, that corresponds to
-            // the provided expression.
-            let _: &True = assert_impl!(@boolexpr($ty,) $($rest)*);
+    ($ty:ty: $($rest:tt)*) => {{
+        #[allow(unused_imports)]
+        use $crate::_core::marker::PhantomData;
+        #[allow(unused_imports)]
+        use $crate::_core::ops::Deref;
+        use $crate::{True, False};
+
+        // Fallback trait that returns false if the type does not implement a given trait.
+        trait DoesntImpl {
+            const DOES_IMPL: False = False;
         }
-    }};
-    (@body($ty:ty: $($rest:tt)*)) => {{
+
         // Construct an expression using True/False and their operators, that corresponds to
         // the provided expression.
-        const _: &True = assert_impl!(@boolexpr($ty,) $($rest)*);
+        *does_impl!(@boolexpr($ty,) $($rest)*)
     }};
-
-    ($($rest:tt)*) => {
-        const _: () = {
-            #[allow(unused_imports)]
-            use $crate::_core::marker::PhantomData;
-            #[allow(unused_imports)]
-            use $crate::_core::ops::Deref;
-            use $crate::{True, False};
-
-            // Fallback trait that returns false if the type does not implement a given trait.
-            trait DoesntImpl {
-                const DOES_IMPL: False = False;
-            }
-
-            // Actual test
-            assert_impl!(@body($($rest)*))
-        };
-    };
 }
