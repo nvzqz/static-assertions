@@ -51,9 +51,7 @@
 #[macro_export]
 macro_rules! const_assert {
     ($x:expr $(,)?) => {
-        #[allow(unknown_lints, eq_op)]
         const _: fn() = ||{
-            const ASSERT: bool = $x;
             let _: $crate::True = $crate::to_bool!($x);
         };
     };

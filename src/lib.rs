@@ -119,5 +119,7 @@ mod assert_obj_safe;
 mod assert_trait;
 mod assert_type;
 mod const_assert;
+
+/// This module should never be used publicly and is not part of this crate's semver requirements.
 #[doc(hidden)]
 pub mod type_level_bool;
