@@ -103,3 +103,100 @@ macro_rules! assert_trait_super_all {
         $(assert_trait_sub_all!($sub: $super);)+
     };
 }
+
+/// Asserts that the trait is a child of one or more of the other traits.
+///
+/// Related:
+/// - [`assert_impl_any!`]
+///
+/// # Examples
+///
+/// All types that implement [`Copy`] must implement [`Clone`]:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_trait_sub_any!(Copy: Clone);
+/// ```
+///
+/// All types that implement [`Ord`] must implement [`Eq`], but don't have to implement [`Clone`]:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_trait_sub_any!(Ord: Eq, Clone);
+/// ```
+///
+/// The following example fails to compile because neither [`Eq`] nor [`Clone`] are required for
+/// [`PartialOrd`]:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_trait_sub_any!(PartialOrd: Eq, Clone);
+/// ```
+///
+/// [`assert_impl_any!`]: macro.assert_impl_any.html
+///
+/// [`Copy`]:       https://doc.rust-lang.org/std/marker/trait.Copy.html
+/// [`Clone`]:      https://doc.rust-lang.org/std/clone/trait.Clone.html
+/// [`Ord`]:        https://doc.rust-lang.org/std/cmp/trait.Ord.html
+/// [`PartialOrd`]: https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html
+/// [`Eq`]:         https://doc.rust-lang.org/std/cmp/trait.Eq.html
+/// [`PartialEq`]:  https://doc.rust-lang.org/std/cmp/trait.PartialEq.html
+#[macro_export]
+macro_rules! assert_trait_sub_any {
+    ($sub:path: $($super:path),+ $(,)?) => {
+        const _: fn() = || {
+            use $crate::_core::marker::PhantomData;
+            use $crate::_core::ops::Deref;
+
+            fn for_all<T: $sub>() {
+                // Fallback to use as the first iterative assignment to `previous`.
+                let previous = AssertImplAnyFallback;
+                struct AssertImplAnyFallback;
+
+                // Ensures that blanket traits can't impersonate the method. This
+                // prevents a false positive attack where---if a blanket trait is in
+                // scope that has `_static_assertions_impl_any`---the macro will
+                // compile when it shouldn't.
+                //
+                // See https://github.com/nvzqz/static-assertions-rs/issues/19 for
+                // more info.
+                struct ActualAssertImplAnyToken;
+                trait AssertImplAnyToken {}
+                impl AssertImplAnyToken for ActualAssertImplAnyToken {}
+                fn assert_impl_any_token<T: AssertImplAnyToken>(_: T) {}
+
+                $(let previous = {
+                    struct Wrapper<T, N>(PhantomData<T>, N);
+
+                    // If the method for this wrapper can't be called then the
+                    // compiler will insert a deref and try again. This forwards the
+                    // compiler's next attempt to the previous wrapper.
+                    impl<T, N> Deref for Wrapper<T, N> {
+                        type Target = N;
+
+                        fn deref(&self) -> &Self::Target {
+                            &self.1
+                        }
+                    }
+
+                    // This impl is bounded on the `$t` trait, so the method can
+                    // only be called if `$x` implements `$t`. This is why a new
+                    // `Wrapper` is defined for each `previous`.
+                    impl<T: $super, N> Wrapper<T, N> {
+                        fn _static_assertions_impl_any(&self) -> ActualAssertImplAnyToken {
+                            ActualAssertImplAnyToken
+                        }
+                    }
+
+                    Wrapper::<T, _>(PhantomData, previous)
+                };)+
+
+                // Attempt to find the method that can actually be called. The found
+                // method must return a type that implements the sealed `Token`
+                // trait, this ensures that blanket trait methods can't cause this
+                // macro to compile.
+                assert_impl_any_token(previous._static_assertions_impl_any());
+            }
+        };
+    };
+}
