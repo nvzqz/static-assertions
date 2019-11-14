@@ -107,6 +107,9 @@ pub use proc_static_assertions::assert;
 #[doc(hidden)]
 pub extern crate core as _core;
 
+#[doc(hidden)]
+pub use type_level_bool::{True, False};
+
 mod assert_cfg;
 mod assert_eq_align;
 mod assert_eq_size;
@@ -116,3 +119,7 @@ mod assert_obj_safe;
 mod assert_trait;
 mod assert_type;
 mod const_assert;
+
+/// This module should never be used publicly and is not part of this crate's semver requirements.
+#[doc(hidden)]
+pub mod type_level_bool;
