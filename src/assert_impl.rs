@@ -329,28 +329,97 @@ macro_rules! assert_not_impl_all {
 macro_rules! assert_not_impl_any {
     ($x:ty: $($t:path),+ $(,)?) => {
         const _: fn() = || {
-            // Generic trait with a blanket impl over `()` for all types.
-            trait AmbiguousIfImpl<A> {
-                // Required for actually being able to reference the trait.
-                fn some_item() {}
+            use $crate::_core::marker::PhantomData;
+            use $crate::_core::ops::Deref;
+
+            #[derive(Copy, Clone)]
+            struct True;
+            #[derive(Copy, Clone)]
+            struct False;
+
+            fn assert_true(_: True){}
+            fn assert_false(_: False){}
+
+            trait Not {
+                type Result;
+                fn not(self) -> Self::Result;
+            }
+            trait And<Other> {
+                type Result;
+                fn and(self, _: Other) -> Self::Result;
+            }
+            trait Or<Other> {
+                type Result;
+                fn or(self, _: Other) -> Self::Result;
             }
 
-            impl<T: ?Sized> AmbiguousIfImpl<()> for T {}
+            impl Not for True {
+                type Result = False;
+                fn not(self) -> False { False }
+            }
+            impl Not for False {
+                type Result = True;
+                fn not(self) -> True { True }
+            }
 
-            // Creates multiple scoped `Invalid` types for each trait `$t`, over
-            // which a specialized `AmbiguousIfImpl<Invalid>` is implemented for
-            // every type that implements `$t`.
-            $({
-                #[allow(dead_code)]
-                struct Invalid;
+            impl<T> And<T> for True {
+                type Result = T;
+                fn and(self, other: T) -> Self::Result { other }
+            }
+            impl<T> And<T> for False {
+                type Result = False;
+                fn and(self, _: T) -> Self::Result { False }
+            }
+            impl<T> Or<T> for True {
+                type Result = True;
+                fn or(self, _: T) -> Self::Result { True }
+            }
+            impl<T> Or<T> for False {
+                type Result = T;
+                fn or(self, other: T) -> Self::Result { other }
+            }
 
-                impl<T: ?Sized + $t> AmbiguousIfImpl<Invalid> for T {}
-            })+
+            trait DoesImpl {
+                type Result;
+                fn does_impl(&self) -> Self::Result;
+            }
 
-            // If there is only one specialized trait impl, type inference with
-            // `_` can be resolved and this can compile. Fails to compile if
-            // `$x` implements any `AmbiguousIfImpl<Invalid>`.
-            let _ = <$x as AmbiguousIfImpl<_>>::some_item;
+            struct Base;
+            impl DoesImpl for Base {
+                type Result = False;
+                fn does_impl(&self) -> False {
+                    False
+                }
+            }
+            static BASE: Base = Base;
+
+
+            let result = False;
+
+            $(let result = result.or({
+                struct Wrapper<T>(PhantomData<T>);
+
+                impl<T> Deref for Wrapper<T> {
+                    type Target = Base;
+                    fn deref(&self) -> &Self::Target {
+                        &BASE
+                    }
+                }
+
+                impl<T: $t> DoesImpl for Wrapper<T> {
+                    type Result = True;
+                    fn does_impl(&self) -> True {
+                        True
+                    }
+                }
+
+                // If `$type: $trait`, the `does_impl` method on `Wrapper` will be called, and return
+                // `True`. Otherwise, the compiler will try to deref and call the method on `Base`,
+                // which returns `False`.
+                Wrapper::<$x>(PhantomData).does_impl()
+            });)+
+
+            assert_true(result.not())
         };
     };
 }

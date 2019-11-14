@@ -39,16 +39,100 @@
 #[macro_export]
 macro_rules! assert_trait_sub_all {
     ($sub:path: $($super:path),+ $(,)?) => {
-        const _: () = {
-            // One scope per super-trait.
-            $({
-                #[allow(non_camel_case_types)]
-                trait __Impl_Implication: $super {}
+        const _: fn() = || {
+            use $crate::_core::marker::PhantomData;
+            use $crate::_core::ops::Deref;
 
-                // Can only be implemented for `$sub` types if `$super` is
-                // also implemented.
-                impl<T: $sub> __Impl_Implication for T {}
-            })+
+            #[derive(Copy, Clone)]
+            struct True;
+            #[derive(Copy, Clone)]
+            struct False;
+
+            fn assert_true(_: True){}
+            fn assert_false(_: False){}
+
+            trait Not {
+                type Result;
+                fn not(self) -> Self::Result;
+            }
+            trait And<Other> {
+                type Result;
+                fn and(self, _: Other) -> Self::Result;
+            }
+            trait Or<Other> {
+                type Result;
+                fn or(self, _: Other) -> Self::Result;
+            }
+
+            impl Not for True {
+                type Result = False;
+                fn not(self) -> False { False }
+            }
+            impl Not for False {
+                type Result = True;
+                fn not(self) -> True { True }
+            }
+
+            impl<T> And<T> for True {
+                type Result = T;
+                fn and(self, other: T) -> Self::Result { other }
+            }
+            impl<T> And<T> for False {
+                type Result = False;
+                fn and(self, _: T) -> Self::Result { False }
+            }
+            impl<T> Or<T> for True {
+                type Result = True;
+                fn or(self, _: T) -> Self::Result { True }
+            }
+            impl<T> Or<T> for False {
+                type Result = T;
+                fn or(self, other: T) -> Self::Result { other }
+            }
+
+            trait DoesImpl {
+                type Result;
+                fn does_impl(&self) -> Self::Result;
+            }
+
+            struct Base;
+            impl DoesImpl for Base {
+                type Result = False;
+                fn does_impl(&self) -> False {
+                    False
+                }
+            }
+            static BASE: Base = Base;
+
+
+            fn forall<T: $sub>() {
+                let result = True;
+
+                $(let result = result.and({
+                    struct Wrapper<T>(PhantomData<T>);
+
+                    impl<T> Deref for Wrapper<T> {
+                        type Target = Base;
+                        fn deref(&self) -> &Self::Target {
+                            &BASE
+                        }
+                    }
+
+                    impl<T: $super> DoesImpl for Wrapper<T> {
+                        type Result = True;
+                        fn does_impl(&self) -> True {
+                            True
+                        }
+                    }
+
+                    // If `$type: $trait`, the `does_impl` method on `Wrapper` will be called, and return
+                    // `True`. Otherwise, the compiler will try to deref and call the method on `Base`,
+                    // which returns `False`.
+                    Wrapper::<T>(PhantomData).does_impl()
+                });)+
+
+                assert_true(result)
+            }
         };
     };
 }
@@ -148,54 +232,95 @@ macro_rules! assert_trait_sub_any {
             use $crate::_core::marker::PhantomData;
             use $crate::_core::ops::Deref;
 
-            fn for_all<T: $sub>() {
-                // Fallback to use as the first iterative assignment to `previous`.
-                let previous = AssertImplAnyFallback;
-                struct AssertImplAnyFallback;
+            #[derive(Copy, Clone)]
+            struct True;
+            #[derive(Copy, Clone)]
+            struct False;
 
-                // Ensures that blanket traits can't impersonate the method. This
-                // prevents a false positive attack where---if a blanket trait is in
-                // scope that has `_static_assertions_impl_any`---the macro will
-                // compile when it shouldn't.
-                //
-                // See https://github.com/nvzqz/static-assertions-rs/issues/19 for
-                // more info.
-                struct ActualAssertImplAnyToken;
-                trait AssertImplAnyToken {}
-                impl AssertImplAnyToken for ActualAssertImplAnyToken {}
-                fn assert_impl_any_token<T: AssertImplAnyToken>(_: T) {}
+            fn assert_true(_: True){}
+            fn assert_false(_: False){}
 
-                $(let previous = {
-                    struct Wrapper<T, N>(PhantomData<T>, N);
+            trait Not {
+                type Result;
+                fn not(self) -> Self::Result;
+            }
+            trait And<Other> {
+                type Result;
+                fn and(self, _: Other) -> Self::Result;
+            }
+            trait Or<Other> {
+                type Result;
+                fn or(self, _: Other) -> Self::Result;
+            }
 
-                    // If the method for this wrapper can't be called then the
-                    // compiler will insert a deref and try again. This forwards the
-                    // compiler's next attempt to the previous wrapper.
-                    impl<T, N> Deref for Wrapper<T, N> {
-                        type Target = N;
+            impl Not for True {
+                type Result = False;
+                fn not(self) -> False { False }
+            }
+            impl Not for False {
+                type Result = True;
+                fn not(self) -> True { True }
+            }
 
+            impl<T> And<T> for True {
+                type Result = T;
+                fn and(self, other: T) -> Self::Result { other }
+            }
+            impl<T> And<T> for False {
+                type Result = False;
+                fn and(self, _: T) -> Self::Result { False }
+            }
+            impl<T> Or<T> for True {
+                type Result = True;
+                fn or(self, _: T) -> Self::Result { True }
+            }
+            impl<T> Or<T> for False {
+                type Result = T;
+                fn or(self, other: T) -> Self::Result { other }
+            }
+
+            trait DoesImpl {
+                type Result;
+                fn does_impl(&self) -> Self::Result;
+            }
+
+            struct Base;
+            impl DoesImpl for Base {
+                type Result = False;
+                fn does_impl(&self) -> False {
+                    False
+                }
+            }
+            static BASE: Base = Base;
+
+
+            fn forall<T: $sub>() {
+                let result = False;
+
+                $(let result = result.or({
+                    struct Wrapper<T>(PhantomData<T>);
+
+                    impl<T> Deref for Wrapper<T> {
+                        type Target = Base;
                         fn deref(&self) -> &Self::Target {
-                            &self.1
+                            &BASE
                         }
                     }
 
-                    // This impl is bounded on the `$t` trait, so the method can
-                    // only be called if `$x` implements `$t`. This is why a new
-                    // `Wrapper` is defined for each `previous`.
-                    impl<T: $super, N> Wrapper<T, N> {
-                        fn _static_assertions_impl_any(&self) -> ActualAssertImplAnyToken {
-                            ActualAssertImplAnyToken
+                    impl<T: $super> DoesImpl for Wrapper<T> {
+                        type Result = True;
+                        fn does_impl(&self) -> True {
+                            True
                         }
                     }
 
-                    Wrapper::<T, _>(PhantomData, previous)
-                };)+
+                    // If `$type: $trait`, the `does_impl` method on `Wrapper` will be called, and return
+                    // `True`. Otherwise, the compiler will try to deref and call the method on `Base`,
+                    // which returns `False`.
+                    Wrapper::<T>(PhantomData).does_impl()
+                });)+
 
-                // Attempt to find the method that can actually be called. The found
-                // method must return a type that implements the sealed `Token`
-                // trait, this ensures that blanket trait methods can't cause this
-                // macro to compile.
-                assert_impl_any_token(previous._static_assertions_impl_any());
+                assert_true(result)
             }
         };
     };
