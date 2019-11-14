@@ -1,5 +1,19 @@
+#[derive(Clone, Copy)]
 pub struct True;
+#[derive(Clone, Copy)]
 pub struct False;
+
+impl True {
+    pub fn not(self) -> False { False }
+    pub fn and<T>(self, other: T) -> T { other }
+    pub fn or<T>(self, _: T) -> True { True }
+}
+
+impl False {
+    pub fn not(self) -> True { True }
+    pub fn and<T>(self, _: T) -> False { False }
+    pub fn or<T>(self, other: T) -> T { other }
+}
 
 pub trait ToBool {
     type Value;

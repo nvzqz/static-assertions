@@ -388,15 +388,15 @@ macro_rules! assert_impl {
         }
 
         impl<T: ?Sized + $($trait)*> Wrapper<T> {
-            fn does_impl(&self) -> True {
-                True
+            fn does_impl(&self) -> LocalTrue {
+                LocalTrue
             }
         }
 
         // If `$type: $trait`, the `does_impl` method on `Wrapper` will be called, and return
         // `True`. Otherwise, the compiler will try to deref and call the method on `Base`,
         // which returns `False`.
-        Wrapper::<$ty>(PhantomData).does_impl()
+        ensure_local(Wrapper::<$ty>(PhantomData).does_impl())
     }};
 
     (@body(for($($generic:tt)*) $ty:ty: $($rest:tt)*)) => {{
@@ -420,29 +420,33 @@ macro_rules! assert_impl {
             use $crate::_core::marker::PhantomData;
             #[allow(unused_imports)]
             use $crate::_core::ops::Deref;
+            use $crate::{True, False};
 
             // Setup the boolean types
-            #[derive(Copy, Clone)]
-            struct True;
-            #[derive(Copy, Clone)]
-            struct False;
+            // We need local types to ensure that a blanket impl can't generate them and induce an
+            // incorrect result.
+            struct LocalTrue;
+            struct LocalFalse;
 
-            impl True {
-                fn not(self) -> False { False }
-                fn and<T>(self, other: T) -> T { other }
-                fn or<T>(self, _: T) -> True { True }
+            trait LocalBool {
+                type Global;
+                fn to_global_bool(self) -> Self::Global;
             }
-            impl False {
-                fn not(self) -> True { True }
-                fn and<T>(self, _: T) -> False { False }
-                fn or<T>(self, other: T) -> T { other }
+            impl LocalBool for LocalTrue {
+                type Global = True;
+                fn to_global_bool(self) -> Self::Global { True }
             }
+            impl LocalBool for LocalFalse {
+                type Global = False;
+                fn to_global_bool(self) -> Self::Global { False }
+            }
+            fn ensure_local<T: LocalBool>(x: T) -> T::Global { x.to_global_bool() }
 
             // Base struct that indicates a type does not implement a given trait.
             struct Base;
             impl Base {
-                fn does_impl(&self) -> False {
-                    False
+                fn does_impl(&self) -> LocalFalse {
+                    LocalFalse
                 }
             }
             static BASE: Base = Base;
