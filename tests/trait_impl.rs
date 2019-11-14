@@ -6,8 +6,6 @@ extern crate static_assertions;
 
 use core::ops::Range;
 
-const_assert!(true);
-
 trait Tri<A: ?Sized, B: ?Sized, C: ?Sized> {}
 
 impl<T, A: ?Sized, B: ?Sized, C: ?Sized> Tri<A, B, C> for T {}
