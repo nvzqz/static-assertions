@@ -388,22 +388,20 @@ macro_rules! assert_impl {
 
         // If `$type: $trait`, the `does_impl` inherent method on `Wrapper` will be called, and
         // return `True`. Otherwise, the trait method will be called, which returns `False`.
-        <Wrapper<$ty>>::DOES_IMPL
+        &<Wrapper<$ty>>::DOES_IMPL
     }};
 
     (@body(for($($generic:tt)*) $ty:ty: $($rest:tt)*)) => {{
         fn assert_impl<$($generic)*>() {
-            // Construct an expression using True/False and the operators above, that
-            // corresponds to the provided expression.
-            let _: True = assert_impl!(@boolexpr($ty,) $($rest)*);
+            // Construct an expression using True/False and their operators, that corresponds to
+            // the provided expression.
+            let _: &True = assert_impl!(@boolexpr($ty,) $($rest)*);
         }
     }};
     (@body($ty:ty: $($rest:tt)*)) => {{
-        fn assert_impl() {
-            // Construct an expression using True/False and the operators above, that
-            // corresponds to the provided expression.
-            let _: True = assert_impl!(@boolexpr($ty,) $($rest)*);
-        }
+        // Construct an expression using True/False and their operators, that corresponds to
+        // the provided expression.
+        const _: &True = assert_impl!(@boolexpr($ty,) $($rest)*);
     }};
 
     ($($rest:tt)*) => {

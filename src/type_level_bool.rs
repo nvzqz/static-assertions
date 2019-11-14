@@ -3,16 +3,19 @@ pub struct True;
 #[derive(Clone, Copy)]
 pub struct False;
 
+const TRUE: True = True;
+const FALSE: False = False;
+
 impl True {
-    pub fn not(self) -> False { False }
-    pub fn and<T>(self, other: T) -> T { other }
-    pub fn or<T>(self, _: T) -> True { True }
+    pub const fn not<'a>(&'a self) -> &'a False { &FALSE }
+    pub const fn and<'a, T>(&'a self, other: &'a T) -> &'a T { other }
+    pub const fn or<'a, T>(&'a self, _: &'a T) -> &'a True { &TRUE }
 }
 
 impl False {
-    pub fn not(self) -> True { True }
-    pub fn and<T>(self, _: T) -> False { False }
-    pub fn or<T>(self, other: T) -> T { other }
+    pub const fn not<'a>(&'a self) -> &'a True { &TRUE }
+    pub const fn and<'a, T>(&'a self, _: &'a T) -> &'a False { &FALSE }
+    pub const fn or<'a, T>(&'a self, other: &'a T) -> &'a T { other }
 }
 
 pub trait ToBool: Sized {
