@@ -79,7 +79,10 @@
 #![deny(missing_docs)]
 
 extern crate proc_macro;
+
 use proc_macro::TokenStream;
+
+mod parse;
 
 /// Statically assert aspects of types, traits, and more.
 ///
