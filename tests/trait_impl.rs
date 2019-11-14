@@ -37,3 +37,20 @@ assert_impl_one!(Foo: C, B);
 assert_impl_one!(Foo: A, B, C);
 assert_impl_one!(Foo: B, C, A);
 assert_impl_one!(Foo: C, A, B);
+
+#[derive(Clone)]
+struct Test;
+
+assert_impl!(u8: (From<u16>) || (Into<u16>));
+assert_impl!((): (From<u8>) || (From<u16>) || Send);
+assert_impl!((): (!From<u8>) && !(From<u16>) && Send);
+assert_impl!((): Copy || Clone);
+assert_impl!((): Copy && Clone);
+assert_impl!(Test: Copy || Clone);
+assert_impl!(Test: !Copy || Clone);
+assert_impl!(Test: !Copy && Clone);
+assert_impl!(Test: !Copy && (Clone));
+assert_impl!(Test: !(Copy) && Clone);
+assert_impl!(Test: !(!Clone));
+assert_impl!(Test: !(Copy) && !(!Clone));
+assert_impl!(Test: !(Copy && Clone));

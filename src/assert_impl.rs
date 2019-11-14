@@ -109,14 +109,10 @@ macro_rules! assert_impl_one {
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_impl_all {
-    ($type:ty: $($trait:path),+ $(,)?) => {
-        const _: fn() = || {
-            // Only callable when `$type` implements all traits in `$($trait)+`.
-            fn assert_impl_all<T: ?Sized $(+ $trait)+>() {}
-            assert_impl_all::<$type>();
-        };
+    ($ty:ty: $($traits:path),+ $(,)?) => {
+        assert_impl!($ty: $( ($traits) )&&+);
     };
 }
 
@@ -153,61 +149,10 @@ macro_rules! assert_impl_all {
 /// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_impl_any {
-    ($x:ty: $($t:path),+ $(,)?) => {
-        const _: fn() = || {
-            use $crate::_core::marker::PhantomData;
-            use $crate::_core::ops::Deref;
-
-            // Fallback to use as the first iterative assignment to `previous`.
-            let previous = AssertImplAnyFallback;
-            struct AssertImplAnyFallback;
-
-            // Ensures that blanket traits can't impersonate the method. This
-            // prevents a false positive attack where---if a blanket trait is in
-            // scope that has `_static_assertions_impl_any`---the macro will
-            // compile when it shouldn't.
-            //
-            // See https://github.com/nvzqz/static-assertions-rs/issues/19 for
-            // more info.
-            struct ActualAssertImplAnyToken;
-            trait AssertImplAnyToken {}
-            impl AssertImplAnyToken for ActualAssertImplAnyToken {}
-            fn assert_impl_any_token<T: AssertImplAnyToken>(_: T) {}
-
-            $(let previous = {
-                struct Wrapper<T, N>(PhantomData<T>, N);
-
-                // If the method for this wrapper can't be called then the
-                // compiler will insert a deref and try again. This forwards the
-                // compiler's next attempt to the previous wrapper.
-                impl<T, N> Deref for Wrapper<T, N> {
-                    type Target = N;
-
-                    fn deref(&self) -> &Self::Target {
-                        &self.1
-                    }
-                }
-
-                // This impl is bounded on the `$t` trait, so the method can
-                // only be called if `$x` implements `$t`. This is why a new
-                // `Wrapper` is defined for each `previous`.
-                impl<T: $t, N> Wrapper<T, N> {
-                    fn _static_assertions_impl_any(&self) -> ActualAssertImplAnyToken {
-                        ActualAssertImplAnyToken
-                    }
-                }
-
-                Wrapper::<$x, _>(PhantomData, previous)
-            };)+
-
-            // Attempt to find the method that can actually be called. The found
-            // method must return a type that implements the sealed `Token`
-            // trait, this ensures that blanket trait methods can't cause this
-            // macro to compile.
-            assert_impl_any_token(previous._static_assertions_impl_any());
-        };
+    ($ty:ty: $($traits:path),+ $(,)?) => {
+        assert_impl!($ty: $( ($traits) )||+);
     };
 }
 
@@ -259,30 +204,10 @@ macro_rules! assert_impl_any {
 /// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
 /// [`Cell`]: https://doc.rust-lang.org/std/cell/struct.Cell.html
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_not_impl_all {
-    ($x:ty: $($t:path),+ $(,)?) => {
-        const _: fn() = || {
-            // Generic trait with a blanket impl over `()` for all types.
-            trait AmbiguousIfImpl<A> {
-                // Required for actually being able to reference the trait.
-                fn some_item() {}
-            }
-
-            impl<T: ?Sized> AmbiguousIfImpl<()> for T {}
-
-            // Used for the specialized impl when *all* traits in
-            // `$($t)+` are implemented.
-            #[allow(dead_code)]
-            struct Invalid;
-
-            impl<T: ?Sized $(+ $t)+> AmbiguousIfImpl<Invalid> for T {}
-
-            // If there is only one specialized trait impl, type inference with
-            // `_` can be resolved and this can compile. Fails to compile if
-            // `$x` implements `AmbiguousIfImpl<Invalid>`.
-            let _ = <$x as AmbiguousIfImpl<_>>::some_item;
-        };
+    ($ty:ty: $($traits:path),+ $(,)?) => {
+        assert_impl!($ty: !( $( ($traits) )&&+ ));
     };
 }
 
@@ -325,11 +250,148 @@ macro_rules! assert_not_impl_all {
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 /// [`assert_not_impl_all!`]: macro.assert_not_impl_all.html
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_not_impl_any {
-    ($x:ty: $($t:path),+ $(,)?) => {
-        const _: fn() = || {
+    ($ty:ty: $($traits:path),+ $(,)?) => {
+        assert_impl!($ty: !( $( ($traits) )||+ ));
+    };
+}
+
+
+/// Asserts that the type implements or not the given traits. Accepts an arbitrary
+/// boolean expression made of traits.
+///
+/// This macro causes a compilation failure if the expression is not satisfied.
+///
+/// # Syntax
+///
+/// ```skip
+/// assert_impl!(<type>: <trait_expr>);
+/// ```
+/// where
+/// - `<type>` is a type (that must not depend on a generic parameter)
+/// - `<trait_expr>` is an expression made out of trait names, combined with
+///     `!` for negation, `&&` for conjunction, `||` for disjunction and
+///     parentheses for grouping.
+///
+/// For technical reasons, traits like `Into<u8>` that are not a single identifier
+/// must be surrounded by parentheses.
+/// Note also that the usual operator priority is not respected: `x && y || z` is
+/// parsed as `x && (y || z)`
+///
+/// # Examples
+///
+/// If `u32` were to implement `Into` conversions for `usize` _and_ for `u8`,
+/// the following would fail to compile:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_impl!(u32: !((Into<usize>) && (Into<u8>)));
+/// ```
+///
+/// Check that a type is [`Send`] bit not [`Sync`].
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// # struct Cell<T> { x: *mut T }
+/// # unsafe impl<T> Send for Cell<T> {}
+/// assert_impl!(Cell<u32>: Send && !Sync);
+/// ```
+///
+/// This is also good for simple one-off cases:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_impl!(&'static mut u8: !Copy);
+/// ```
+///
+/// The following example fails to compile since `u64` cannot be converted into
+/// either `u32` or `u16`:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_impl!(u64: (Into<u32>) || (Into<u16>));
+/// ```
+///
+/// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
+/// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
+/// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
+#[macro_export(local_inner_macros)]
+macro_rules! assert_impl {
+    (@boolexpr($($args:tt)*) ($($expr:tt)*)) => {
+        assert_impl!(@boolexpr($($args)*) $($expr)*)
+    };
+    (@boolexpr($($args:tt)*) !($($expr:tt)*)) => {
+        assert_impl!(@boolexpr($($args)*) $($expr)*).not()
+    };
+    (@boolexpr($($args:tt)*) ($($left:tt)*) || $($right:tt)*) => {{
+        let left = assert_impl!(@boolexpr($($args)*) $($left)*);
+        let right = assert_impl!(@boolexpr($($args)*) $($right)*);
+        left.or(right)
+    }};
+    (@boolexpr($($args:tt)*) ($($left:tt)*) && $($right:tt)*) => {{
+        let left = assert_impl!(@boolexpr($($args)*) $($left)*);
+        let right = assert_impl!(@boolexpr($($args)*) $($right)*);
+        left.and(right)
+    }};
+    (@boolexpr($($args:tt)*) !($($left:tt)*) || $($right:tt)*) => {{
+        assert_impl!(@boolexpr($($args)*) (!($($left)*)) || $($right)*)
+    }};
+    (@boolexpr($($args:tt)*) !($($left:tt)*) && $($right:tt)*) => {{
+        assert_impl!(@boolexpr($($args)*) (!($($left)*)) && $($right)*)
+    }};
+    (@boolexpr($($args:tt)*) !$left:ident || $($right:tt)*) => {{
+        assert_impl!(@boolexpr($($args)*) !($left) || $($right)*)
+    }};
+    (@boolexpr($($args:tt)*) !$left:ident && $($right:tt)*) => {{
+        assert_impl!(@boolexpr($($args)*) !($left) && $($right)*)
+    }};
+    (@boolexpr($($args:tt)*) $left:ident || $($right:tt)*) => {
+        assert_impl!(@boolexpr($($args)*) ($left) || $($right)*)
+    };
+    (@boolexpr($($args:tt)*) $left:ident && $($right:tt)*) => {{
+        assert_impl!(@boolexpr($($args)*) ($left) && $($right)*)
+    }};
+    (@boolexpr($($args:tt)*) !$expr:ident) => {
+        assert_impl!(@boolexpr($($args)*) !($expr))
+    };
+    (@boolexpr($($args:tt)*) !$expr:path) => {
+        assert_impl!(@boolexpr($($args)*) !($expr))
+    };
+    (@boolexpr($($args:tt)*) $expr:ident) => {
+        assert_impl!(@base($($args)*) $expr)
+    };
+    (@boolexpr($($args:tt)*) $expr:path) => {
+        assert_impl!(@base($($args)*) $expr)
+    };
+
+    (@base($ty:ty, $($args:tt)*) $($trait:tt)*) => {{
+        // Base case: returns whether `ty` implements `trait`.
+        struct Wrapper<T: ?Sized>(PhantomData<T>);
+
+        impl<T: ?Sized> Deref for Wrapper<T> {
+            type Target = Base;
+            fn deref(&self) -> &Self::Target {
+                &BASE
+            }
+        }
+
+        impl<T: ?Sized + $($trait)*> Wrapper<T> {
+            fn does_impl(&self) -> True {
+                True
+            }
+        }
+
+        // If `$type: $trait`, the `does_impl` method on `Wrapper` will be called, and return
+        // `True`. Otherwise, the compiler will try to deref and call the method on `Base`,
+        // which returns `False`.
+        Wrapper::<$ty>(PhantomData).does_impl()
+    }};
+    ($ty:ty: $($rest:tt)*) => {
+        const _: () = {
+            #[allow(unused_imports)]
             use $crate::_core::marker::PhantomData;
+            #[allow(unused_imports)]
             use $crate::_core::ops::Deref;
 
             #[derive(Copy, Clone)]
@@ -337,89 +399,30 @@ macro_rules! assert_not_impl_any {
             #[derive(Copy, Clone)]
             struct False;
 
-            fn assert_true(_: True){}
-            fn assert_false(_: False){}
-
-            trait Not {
-                type Result;
-                fn not(self) -> Self::Result;
-            }
-            trait And<Other> {
-                type Result;
-                fn and(self, _: Other) -> Self::Result;
-            }
-            trait Or<Other> {
-                type Result;
-                fn or(self, _: Other) -> Self::Result;
-            }
-
-            impl Not for True {
-                type Result = False;
+            impl True {
                 fn not(self) -> False { False }
+                fn and<T>(self, other: T) -> T { other }
+                fn or<T>(self, _: T) -> True { True }
             }
-            impl Not for False {
-                type Result = True;
+            impl False {
                 fn not(self) -> True { True }
-            }
-
-            impl<T> And<T> for True {
-                type Result = T;
-                fn and(self, other: T) -> Self::Result { other }
-            }
-            impl<T> And<T> for False {
-                type Result = False;
-                fn and(self, _: T) -> Self::Result { False }
-            }
-            impl<T> Or<T> for True {
-                type Result = True;
-                fn or(self, _: T) -> Self::Result { True }
-            }
-            impl<T> Or<T> for False {
-                type Result = T;
-                fn or(self, other: T) -> Self::Result { other }
-            }
-
-            trait DoesImpl {
-                type Result;
-                fn does_impl(&self) -> Self::Result;
+                fn and<T>(self, _: T) -> False { False }
+                fn or<T>(self, other: T) -> T { other }
             }
 
             struct Base;
-            impl DoesImpl for Base {
-                type Result = False;
+            impl Base {
                 fn does_impl(&self) -> False {
                     False
                 }
             }
             static BASE: Base = Base;
 
-
-            let result = False;
-
-            $(let result = result.or({
-                struct Wrapper<T>(PhantomData<T>);
-
-                impl<T> Deref for Wrapper<T> {
-                    type Target = Base;
-                    fn deref(&self) -> &Self::Target {
-                        &BASE
-                    }
-                }
-
-                impl<T: $t> DoesImpl for Wrapper<T> {
-                    type Result = True;
-                    fn does_impl(&self) -> True {
-                        True
-                    }
-                }
-
-                // If `$type: $trait`, the `does_impl` method on `Wrapper` will be called, and return
-                // `True`. Otherwise, the compiler will try to deref and call the method on `Base`,
-                // which returns `False`.
-                Wrapper::<$x>(PhantomData).does_impl()
-            });)+
-
-            assert_true(result.not())
+            let _: fn() = || {
+                // Construct an expression using True/False and the operators above, that
+                // corresponds to the provided expression.
+                let _: True = assert_impl!(@boolexpr($ty,) $($rest)*);
+            };
         };
     };
 }
