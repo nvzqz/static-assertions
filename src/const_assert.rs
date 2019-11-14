@@ -51,9 +51,7 @@
 #[macro_export]
 macro_rules! const_assert {
     ($x:expr $(,)?) => {
-        const _: fn() = ||{
-            let _: $crate::True = $crate::to_bool!($x);
-        };
+        const _: $crate::True = $crate::to_bool!($x);
     };
 }
 
