@@ -383,14 +383,12 @@ macro_rules! assert_impl {
         impl<T: ?Sized> DoesntImpl for Wrapper<T> {}
 
         impl<T: ?Sized + $($trait)*> Wrapper<T> {
-            fn does_impl(&self) -> True {
-                True
-            }
+            const DOES_IMPL: True = True;
         }
 
         // If `$type: $trait`, the `does_impl` inherent method on `Wrapper` will be called, and
         // return `True`. Otherwise, the trait method will be called, which returns `False`.
-        Wrapper::<$ty>(PhantomData).does_impl()
+        <Wrapper<$ty>>::DOES_IMPL
     }};
 
     (@body(for($($generic:tt)*) $ty:ty: $($rest:tt)*)) => {{
@@ -418,9 +416,7 @@ macro_rules! assert_impl {
 
             // Fallback trait that returns false if the type does not implement a given trait.
             trait DoesntImpl {
-                fn does_impl(&self) -> False {
-                    False
-                }
+                const DOES_IMPL: False = False;
             }
 
             // Actual test
