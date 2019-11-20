@@ -32,6 +32,7 @@
 //! and this to your crate root (`main.rs` or `lib.rs`):
 //!
 //! ```
+//! # #[allow(unused_imports)]
 //! #[macro_use]
 //! extern crate static_assertions;
 //! # fn main() {}
@@ -98,6 +99,7 @@
 #![no_std]
 
 #![deny(unused_macros)]
+#![doc(test(attr(deny(warnings), allow(dead_code))))]
 
 #[cfg(feature = "proc_static_assertions")]
 extern crate proc_static_assertions;
