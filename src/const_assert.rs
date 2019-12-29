@@ -57,13 +57,17 @@ macro_rules! const_assert {
 
 /// Asserts that constants are equal in value.
 ///
+/// Use [`const_assert_eq_usize!`](macro.const_assert_eq_usize.html) for better
+/// error messages when asserting
+/// [`usize`](https://doc.rust-lang.org/std/primitive.usize.html) equality.
+///
 /// # Examples
 ///
 /// This works as a shorthand for `const_assert!(a == b)`:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// const TWO: usize = 2;
+/// const TWO: i32 = 2;
 ///
 /// const_assert_eq!(TWO * TWO, TWO + TWO);
 /// ```
@@ -78,6 +82,20 @@ macro_rules! const_assert {
 macro_rules! const_assert_eq {
     ($x:expr, $y:expr $(,)?) => {
         const_assert!($x == $y);
+    };
+}
+
+/// Asserts that constants of type
+/// [`usize`](https://doc.rust-lang.org/std/primitive.usize.html) are equal in
+/// value.
+///
+/// This is equivalent to [`const_assert_eq!`](macro.const_assert_eq.html) but
+/// allows for inspecting the values in error messages.
+#[macro_export]
+macro_rules! const_assert_eq_usize {
+    ($x:expr, $($y:expr),+ $(,)?) => {
+        // Assigned instance must match the annotated type or else it will fail.
+        $(const _: [(); $x] = [(); $y];)+
     };
 }
 

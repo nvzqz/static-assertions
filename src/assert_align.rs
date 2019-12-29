@@ -32,14 +32,12 @@
 /// ```
 ///
 /// [FFI]: https://en.wikipedia.org/wiki/Foreign_function_interface
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! assert_align_eq {
     ($x:ty, $($xs:ty),+ $(,)?) => {
         const _: fn() = || {
-            // Assigned instance must match the annotated type or else it will
-            // fail to compile
             use $crate::_core::mem::align_of;
-            $(let _: [(); align_of::<$x>()] = [(); align_of::<$xs>()];)+
+            const_assert_eq_usize!(align_of::<$x>() $(, align_of::<$xs>())+);
         };
     };
 }
