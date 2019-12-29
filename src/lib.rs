@@ -98,7 +98,7 @@
 
 #![no_std]
 
-#![deny(unused_macros)]
+#![deny(missing_docs, unused_macros)]
 #![doc(test(attr(deny(warnings), allow(dead_code))))]
 
 #[cfg(feature = "proc_static_assertions")]
