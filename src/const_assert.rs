@@ -48,7 +48,7 @@
 /// ```
 ///
 /// [static_assert]: http://en.cppreference.com/w/cpp/language/static_assert
-#[macro_export]
+#[macro_export(local_inner_macros)]
 macro_rules! const_assert {
     ($x:expr $(,)?) => {
         const _: $crate::True = $crate::to_bool!($x);
