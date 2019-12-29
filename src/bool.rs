@@ -38,6 +38,9 @@ impl ToBool for [(); 1] {
 #[macro_export]
 macro_rules! _to_bool {
     ($x:expr) => {
-        <[(); $x as usize] as $crate::_bool::ToBool>::TO_BOOL
+        {
+            const X: bool = $x;
+            <[(); X as usize] as $crate::_bool::ToBool>::TO_BOOL
+        }
     };
 }
