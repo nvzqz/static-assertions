@@ -111,12 +111,12 @@ pub use proc_static_assertions::assert;
 #[doc(hidden)]
 pub extern crate core as _core;
 
+mod assert_align;
 mod assert_cfg;
-mod assert_eq_align;
-mod assert_eq_size;
 mod assert_fields;
 mod assert_impl;
 mod assert_obj_safe;
+mod assert_size;
 mod assert_trait;
 mod assert_type;
 mod const_assert;

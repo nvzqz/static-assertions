@@ -9,14 +9,14 @@
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_eq_align!(usize, *const u8, *mut u8);
+/// assert_align_eq!(usize, *const u8, *mut u8);
 /// ```
 ///
 /// The following passes because `[i32; 4]` has the same alignment as `i32`:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_eq_align!([i32; 4], i32);
+/// assert_align_eq!([i32; 4], i32);
 /// ```
 ///
 /// The following example fails to compile because `i32x4` explicitly has 4
@@ -28,12 +28,12 @@
 /// #[repr(align(16))]
 /// struct i32x4([i32; 4]);
 ///
-/// assert_eq_align!(i32x4, [i32; 4]);
+/// assert_align_eq!(i32x4, [i32; 4]);
 /// ```
 ///
 /// [FFI]: https://en.wikipedia.org/wiki/Foreign_function_interface
 #[macro_export]
-macro_rules! assert_eq_align {
+macro_rules! assert_align_eq {
     ($x:ty, $($xs:ty),+ $(,)?) => {
         const _: fn() = || {
             // Assigned instance must match the annotated type or else it will
@@ -41,5 +41,20 @@ macro_rules! assert_eq_align {
             use $crate::_core::mem::align_of;
             $(let _: [(); align_of::<$x>()] = [(); align_of::<$xs>()];)+
         };
+    };
+}
+
+/// Asserts that types are equal in alignment.
+///
+/// This macro has been deprecated in favor of
+/// [`assert_align_eq!`](macro.assert_align_eq.html).
+#[deprecated(
+    since = "1.2.0",
+    note = "Please use the 'assert_align_eq' macro instead",
+)]
+#[macro_export(local_inner_macros)]
+macro_rules! assert_eq_align {
+    ($($t:tt)*) => {
+        assert_align_eq!($($t)*);
     };
 }
