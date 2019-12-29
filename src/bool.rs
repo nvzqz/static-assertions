@@ -19,18 +19,18 @@ impl False {
 }
 
 pub trait ToBool: Sized {
-    type Value: Sized;
-    const TO_BOOL: Self::Value;
+    type Bool: Sized;
+    const TO_BOOL: Self::Bool;
 }
 
 impl ToBool for [(); 0] {
-    type Value = False;
-    const TO_BOOL: Self::Value = False;
+    type Bool = False;
+    const TO_BOOL: Self::Bool = False;
 }
 
 impl ToBool for [(); 1] {
-    type Value = True;
-    const TO_BOOL: Self::Value = True;
+    type Bool = True;
+    const TO_BOOL: Self::Bool = True;
 }
 
 /// Converts a `const bool` to a type-level boolean.
@@ -38,6 +38,6 @@ impl ToBool for [(); 1] {
 #[macro_export]
 macro_rules! to_bool {
     ($x:expr) => {
-        <[(); $x as usize] as $crate::type_level_bool::ToBool>::TO_BOOL
+        <[(); $x as usize] as $crate::_bool::ToBool>::TO_BOOL
     };
 }
