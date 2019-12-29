@@ -257,9 +257,7 @@ macro_rules! assert_not_impl_any {
     };
 }
 
-
-/// Asserts that the type implements or not the given traits. Accepts an arbitrary
-/// boolean expression made of traits.
+/// Asserts that the type implements a logical trait expression.
 ///
 /// This macro causes a compilation failure if the expression is not satisfied.
 ///
@@ -269,17 +267,24 @@ macro_rules! assert_not_impl_any {
 /// assert_impl!(<type>: <trait_expr>);
 /// assert_impl!(for(<type>: <bounds>) <type>: <trait_expr>);
 /// ```
-/// where
+///
+/// where:
+///
 /// - `<type>` is a type (that must not depend on a generic parameter)
-/// - `<trait_expr>` is an expression made out of trait names, combined with
-///     `!` for negation, `&` for conjunction, `|` for disjunction and
-///     parentheses for grouping.
+///
+/// - `<trait_expr>` is an expression made out of trait names, combined with `!`
+///   for negation, `&` for conjunction, `|` for disjunction and parentheses for
+///   grouping.
+///
 /// - `<bounds>` is a trait bounds expression.
 ///
-/// For technical reasons, traits like `Into<u8>` that are not a single identifier
-/// must be surrounded by parentheses.
-/// Note also that the usual operator priority is not respected: `x & y | z` is
-/// parsed as `x & (y | z)`
+/// For technical reasons:
+///
+/// - Traits (like `Into<u8>`) that are not a single identifier must be
+///   surrounded by parentheses.
+///
+/// - The usual operator priority is not respected: `x & y | z` is parsed as
+///   `x & (y | z)`.
 ///
 /// # Examples
 ///
@@ -291,7 +296,7 @@ macro_rules! assert_not_impl_any {
 /// assert_impl!(u32: !((Into<usize>) & (Into<u8>)));
 /// ```
 ///
-/// Check that a type is [`Send`] bit not [`Sync`].
+/// Check that a type is [`Send`] but not [`Sync`].
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -300,14 +305,14 @@ macro_rules! assert_not_impl_any {
 /// assert_impl!(Cell<u32>: Send & !Sync);
 /// ```
 ///
-/// This is also good for simple one-off cases:
+/// Check simple one-off cases:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// assert_impl!(&'static mut u8: !Copy);
 /// ```
 ///
-/// Check that a type is always [`Clone`] even when its parameter isn't:
+/// Check that a type is _always_ [`Clone`] even when its parameter isn't:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -326,28 +331,28 @@ macro_rules! assert_not_impl_any {
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-/// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
 #[macro_export(local_inner_macros)]
 macro_rules! assert_impl {
     (for($($generic:tt)*) $ty:ty: $($rest:tt)*) => {
         const _: () = {
             fn assert_impl<$($generic)*>() {
-                // Construct an expression using True/False and their operators, that corresponds to
-                // the provided expression.
+                // Construct an expression using True/False and their operators,
+                // that corresponds to the provided expression.
                 let _: $crate::True = $crate::_does_impl!($ty: $($rest)*);
             }
         };
     };
     ($ty:ty: $($rest:tt)*) => {
-        // Construct an expression using True/False and their operators, that corresponds to
-        // the provided expression.
+        // Construct an expression using True/False and their operators, that
+        // corresponds to the provided expression.
         const _: $crate::True = $crate::_does_impl!($ty: $($rest)*);
     };
 }
 
-/// Returns `True` or `False` depending on whether the given type implements the given trait
-/// boolean expression. Can be used in const contexts if it doesn't depend on outer generic
-/// parameters.
+/// Returns `True` or `False` depending on whether the given type implements the
+/// given trait boolean expression. Can be used in const contexts if it doesn't
+/// depend on outer generic parameters.
+///
 /// This is the core of `assert_impl`.
 #[doc(hidden)]
 #[macro_export(local_inner_macros)]
@@ -406,8 +411,9 @@ macro_rules! _does_impl {
             const DOES_IMPL: True = True;
         }
 
-        // If `$type: $trait`, the `_does_impl` inherent method on `Wrapper` will be called, and
-        // return `True`. Otherwise, the trait method will be called, which returns `False`.
+        // If `$type: $trait`, the `_does_impl` inherent method on `Wrapper`
+        // will be called, and return `True`. Otherwise, the trait method will
+        // be called, which returns `False`.
         &<Wrapper<$ty>>::DOES_IMPL
     }};
 
@@ -418,14 +424,15 @@ macro_rules! _does_impl {
         use $crate::_core::ops::Deref;
         use $crate::{True, False};
 
-        // Fallback trait that returns false if the type does not implement a given trait.
+        // Fallback trait that returns false if the type does not implement a
+        // given trait.
         trait DoesntImpl {
             const DOES_IMPL: False = False;
         }
         impl<T: ?Sized> DoesntImpl for T {}
 
-        // Construct an expression using True/False and their operators, that corresponds to
-        // the provided expression.
+        // Construct an expression using True/False and their operators, that
+        // corresponds to the provided expression.
         *_does_impl!(@boolexpr($ty,) $($rest)*)
     }};
 }
