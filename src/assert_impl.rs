@@ -334,14 +334,14 @@ macro_rules! assert_impl {
             fn assert_impl<$($generic)*>() {
                 // Construct an expression using True/False and their operators, that corresponds to
                 // the provided expression.
-                let _: $crate::True = $crate::does_impl!($ty: $($rest)*);
+                let _: $crate::True = $crate::_does_impl!($ty: $($rest)*);
             }
         };
     };
     ($ty:ty: $($rest:tt)*) => {
         // Construct an expression using True/False and their operators, that corresponds to
         // the provided expression.
-        const _: $crate::True = $crate::does_impl!($ty: $($rest)*);
+        const _: $crate::True = $crate::_does_impl!($ty: $($rest)*);
     };
 }
 
@@ -351,52 +351,52 @@ macro_rules! assert_impl {
 /// This is the core of `assert_impl`.
 #[doc(hidden)]
 #[macro_export(local_inner_macros)]
-macro_rules! does_impl {
+macro_rules! _does_impl {
     (@boolexpr($($args:tt)*) ($($expr:tt)*)) => {
-        does_impl!(@boolexpr($($args)*) $($expr)*)
+        _does_impl!(@boolexpr($($args)*) $($expr)*)
     };
     (@boolexpr($($args:tt)*) !($($expr:tt)*)) => {
-        does_impl!(@boolexpr($($args)*) $($expr)*).not()
+        _does_impl!(@boolexpr($($args)*) $($expr)*).not()
     };
     (@boolexpr($($args:tt)*) ($($left:tt)*) || $($right:tt)*) => {{
-        let left = does_impl!(@boolexpr($($args)*) $($left)*);
-        let right = does_impl!(@boolexpr($($args)*) $($right)*);
+        let left = _does_impl!(@boolexpr($($args)*) $($left)*);
+        let right = _does_impl!(@boolexpr($($args)*) $($right)*);
         left.or(right)
     }};
     (@boolexpr($($args:tt)*) ($($left:tt)*) && $($right:tt)*) => {{
-        let left = does_impl!(@boolexpr($($args)*) $($left)*);
-        let right = does_impl!(@boolexpr($($args)*) $($right)*);
+        let left = _does_impl!(@boolexpr($($args)*) $($left)*);
+        let right = _does_impl!(@boolexpr($($args)*) $($right)*);
         left.and(right)
     }};
     (@boolexpr($($args:tt)*) !($($left:tt)*) || $($right:tt)*) => {{
-        does_impl!(@boolexpr($($args)*) (!($($left)*)) || $($right)*)
+        _does_impl!(@boolexpr($($args)*) (!($($left)*)) || $($right)*)
     }};
     (@boolexpr($($args:tt)*) !($($left:tt)*) && $($right:tt)*) => {{
-        does_impl!(@boolexpr($($args)*) (!($($left)*)) && $($right)*)
+        _does_impl!(@boolexpr($($args)*) (!($($left)*)) && $($right)*)
     }};
     (@boolexpr($($args:tt)*) !$left:ident || $($right:tt)*) => {{
-        does_impl!(@boolexpr($($args)*) !($left) || $($right)*)
+        _does_impl!(@boolexpr($($args)*) !($left) || $($right)*)
     }};
     (@boolexpr($($args:tt)*) !$left:ident && $($right:tt)*) => {{
-        does_impl!(@boolexpr($($args)*) !($left) && $($right)*)
+        _does_impl!(@boolexpr($($args)*) !($left) && $($right)*)
     }};
     (@boolexpr($($args:tt)*) $left:ident || $($right:tt)*) => {
-        does_impl!(@boolexpr($($args)*) ($left) || $($right)*)
+        _does_impl!(@boolexpr($($args)*) ($left) || $($right)*)
     };
     (@boolexpr($($args:tt)*) $left:ident && $($right:tt)*) => {{
-        does_impl!(@boolexpr($($args)*) ($left) && $($right)*)
+        _does_impl!(@boolexpr($($args)*) ($left) && $($right)*)
     }};
     (@boolexpr($($args:tt)*) !$expr:ident) => {
-        does_impl!(@boolexpr($($args)*) !($expr))
+        _does_impl!(@boolexpr($($args)*) !($expr))
     };
     (@boolexpr($($args:tt)*) !$expr:path) => {
-        does_impl!(@boolexpr($($args)*) !($expr))
+        _does_impl!(@boolexpr($($args)*) !($expr))
     };
     (@boolexpr($($args:tt)*) $expr:ident) => {
-        does_impl!(@base($($args)*) $expr)
+        _does_impl!(@base($($args)*) $expr)
     };
     (@boolexpr($($args:tt)*) $expr:path) => {
-        does_impl!(@base($($args)*) $expr)
+        _does_impl!(@base($($args)*) $expr)
     };
 
     (@base($ty:ty, $($args:tt)*) $($trait:tt)*) => {{
@@ -406,7 +406,7 @@ macro_rules! does_impl {
             const DOES_IMPL: True = True;
         }
 
-        // If `$type: $trait`, the `does_impl` inherent method on `Wrapper` will be called, and
+        // If `$type: $trait`, the `_does_impl` inherent method on `Wrapper` will be called, and
         // return `True`. Otherwise, the trait method will be called, which returns `False`.
         &<Wrapper<$ty>>::DOES_IMPL
     }};
@@ -426,6 +426,6 @@ macro_rules! does_impl {
 
         // Construct an expression using True/False and their operators, that corresponds to
         // the provided expression.
-        *does_impl!(@boolexpr($ty,) $($rest)*)
+        *_does_impl!(@boolexpr($ty,) $($rest)*)
     }};
 }
