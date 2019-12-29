@@ -3,8 +3,8 @@
 /// Related:
 /// - [`assert_impl_any!`]
 /// - [`assert_impl_all!`]
-/// - [`assert_not_impl_all!`]
-/// - [`assert_not_impl_any!`]
+/// - [`assert_impl_not_all!`]
+/// - [`assert_impl_not_any!`]
 ///
 /// # Examples
 ///
@@ -51,8 +51,8 @@
 ///
 /// [`assert_impl_any!`]:     macro.assert_impl_any.html
 /// [`assert_impl_all!`]:     macro.assert_impl_all.html
-/// [`assert_not_impl_all!`]: macro.assert_not_impl_all.html
-/// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
+/// [`assert_impl_not_all!`]: macro.assert_not_impl_all.html
+/// [`assert_impl_not_any!`]: macro.assert_not_impl_any.html
 #[macro_export]
 macro_rules! assert_impl_one {
     ($x:ty: $($t:path),+ $(,)?) => {
@@ -84,7 +84,7 @@ macro_rules! assert_impl_one {
 
 /// Asserts that the type implements _all_ of the given traits.
 ///
-/// See [`assert_not_impl_all!`] for achieving the opposite effect.
+/// See [`assert_impl_not_all!`] for achieving the opposite effect.
 ///
 /// # Examples
 ///
@@ -105,7 +105,7 @@ macro_rules! assert_impl_one {
 /// assert_impl_all!(*const u8: Send);
 /// ```
 ///
-/// [`assert_not_impl_all!`]: macro.assert_not_impl_all.html
+/// [`assert_impl_not_all!`]: macro.assert_not_impl_all.html
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
@@ -118,7 +118,7 @@ macro_rules! assert_impl_all {
 
 /// Asserts that the type implements _any_ of the given traits.
 ///
-/// See [`assert_not_impl_any!`] for achieving the opposite effect.
+/// See [`assert_impl_not_any!`] for achieving the opposite effect.
 ///
 /// # Examples
 ///
@@ -146,7 +146,7 @@ macro_rules! assert_impl_all {
 /// assert_impl_any!(*const u8: Send, Sync);
 /// ```
 ///
-/// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
+/// [`assert_impl_not_any!`]: macro.assert_not_impl_any.html
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
 #[macro_export(local_inner_macros)]
@@ -163,7 +163,7 @@ macro_rules! assert_impl_any {
 ///
 /// Note that the combination of all provided traits is required to not be
 /// implemented. If you want to check that none of multiple traits are
-/// implemented you should invoke [`assert_not_impl_any!`] instead.
+/// implemented you should invoke [`assert_impl_not_any!`] instead.
 ///
 /// # Examples
 ///
@@ -171,7 +171,7 @@ macro_rules! assert_impl_any {
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_not_impl_all!(u32: From<u16>, Into<usize>);
+/// assert_impl_not_all!(u32: From<u16>, Into<usize>);
 /// ```
 ///
 /// The following example fails to compile since `u32` can be converted into
@@ -179,7 +179,7 @@ macro_rules! assert_impl_any {
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_not_impl_all!(u32: Into<u64>);
+/// assert_impl_not_all!(u32: Into<u64>);
 /// ```
 ///
 /// The following compiles because [`Cell`] is not both [`Sync`] _and_ [`Send`]:
@@ -188,7 +188,7 @@ macro_rules! assert_impl_any {
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// use std::cell::Cell;
 ///
-/// assert_not_impl_all!(Cell<u32>: Sync, Send);
+/// assert_impl_not_all!(Cell<u32>: Sync, Send);
 /// ```
 ///
 /// But it is [`Send`], so this fails to compile:
@@ -196,18 +196,33 @@ macro_rules! assert_impl_any {
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// # std::cell::Cell;
-/// assert_not_impl_all!(Cell<u32>: Send);
+/// assert_impl_not_all!(Cell<u32>: Send);
 /// ```
 ///
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
-/// [`assert_not_impl_any!`]: macro.assert_not_impl_any.html
+/// [`assert_impl_not_any!`]: macro.assert_impl_not_any.html
 /// [`Cell`]: https://doc.rust-lang.org/std/cell/struct.Cell.html
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
 #[macro_export(local_inner_macros)]
-macro_rules! assert_not_impl_all {
+macro_rules! assert_impl_not_all {
     ($ty:ty: $($traits:path),+ $(,)?) => {
         assert_impl!($ty: !( $( ($traits) )&+ ));
+    };
+}
+
+/// Asserts that the type does **not** implement _all_ of the given traits.
+///
+/// This macro has been deprecated in favor of
+/// [`assert_impl_not_all!`](macro.assert_impl_not_all.html).
+#[deprecated(
+    since = "1.2.0",
+    note = "Please use the 'assert_impl_not_all' macro instead",
+)]
+#[macro_export(local_inner_macros)]
+macro_rules! assert_not_impl_all {
+    ($($t:tt)*) => {
+        assert_impl_not_all!($($t)*);
     };
 }
 
@@ -218,7 +233,7 @@ macro_rules! assert_not_impl_all {
 ///
 /// This macro causes a compilation failure if any of the provided individual
 /// traits are implemented for the type. If you want to check that a combination
-/// of traits is not implemented you should invoke [`assert_not_impl_all!`]
+/// of traits is not implemented you should invoke [`assert_impl_not_all!`]
 /// instead. For single traits both macros behave the same.
 ///
 /// # Examples
@@ -228,14 +243,14 @@ macro_rules! assert_not_impl_all {
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_not_impl_any!(u32: Into<usize>, Into<u8>);
+/// assert_impl_not_any!(u32: Into<usize>, Into<u8>);
 /// ```
 ///
 /// This is also good for simple one-off cases:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_not_impl_any!(&'static mut u8: Copy);
+/// assert_impl_not_any!(&'static mut u8: Copy);
 /// ```
 ///
 /// The following example fails to compile since `u32` can be converted into
@@ -243,17 +258,32 @@ macro_rules! assert_not_impl_all {
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_not_impl_any!(u32: Into<u64>, Into<u16>);
+/// assert_impl_not_any!(u32: Into<u64>, Into<u16>);
 /// ```
 ///
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
 /// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
-/// [`assert_not_impl_all!`]: macro.assert_not_impl_all.html
+/// [`assert_impl_not_all!`]: macro.assert_impl_not_all.html
 /// [blanket]: https://doc.rust-lang.org/book/ch10-02-traits.html#using-trait-bounds-to-conditionally-implement-methods
 #[macro_export(local_inner_macros)]
-macro_rules! assert_not_impl_any {
+macro_rules! assert_impl_not_any {
     ($ty:ty: $($traits:path),+ $(,)?) => {
         assert_impl!($ty: !( $( ($traits) )|+ ));
+    };
+}
+
+/// Asserts that the type does **not** implement _any_ of the given traits.
+///
+/// This macro has been deprecated in favor of
+/// [`assert_impl_not_any!`](macro.assert_impl_not_any.html).
+#[deprecated(
+    since = "1.2.0",
+    note = "Please use the 'assert_impl_not_any' macro instead",
+)]
+#[macro_export(local_inner_macros)]
+macro_rules! assert_not_impl_any {
+    ($($t:tt)*) => {
+        assert_impl_not_any!($($t)*);
     };
 }
 
