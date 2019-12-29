@@ -80,8 +80,8 @@ macro_rules! const_assert {
 /// ```
 #[macro_export(local_inner_macros)]
 macro_rules! const_assert_eq {
-    ($x:expr, $y:expr $(,)?) => {
-        const_assert!($x == $y);
+    ($x:expr, $($y:expr),+ $(,)?) => {
+        const_assert!($($x == $y)&&+);
     };
 }
 
@@ -120,7 +120,7 @@ macro_rules! const_assert_eq_usize {
 /// ```
 #[macro_export(local_inner_macros)]
 macro_rules! const_assert_ne {
-    ($x:expr, $y:expr $(,)?) => {
-        const_assert!($x != $y);
+    ($x:expr, $($y:expr),+ $(,)?) => {
+        const_assert!($($x != $y)&&+);
     };
 }
