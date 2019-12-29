@@ -106,6 +106,8 @@ extern crate proc_static_assertions;
 #[cfg(feature = "proc_static_assertions")]
 pub use proc_static_assertions::assert;
 
+// This module should never be used publicly and is not part of this crate's
+// semver requirements.
 #[doc(hidden)]
 pub extern crate core as _core;
 
