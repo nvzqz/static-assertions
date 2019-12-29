@@ -124,3 +124,55 @@ macro_rules! const_assert_ne {
         const_assert!($($x != $y)&&+);
     };
 }
+
+/// Asserts that constants are less than each other.
+#[macro_export(local_inner_macros)]
+macro_rules! const_assert_lt {
+    ($x:expr, $($y:expr),+ $(,)?) => {
+        const_assert_lt!(@build $x, $($y),+);
+    };
+    (@build $x:expr) => {};
+    (@build $x:expr, $($y:expr),+) => {
+        const_assert!($x < _head!($($y),+));
+        const_assert_lt!(@build $($y),+);
+    };
+}
+
+/// Asserts that constants are less than or equal to each other.
+#[macro_export(local_inner_macros)]
+macro_rules! const_assert_le {
+    ($x:expr, $($y:expr),+ $(,)?) => {
+        const_assert_le!(@build $x, $($y),+);
+    };
+    (@build $x:expr) => {};
+    (@build $x:expr, $($y:expr),+) => {
+        const_assert!($x <= _head!($($y),+));
+        const_assert_le!(@build $($y),+);
+    };
+}
+
+/// Asserts that constants are greater than each other.
+#[macro_export(local_inner_macros)]
+macro_rules! const_assert_gt {
+    ($x:expr, $($y:expr),+ $(,)?) => {
+        const_assert_gt!(@build $x, $($y),+);
+    };
+    (@build $x:expr) => {};
+    (@build $x:expr, $($y:expr),+) => {
+        const_assert!($x > _head!($($y),+));
+        const_assert_gt!(@build $($y),+);
+    };
+}
+
+/// Asserts that constants are less than or equal to each other.
+#[macro_export(local_inner_macros)]
+macro_rules! const_assert_ge {
+    ($x:expr, $($y:expr),+ $(,)?) => {
+        const_assert_ge!(@build $x, $($y),+);
+    };
+    (@build $x:expr) => {};
+    (@build $x:expr, $($y:expr),+) => {
+        const_assert!($x >= _head!($($y),+));
+        const_assert_ge!(@build $($y),+);
+    };
+}

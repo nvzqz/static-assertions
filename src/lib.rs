@@ -121,6 +121,12 @@ mod assert_trait;
 mod assert_type;
 mod const_assert;
 
+// Utility macros.
+//
+// These macros should also never be used publicly and are not part of this
+// crate's semver requirements.
+mod util;
+
 // Type-level booleans.
 //
 // This module should never be used publicly and is not part of this crate's
