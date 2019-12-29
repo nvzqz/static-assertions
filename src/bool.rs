@@ -3,18 +3,15 @@ pub struct True;
 #[derive(Clone, Copy)]
 pub struct False;
 
-const TRUE: True = True;
-const FALSE: False = False;
-
 impl True {
-    pub const fn not<'a>(&'a self) -> &'a False { &FALSE }
+    pub const fn not<'a>(&'a self) -> &'a False { &False }
     pub const fn and<'a, T>(&'a self, other: &'a T) -> &'a T { other }
-    pub const fn or<'a, T>(&'a self, _: &'a T) -> &'a True { &TRUE }
+    pub const fn or<'a, T>(&'a self, _: &'a T) -> &'a True { &True }
 }
 
 impl False {
-    pub const fn not<'a>(&'a self) -> &'a True { &TRUE }
-    pub const fn and<'a, T>(&'a self, _: &'a T) -> &'a False { &FALSE }
+    pub const fn not<'a>(&'a self) -> &'a True { &True }
+    pub const fn and<'a, T>(&'a self, _: &'a T) -> &'a False { &False }
     pub const fn or<'a, T>(&'a self, other: &'a T) -> &'a T { other }
 }
 
