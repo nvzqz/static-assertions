@@ -112,7 +112,7 @@ macro_rules! assert_impl_one {
 #[macro_export(local_inner_macros)]
 macro_rules! assert_impl_all {
     ($ty:ty: $($traits:path),+ $(,)?) => {
-        assert_impl!($ty: $( ($traits) )&&+);
+        assert_impl!($ty: $( ($traits) )&+);
     };
 }
 
@@ -152,7 +152,7 @@ macro_rules! assert_impl_all {
 #[macro_export(local_inner_macros)]
 macro_rules! assert_impl_any {
     ($ty:ty: $($traits:path),+ $(,)?) => {
-        assert_impl!($ty: $( ($traits) )||+);
+        assert_impl!($ty: $( ($traits) )|+);
     };
 }
 
@@ -207,7 +207,7 @@ macro_rules! assert_impl_any {
 #[macro_export(local_inner_macros)]
 macro_rules! assert_not_impl_all {
     ($ty:ty: $($traits:path),+ $(,)?) => {
-        assert_impl!($ty: !( $( ($traits) )&&+ ));
+        assert_impl!($ty: !( $( ($traits) )&+ ));
     };
 }
 
@@ -253,7 +253,7 @@ macro_rules! assert_not_impl_all {
 #[macro_export(local_inner_macros)]
 macro_rules! assert_not_impl_any {
     ($ty:ty: $($traits:path),+ $(,)?) => {
-        assert_impl!($ty: !( $( ($traits) )||+ ));
+        assert_impl!($ty: !( $( ($traits) )|+ ));
     };
 }
 
@@ -272,14 +272,14 @@ macro_rules! assert_not_impl_any {
 /// where
 /// - `<type>` is a type (that must not depend on a generic parameter)
 /// - `<trait_expr>` is an expression made out of trait names, combined with
-///     `!` for negation, `&&` for conjunction, `||` for disjunction and
+///     `!` for negation, `&` for conjunction, `|` for disjunction and
 ///     parentheses for grouping.
 /// - `<bounds>` is a trait bounds expression.
 ///
 /// For technical reasons, traits like `Into<u8>` that are not a single identifier
 /// must be surrounded by parentheses.
-/// Note also that the usual operator priority is not respected: `x && y || z` is
-/// parsed as `x && (y || z)`
+/// Note also that the usual operator priority is not respected: `x & y | z` is
+/// parsed as `x & (y | z)`
 ///
 /// # Examples
 ///
@@ -288,7 +288,7 @@ macro_rules! assert_not_impl_any {
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_impl!(u32: !((Into<usize>) && (Into<u8>)));
+/// assert_impl!(u32: !((Into<usize>) & (Into<u8>)));
 /// ```
 ///
 /// Check that a type is [`Send`] bit not [`Sync`].
@@ -297,7 +297,7 @@ macro_rules! assert_not_impl_any {
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// # struct Cell<T>(*mut T);
 /// # unsafe impl<T> Send for Cell<T> {}
-/// assert_impl!(Cell<u32>: Send && !Sync);
+/// assert_impl!(Cell<u32>: Send & !Sync);
 /// ```
 ///
 /// This is also good for simple one-off cases:
@@ -320,7 +320,7 @@ macro_rules! assert_not_impl_any {
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_impl!(u64: (Into<u32>) || (Into<u16>));
+/// assert_impl!(u64: (Into<u32>) | (Into<u16>));
 /// ```
 ///
 /// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
@@ -358,33 +358,33 @@ macro_rules! _does_impl {
     (@boolexpr($($args:tt)*) !($($expr:tt)*)) => {
         _does_impl!(@boolexpr($($args)*) $($expr)*).not()
     };
-    (@boolexpr($($args:tt)*) ($($left:tt)*) || $($right:tt)*) => {{
+    (@boolexpr($($args:tt)*) ($($left:tt)*) | $($right:tt)*) => {{
         let left = _does_impl!(@boolexpr($($args)*) $($left)*);
         let right = _does_impl!(@boolexpr($($args)*) $($right)*);
         left.or(right)
     }};
-    (@boolexpr($($args:tt)*) ($($left:tt)*) && $($right:tt)*) => {{
+    (@boolexpr($($args:tt)*) ($($left:tt)*) & $($right:tt)*) => {{
         let left = _does_impl!(@boolexpr($($args)*) $($left)*);
         let right = _does_impl!(@boolexpr($($args)*) $($right)*);
         left.and(right)
     }};
-    (@boolexpr($($args:tt)*) !($($left:tt)*) || $($right:tt)*) => {{
-        _does_impl!(@boolexpr($($args)*) (!($($left)*)) || $($right)*)
+    (@boolexpr($($args:tt)*) !($($left:tt)*) | $($right:tt)*) => {{
+        _does_impl!(@boolexpr($($args)*) (!($($left)*)) | $($right)*)
     }};
-    (@boolexpr($($args:tt)*) !($($left:tt)*) && $($right:tt)*) => {{
-        _does_impl!(@boolexpr($($args)*) (!($($left)*)) && $($right)*)
+    (@boolexpr($($args:tt)*) !($($left:tt)*) & $($right:tt)*) => {{
+        _does_impl!(@boolexpr($($args)*) (!($($left)*)) & $($right)*)
     }};
-    (@boolexpr($($args:tt)*) !$left:ident || $($right:tt)*) => {{
-        _does_impl!(@boolexpr($($args)*) !($left) || $($right)*)
+    (@boolexpr($($args:tt)*) !$left:ident | $($right:tt)*) => {{
+        _does_impl!(@boolexpr($($args)*) !($left) | $($right)*)
     }};
-    (@boolexpr($($args:tt)*) !$left:ident && $($right:tt)*) => {{
-        _does_impl!(@boolexpr($($args)*) !($left) && $($right)*)
+    (@boolexpr($($args:tt)*) !$left:ident & $($right:tt)*) => {{
+        _does_impl!(@boolexpr($($args)*) !($left) & $($right)*)
     }};
-    (@boolexpr($($args:tt)*) $left:ident || $($right:tt)*) => {
-        _does_impl!(@boolexpr($($args)*) ($left) || $($right)*)
+    (@boolexpr($($args:tt)*) $left:ident | $($right:tt)*) => {
+        _does_impl!(@boolexpr($($args)*) ($left) | $($right)*)
     };
-    (@boolexpr($($args:tt)*) $left:ident && $($right:tt)*) => {{
-        _does_impl!(@boolexpr($($args)*) ($left) && $($right)*)
+    (@boolexpr($($args:tt)*) $left:ident & $($right:tt)*) => {{
+        _does_impl!(@boolexpr($($args)*) ($left) & $($right)*)
     }};
     (@boolexpr($($args:tt)*) !$expr:ident) => {
         _does_impl!(@boolexpr($($args)*) !($expr))

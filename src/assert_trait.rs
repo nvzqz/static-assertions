@@ -39,7 +39,7 @@
 #[macro_export(local_inner_macros)]
 macro_rules! assert_trait_sub_all {
     ($sub:path: $($super:path),+ $(,)?) => {
-        assert_impl!(for(T: $sub) T: $( ($super) )&&+);
+        assert_impl!(for(T: $sub) T: $( ($super) )&+);
     };
 }
 
@@ -134,6 +134,6 @@ macro_rules! assert_trait_super_all {
 #[macro_export(local_inner_macros)]
 macro_rules! assert_trait_sub_any {
     ($sub:path: $($super:path),+ $(,)?) => {
-        assert_impl!(for(T: $sub) T: $( ($super) )||+);
+        assert_impl!(for(T: $sub) T: $( ($super) )|+);
     };
 }
