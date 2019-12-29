@@ -34,10 +34,10 @@
 /// [FFI]: https://en.wikipedia.org/wiki/Foreign_function_interface
 #[macro_export(local_inner_macros)]
 macro_rules! assert_align_eq {
-    ($x:ty, $($xs:ty),+ $(,)?) => {
+    ($x:ty, $($y:ty),+ $(,)?) => {
         const _: fn() = || {
             use $crate::_core::mem::align_of;
-            const_assert_eq_usize!(align_of::<$x>() $(, align_of::<$xs>())+);
+            const_assert_eq_usize!(align_of::<$x>() $(, align_of::<$y>())+);
         };
     };
 }
