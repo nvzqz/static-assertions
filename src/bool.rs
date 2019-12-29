@@ -36,7 +36,7 @@ impl ToBool for [(); 1] {
 /// Converts a `const bool` to a type-level boolean.
 #[doc(hidden)]
 #[macro_export]
-macro_rules! to_bool {
+macro_rules! _to_bool {
     ($x:expr) => {
         <[(); $x as usize] as $crate::_bool::ToBool>::TO_BOOL
     };
