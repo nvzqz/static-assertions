@@ -115,6 +115,7 @@ pub use type_level_bool::{True, False};
 mod assert_cfg;
 mod assert_eq_align;
 mod assert_eq_size;
+mod assert_ffi_safe;
 mod assert_fields;
 mod assert_impl;
 mod assert_obj_safe;
