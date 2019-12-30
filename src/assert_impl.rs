@@ -450,10 +450,10 @@ macro_rules! _does_impl {
 
     ($ty:ty: $($rest:tt)*) => {{
         #[allow(unused_imports)]
-        use $crate::_core::marker::PhantomData;
-        #[allow(unused_imports)]
-        use $crate::_core::ops::Deref;
-        use $crate::{True, False};
+        use $crate::{
+            _bool::{True, False},
+            _core::{marker::PhantomData, ops::Deref},
+        };
 
         // Fallback trait that returns false if the type does not implement a
         // given trait.
