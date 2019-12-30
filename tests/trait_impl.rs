@@ -63,6 +63,9 @@ struct Box<T>(T);
 
 assert_impl!(for(T: Clone) Box<T>: Clone);
 assert_impl!(for(T: Clone + Send) Box<T>: Clone & Send);
+assert_impl!(for(T) Box<T>: (From<T>) & (Into<T>));
+
 assert_impl!(for(T) PhantomData<T>: Clone);
 assert_impl!(for(T: Copy) T: Clone);
 assert_impl!(for(T: ?Sized) T: Clone | !Clone);
+assert_impl!(for('a, T: 'a) &'a mut T: !Copy);
