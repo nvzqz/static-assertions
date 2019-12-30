@@ -330,8 +330,8 @@ macro_rules! assert_not_impl_any {
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// # struct Cell<T>(*mut T);
-/// # unsafe impl<T> Send for Cell<T> {}
+/// use std::cell::Cell;
+///
 /// assert_impl!(Cell<u32>: Send & !Sync);
 /// ```
 ///
@@ -346,7 +346,8 @@ macro_rules! assert_not_impl_any {
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// # type Rc<T> = core::marker::PhantomData<T>;
+/// use std::rc::Rc;
+///
 /// assert_impl!(for(T) Rc<T>: Clone);
 /// ```
 ///
