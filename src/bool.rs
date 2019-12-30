@@ -4,25 +4,25 @@ pub struct True;
 pub struct False;
 
 impl True {
-    pub const fn not<'a>(&'a self) -> &'a False {
+    pub const fn not(&self) -> &'static False {
         &False
     }
-    pub const fn and<'a, T>(&'a self, other: &'a T) -> &'a T {
+    pub const fn and<'a, T>(&self, other: &'a T) -> &'a T {
         other
     }
-    pub const fn or<'a, T>(&'a self, _: &'a T) -> &'a True {
+    pub const fn or<T>(&self, _: &T) -> &'static True {
         &True
     }
 }
 
 impl False {
-    pub const fn not<'a>(&'a self) -> &'a True {
+    pub const fn not(&self) -> &'static True {
         &True
     }
-    pub const fn and<'a, T>(&'a self, _: &'a T) -> &'a False {
+    pub const fn and<T>(&self, _: &T) -> &'static False {
         &False
     }
-    pub const fn or<'a, T>(&'a self, other: &'a T) -> &'a T {
+    pub const fn or<'a, T>(&self, other: &'a T) -> &'a T {
         other
     }
 }
