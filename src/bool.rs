@@ -13,6 +13,9 @@ impl True {
     pub const fn or<T>(&self, _: &T) -> &'static True {
         &True
     }
+    pub const fn value(&self) -> bool {
+        true
+    }
 }
 
 impl False {
@@ -24,6 +27,9 @@ impl False {
     }
     pub const fn or<'a, T>(&self, other: &'a T) -> &'a T {
         other
+    }
+    pub const fn value(&self) -> bool {
+        false
     }
 }
 
