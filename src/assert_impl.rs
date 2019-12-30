@@ -388,6 +388,25 @@ macro_rules! assert_impl {
 #[doc(hidden)]
 #[macro_export(local_inner_macros)]
 macro_rules! _does_impl {
+    ($ty:ty: $($rest:tt)*) => {{
+        #[allow(unused_imports)]
+        use $crate::{
+            _bool::{True, False},
+            _core::{marker::PhantomData, ops::Deref},
+        };
+
+        // Fallback trait that returns false if the type does not implement a
+        // given trait.
+        trait DoesntImpl {
+            const DOES_IMPL: False = False;
+        }
+        impl<T: ?Sized> DoesntImpl for T {}
+
+        // Construct an expression using `True`/`False` and their operators,
+        // that corresponds to the provided expression.
+        *_does_impl!(@boolexpr($ty,) $($rest)*)
+    }};
+
     (@boolexpr($($args:tt)*) ($($expr:tt)*)) => {
         _does_impl!(@boolexpr($($args)*) $($expr)*)
     };
@@ -446,24 +465,5 @@ macro_rules! _does_impl {
         // will be called, and return `True`. Otherwise, the trait method will
         // be called, which returns `False`.
         &<Wrapper<$ty>>::DOES_IMPL
-    }};
-
-    ($ty:ty: $($rest:tt)*) => {{
-        #[allow(unused_imports)]
-        use $crate::{
-            _bool::{True, False},
-            _core::{marker::PhantomData, ops::Deref},
-        };
-
-        // Fallback trait that returns false if the type does not implement a
-        // given trait.
-        trait DoesntImpl {
-            const DOES_IMPL: False = False;
-        }
-        impl<T: ?Sized> DoesntImpl for T {}
-
-        // Construct an expression using `True`/`False` and their operators,
-        // that corresponds to the provided expression.
-        *_does_impl!(@boolexpr($ty,) $($rest)*)
     }};
 }
