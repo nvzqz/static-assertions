@@ -30,7 +30,7 @@ mod assoc_type {
 mod dc {
     /// A type that acts like somewhat of a reference counter.
     pub struct DropCounter<'a> {
-        count: &'a mut i32
+        count: &'a mut i32,
     }
 
     impl<'a> DropCounter<'a> {

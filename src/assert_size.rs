@@ -45,7 +45,7 @@ macro_rules! assert_size_eq {
 /// [`assert_size_eq!`](macro.assert_size_eq.html).
 #[deprecated(
     since = "1.2.0",
-    note = "Please use the 'assert_size_eq' macro instead",
+    note = "Please use the 'assert_size_eq' macro instead"
 )]
 #[macro_export(local_inner_macros)]
 macro_rules! assert_eq_size {
@@ -106,7 +106,7 @@ macro_rules! assert_size_eq_ptr {
 /// [`assert_size_eq_ptr!`](macro.assert_size_eq_ptr.html).
 #[deprecated(
     since = "1.2.0",
-    note = "Please use the 'assert_size_eq_ptr' macro instead",
+    note = "Please use the 'assert_size_eq_ptr' macro instead"
 )]
 #[macro_export(local_inner_macros)]
 macro_rules! assert_eq_size_ptr {
@@ -158,7 +158,7 @@ macro_rules! assert_size_eq_val {
 /// [`assert_size_eq_val!`](macro.assert_size_eq_val.html).
 #[deprecated(
     since = "1.2.0",
-    note = "Please use the 'assert_size_eq_val' macro instead",
+    note = "Please use the 'assert_size_eq_val' macro instead"
 )]
 #[macro_export(local_inner_macros)]
 macro_rules! assert_eq_size_val {

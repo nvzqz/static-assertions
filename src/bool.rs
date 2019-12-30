@@ -4,15 +4,27 @@ pub struct True;
 pub struct False;
 
 impl True {
-    pub const fn not<'a>(&'a self) -> &'a False { &False }
-    pub const fn and<'a, T>(&'a self, other: &'a T) -> &'a T { other }
-    pub const fn or<'a, T>(&'a self, _: &'a T) -> &'a True { &True }
+    pub const fn not<'a>(&'a self) -> &'a False {
+        &False
+    }
+    pub const fn and<'a, T>(&'a self, other: &'a T) -> &'a T {
+        other
+    }
+    pub const fn or<'a, T>(&'a self, _: &'a T) -> &'a True {
+        &True
+    }
 }
 
 impl False {
-    pub const fn not<'a>(&'a self) -> &'a True { &True }
-    pub const fn and<'a, T>(&'a self, _: &'a T) -> &'a False { &False }
-    pub const fn or<'a, T>(&'a self, other: &'a T) -> &'a T { other }
+    pub const fn not<'a>(&'a self) -> &'a True {
+        &True
+    }
+    pub const fn and<'a, T>(&'a self, _: &'a T) -> &'a False {
+        &False
+    }
+    pub const fn or<'a, T>(&'a self, other: &'a T) -> &'a T {
+        other
+    }
 }
 
 pub trait ToBool: Sized {
@@ -34,10 +46,8 @@ impl ToBool for [(); 1] {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! _to_bool {
-    ($x:expr) => {
-        {
-            const X: bool = $x;
-            <[(); X as usize] as $crate::_bool::ToBool>::TO_BOOL
-        }
-    };
+    ($x:expr) => {{
+        const X: bool = $x;
+        <[(); X as usize] as $crate::_bool::ToBool>::TO_BOOL
+    }};
 }

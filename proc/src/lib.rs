@@ -74,8 +74,9 @@
 //! [compile-time]: https://en.wikipedia.org/wiki/Compile_time
 
 #![doc(html_root_url = "https://docs.rs/proc_static_assertions/0.0.0")]
-#![doc(html_logo_url = "https://raw.githubusercontent.com/nvzqz/static-assertions-rs/assets/Icon.png")]
-
+#![doc(
+    html_logo_url = "https://raw.githubusercontent.com/nvzqz/static-assertions-rs/assets/Icon.png"
+)]
 #![deny(missing_docs)]
 
 extern crate proc_macro;

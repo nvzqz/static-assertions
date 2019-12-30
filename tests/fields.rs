@@ -19,7 +19,10 @@ assert_fields!(Foo::A: x, y, x);
 
 mod m {
     #[allow(dead_code)]
-    pub struct Bar<T: ?Sized> { pub nul: (), pub inner: T }
+    pub struct Bar<T: ?Sized> {
+        pub nul: (),
+        pub inner: T,
+    }
 }
 
 #[allow(dead_code)]

@@ -48,7 +48,7 @@ macro_rules! assert_align_eq {
 /// [`assert_align_eq!`](macro.assert_align_eq.html).
 #[deprecated(
     since = "1.2.0",
-    note = "Please use the 'assert_align_eq' macro instead",
+    note = "Please use the 'assert_align_eq' macro instead"
 )]
 #[macro_export(local_inner_macros)]
 macro_rules! assert_eq_align {
