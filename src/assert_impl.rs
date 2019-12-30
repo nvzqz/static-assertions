@@ -367,15 +367,15 @@ macro_rules! assert_impl {
     (for($($generic:tt)*) $ty:ty: $($rest:tt)*) => {
         const _: () = {
             fn assert_impl<$($generic)*>() {
-                // Construct an expression using True/False and their operators,
-                // that corresponds to the provided expression.
+                // Construct an expression using `True`/`False` and their
+                // operators, that corresponds to the provided expression.
                 let _: $crate::True = $crate::_does_impl!($ty: $($rest)*);
             }
         };
     };
     ($ty:ty: $($rest:tt)*) => {
-        // Construct an expression using True/False and their operators, that
-        // corresponds to the provided expression.
+        // Construct an expression using `True`/`False` and their operators,
+        // that corresponds to the provided expression.
         const _: $crate::True = $crate::_does_impl!($ty: $($rest)*);
     };
 }
@@ -462,8 +462,8 @@ macro_rules! _does_impl {
         }
         impl<T: ?Sized> DoesntImpl for T {}
 
-        // Construct an expression using True/False and their operators, that
-        // corresponds to the provided expression.
+        // Construct an expression using `True`/`False` and their operators,
+        // that corresponds to the provided expression.
         *_does_impl!(@boolexpr($ty,) $($rest)*)
     }};
 }
