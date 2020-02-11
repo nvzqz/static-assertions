@@ -25,7 +25,4 @@ nightly = []
 proc = ["proc_static_assertions"]
 
 [badges]
-travis-ci = { repository = "nvzqz/static-assertions-rs" }
-is-it-maintained-open-issues = { repository = "nvzqz/static-assertions-rs" }
-is-it-maintained-issue-resolution = { repository = "nvzqz/static-assertions-rs" }
-maintenance = { status = "passively-maintained" }
+maintenance = { status = "actively-maintained" }
