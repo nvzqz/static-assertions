@@ -4,8 +4,8 @@
 //!     <a href="https://crates.io/crates/static_assertions">
 //!         <img src="https://img.shields.io/crates/d/static_assertions.svg" alt="Downloads">
 //!     </a>
-//!     <a href="https://travis-ci.org/nvzqz/static-assertions-rs">
-//!         <img src="https://travis-ci.org/nvzqz/static-assertions-rs.svg?branch=master" alt="Build Status">
+//!     <a href="https://github.com/nvzqz/static-assertions-rs/actions?query=workflow%3ACI">
+//!         <img src="https://github.com/nvzqz/static-assertions-rs/workflows/CI/badge.svg" alt="Build Status">
 //!     </a>
 //!     <img src="https://img.shields.io/badge/rustc-^1.37.0-blue.svg" alt="rustc ^1.37.0">
 //!     <br><br>
