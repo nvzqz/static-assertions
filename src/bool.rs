@@ -1,50 +1,120 @@
-#[derive(Clone, Copy)]
-pub struct True;
-#[derive(Clone, Copy)]
-pub struct False;
+use core::ops::{BitAnd, BitOr, BitXor, Not};
 
-impl True {
-    pub const fn not(&self) -> &'static False {
-        &False
-    }
-    pub const fn and<'a, T>(&self, other: &'a T) -> &'a T {
-        other
-    }
-    pub const fn or<T>(&self, _: &T) -> &'static True {
-        &True
-    }
-    pub const fn value(&self) -> bool {
-        true
+pub struct True;
+
+impl BitAnd<True> for True {
+    type Output = True;
+
+    fn bitand(self, _: True) -> True {
+        True
     }
 }
 
-impl False {
-    pub const fn not(&self) -> &'static True {
-        &True
+impl BitAnd<False> for True {
+    type Output = False;
+
+    fn bitand(self, _: False) -> False {
+        False
     }
-    pub const fn and<T>(&self, _: &T) -> &'static False {
-        &False
+}
+
+impl<T> BitOr<T> for True {
+    type Output = True;
+
+    fn bitor(self, _: T) -> True {
+        True
     }
-    pub const fn or<'a, T>(&self, other: &'a T) -> &'a T {
-        other
+}
+
+impl BitXor<True> for True {
+    type Output = False;
+
+    fn bitxor(self, _: True) -> False {
+        False
     }
-    pub const fn value(&self) -> bool {
-        false
+}
+
+impl BitXor<False> for True {
+    type Output = True;
+
+    fn bitxor(self, _: False) -> True {
+        True
+    }
+}
+
+impl Not for True {
+    type Output = False;
+
+    fn not(self) -> False {
+        False
+    }
+}
+
+pub struct False;
+
+impl<T> BitAnd<T> for False {
+    type Output = False;
+
+    fn bitand(self, _: T) -> False {
+        False
+    }
+}
+
+impl BitOr<True> for False {
+    type Output = True;
+
+    fn bitor(self, _: True) -> True {
+        True
+    }
+}
+
+impl BitOr<False> for False {
+    type Output = False;
+
+    fn bitor(self, _: False) -> False {
+        False
+    }
+}
+
+impl BitXor<False> for False {
+    type Output = True;
+
+    fn bitxor(self, _: False) -> True {
+        True
+    }
+}
+
+impl BitXor<True> for False {
+    type Output = False;
+
+    fn bitxor(self, _: True) -> False {
+        False
+    }
+}
+
+impl Not for False {
+    type Output = True;
+
+    fn not(self) -> True {
+        True
     }
 }
 
 pub trait ToBool: Sized {
     type Bool: Sized;
+
     const TO_BOOL: Self::Bool;
 }
 
 impl ToBool for [(); 0] {
     type Bool = False;
+
     const TO_BOOL: Self::Bool = False;
 }
 
 impl ToBool for [(); 1] {
     type Bool = True;
+
     const TO_BOOL: Self::Bool = True;
 }
 

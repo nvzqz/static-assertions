@@ -120,7 +120,7 @@ mod assert_size;
 mod assert_trait;
 mod assert_type;
 mod const_assert;
-mod does_impl;
+mod impls;
 
 // Utility macros.
 //

@@ -238,8 +238,8 @@ macro_rules! assert_not_impl_all {
 ///
 /// # Examples
 ///
-/// If `u32` were to implement `Into` conversions for `usize` _and_ for `u8`,
-/// the following would fail to compile:
+/// If `u32` were to implement `Into` conversions for `usize` and `u8`, the
+/// following would fail to compile:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -250,7 +250,7 @@ macro_rules! assert_not_impl_all {
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_impl_not_any!(&'static mut u8: Copy);
+/// assert_impl_not_any!(&mut u8: Copy);
 /// ```
 ///
 /// The following example fails to compile since `u32` can be converted into
@@ -287,65 +287,112 @@ macro_rules! assert_not_impl_any {
     };
 }
 
-/// Asserts that the type implements a logical trait expression.
+/// Asserts that the type implements a [logical trait expression].
 ///
-/// This macro causes a compilation failure if the expression is not satisfied.
+/// See [`impls`] for simply getting a [`bool`] from this condition without
+/// asserting it.
 ///
-/// See [`does_impl!`](macro.does_impl.html) for simply getting a [`bool`] from
-/// this condition without asserting it.
+/// # Index
+///
+/// - [Syntax](#syntax)
+/// - [Logical Trait Expression](#logical-trait-expression)
+/// - [Examples](#examples)
+///   - [Precedence and Nesting](#precedence-and-nesting)
+///   - [Mutual Exclusion](#mutual-exclusion)
+///   - [Generic Types](#generic-types)
+///   - [Reference Types](#reference-types)
+/// - [False Positives](#false-positives)
+/// - [Limitations](#limitations)
 ///
 /// # Syntax
 ///
 /// ```skip
-/// assert_impl!(<type>: <trait_expr>);
-/// assert_impl!(for(<type>: <bounds>) <type>: <trait_expr>);
+/// assert_impl!($type: $trait_expr);
+/// assert_impl!(for($generic) $type: $trait_expr);
 /// ```
 ///
 /// where:
 ///
-/// - `<type>` is a type (that must not depend on a generic parameter)
+/// - `$type` is any Rust type in scope.
+///   - Limitation: cannot depend on an external generic parameter.
 ///
-/// - `<trait_expr>` is an expression made out of trait names, combined with `!`
-///   for negation, `&` for conjunction, `|` for disjunction and parentheses for
-///   grouping.
+/// - `$trait_expr` is [logical trait expression].
+///   - Limitation: cannot depend on _any_ generic parameter.
 ///
-/// - `<bounds>` is a trait bounds expression.
+/// - `$generic` is a set of [generic parameters][generics] usable by `$type`.
 ///
-/// For technical reasons:
+/// # Logical Trait Expression
 ///
-/// - Traits (like `Into<u8>`) that are not a single identifier must be
-///   surrounded by parentheses.
+/// In this macro, a trait should be thought of as a [`bool`] indicating whether
+/// the given type implements it.
 ///
-/// - The usual operator priority is not respected: `x & y | z` is parsed as
-///   `x & (y | z)`.
+/// An expression can be formed from these trait operations:
+///
+/// - And (`&`): also known as [logical conjunction], this returns `true` if
+///   **both** operands are `true`. This is usually defined in Rust via the
+///   [`BitAnd`] trait.
+///
+/// - Or (`|`): also known as [logical disjunction], this returns `true` if
+///   **either** of two operands is `true`. This is usually defined in Rust via
+///   the [`BitOr`] trait.
+///
+/// - Exclusive-or (`^`): also known as [exclusive disjunction], this returns
+///   `true` if **only one** of two operands is `true`. This is usually defined
+///   in Rust via the [`BitXor`] trait.
+///
+/// - Not (`!`): a negation that returns `false` if the operand is `true`, or
+///   `true` if the operand is `false`. This is usually defined in Rust via the
+///   [`Not`] trait.
 ///
 /// # Examples
 ///
-/// If `u32` were to implement `Into` conversions for `usize` _and_ for `u8`,
-/// the following would fail to compile:
+/// This macro is very flexible and works in a variety of ways as described
+/// below.
+///
+/// ## Precedence and Nesting
+///
+/// Trait operations abide by [Rust's expression precedence][precedence].
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_impl!(u32: !((Into<usize>) & (Into<u8>)));
+/// assert_impl!(u8: Copy | Copy ^ Copy & Copy);
+/// assert_impl!(u8: Copy & Copy ^ Copy | Copy);
 /// ```
 ///
-/// Check that a type is [`Send`] but not [`Sync`].
-///
-/// ```
-/// # #[macro_use] extern crate static_assertions; fn main() {}
-/// use std::cell::Cell;
-///
-/// assert_impl!(Cell<u32>: Send & !Sync);
-/// ```
-///
-/// Check simple one-off cases:
+/// The first expression evaluated left-to-right fails:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_impl!(&'static mut u8: !Copy);
+/// assert_impl!(u8: ((Copy | Copy) ^ Copy) & Copy);
 /// ```
 ///
-/// Check that a type is _always_ [`Clone`] even when its parameter isn't:
+/// The second expression evaluated right-to-left fails:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_impl!(u8: Copy & (Copy ^ (Copy | Copy)));
+/// ```
+///
+/// ## Mutual Exclusion
+///
+/// Because exclusive-or (`^`) is a trait operation, we can check that a type
+/// implements one of two traits, but not both:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// struct T;
+///
+/// trait Foo {}
+/// trait Bar {}
+///
+/// impl Foo for T {}
+///
+/// assert_impl!(T: Foo ^ Bar);
+/// ```
+///
+/// ## Generic Types
+///
+/// Check that a type is _always_ [`Clone`], even when its parameter isn't:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -354,32 +401,126 @@ macro_rules! assert_not_impl_any {
 /// assert_impl!(for(T) Rc<T>: Clone);
 /// ```
 ///
-/// The following example fails to compile since `u64` cannot be converted into
-/// either `u32` or `u16`:
+/// Check that a type is [`Send`] but not [`Sync`], even when its parameter is:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// use std::cell::Cell;
+///
+/// assert_impl!(for(T: Send + Sync) Cell<T>: Send & !Sync);
+/// ```
+///
+/// ## Reference Types
+///
+/// If a type implements [`Sync`], then a reference to it implements [`Send`]:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_impl!(for(T: Sync) &T: Send);
+/// ```
+///
+/// Something surprising to many Rust users is that [`&mut T`] _does not_
+/// implement [`Copy`] _nor_ [`Clone`]:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_impl!(for(T) &mut T: !Copy & !Clone);
+/// ```
+///
+/// Surely you're thinking now that this macro must be broken, because you've
+/// been able to reuse [`&mut T`] throughout your lifetime with Rust. This works
+/// because, in certain contexts, the compiler silently adds "re-borrows"
+/// (`&mut *ref`) with a shorter lifetime and shadows the original. In reality,
+/// [`&mut T`] is a move-only type.
+///
+/// # False Positives
+///
+/// There is a bug where asserting a generic type `A<T>` implements [`From<T>`]
+/// or [`Into<T>`] will always pass.
+///
+/// For example, asserting that [`Rc<T>`] implements [`Into<T>`] passes when it
+/// shouldn't:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// # use std::rc::Rc;
+/// assert_impl!(for(T) Rc<T>: Into<T>);
+/// ```
+///
+/// If we try to use [`Into<T>`], we can see that [`Rc<T>`] does not actually
+/// implement it:
+///
+/// ```compile_fail
+/// # use std::rc::Rc;
+/// fn convert<T>(rc: Rc<T>) -> T {
+///     Into::<T>::into(rc)
+/// }
+/// ```
+///
+/// # Limitations
+///
+/// The type cannot refer to an external generic parameter:
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_impl!(u64: (Into<u32>) | (Into<u16>));
+/// # use std::rc::Rc;
+/// fn test<T>() {
+///     assert_impl!(Rc<T>: Clone);
+/// }
 /// ```
 ///
-/// [`bool`]: https://doc.rust-lang.org/std/primitive.bool.html
-/// [`Send`]: https://doc.rust-lang.org/std/marker/trait.Send.html
-/// [`Sync`]: https://doc.rust-lang.org/std/marker/trait.Sync.html
-/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
+/// The trait cannot refer to any generic parameter:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions; fn main() {}
+/// assert_impl!(for(T, U: From<T>) T: Into<U>);
+/// ```
+///
+/// [`impls`]: https://github.com/nvzqz/impls
+/// [exclusive disjunction]: https://en.wikipedia.org/wiki/Exclusive_disjunction
+/// [logical conjunction]: https://en.wikipedia.org/wiki/Logical_conjunction
+/// [logical disjunction]: https://en.wikipedia.org/wiki/Logical_disjunction
+/// [logical trait expression]: #logical-trait-expression
+///
+/// [generics]: https://doc.rust-lang.org/book/ch10-00-generics.html
+/// [precedence]: https://doc.rust-lang.org/reference/expressions.html#expression-precedence
+///
+/// [`&mut T`]:  https://doc.rust-lang.org/std/primitive.reference.html
+/// [`BitAnd`]:  https://doc.rust-lang.org/std/ops/trait.BitAnd.html
+/// [`BitOr`]:   https://doc.rust-lang.org/std/ops/trait.BitOr.html
+/// [`BitXor`]:  https://doc.rust-lang.org/std/ops/trait.BitXor.html
+/// [`bool`]:    https://doc.rust-lang.org/std/primitive.bool.html
+/// [`Clone`]:   https://doc.rust-lang.org/std/clone/trait.Clone.html
+/// [`Copy`]:    https://doc.rust-lang.org/std/marker/trait.Copy.html
+/// [`From`]:    https://doc.rust-lang.org/std/convert/trait.From.html
+/// [`From<T>`]: https://doc.rust-lang.org/std/convert/trait.From.html
+/// [`Into`]:    https://doc.rust-lang.org/std/convert/trait.Into.html
+/// [`Into<T>`]: https://doc.rust-lang.org/std/convert/trait.Into.html
+/// [`Not`]:     https://doc.rust-lang.org/std/ops/trait.Not.html
+/// [`Rc<T>`]:   https://doc.rust-lang.org/std/rc/struct.Rc.html
+/// [`Send`]:    https://doc.rust-lang.org/std/marker/trait.Send.html
+/// [`Sync`]:    https://doc.rust-lang.org/std/marker/trait.Sync.html
+/// [`u16`]:     https://doc.rust-lang.org/std/primitive.u16.html
+/// [`u32`]:     https://doc.rust-lang.org/std/primitive.u32.html
+/// [`u64`]:     https://doc.rust-lang.org/std/primitive.u64.html
+/// [`u8`]:      https://doc.rust-lang.org/std/primitive.u8.html
+/// [`usize`]:   https://doc.rust-lang.org/std/primitive.usize.html
 #[macro_export(local_inner_macros)]
 macro_rules! assert_impl {
-    (for($($generic:tt)*) $ty:ty: $($rest:tt)*) => {
+    (for($($generic:tt)+) $ty:ty: $($trait_expr:tt)+) => {
         const _: () = {
-            fn assert_impl<$($generic)*>() {
+            fn assert_impl<$($generic)+>() {
                 // Construct an expression using `True`/`False` and their
                 // operators, that corresponds to the provided expression.
-                let _: $crate::True = $crate::_does_impl!($ty: $($rest)*);
+                let _: $crate::True = $crate::_impls!($ty: $($trait_expr)+);
             }
         };
     };
-    ($ty:ty: $($rest:tt)*) => {
+    ($ty:ty: $($trait_expr:tt)+) => {
         // Construct an expression using `True`/`False` and their operators,
         // that corresponds to the provided expression.
-        const _: $crate::True = $crate::_does_impl!($ty: $($rest)*);
+        const _: fn() = || {
+            let _: $crate::True = $crate::_impls!($ty: $($trait_expr)+);
+        };
     };
 }

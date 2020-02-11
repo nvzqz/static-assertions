@@ -4,7 +4,7 @@
 #[macro_use]
 extern crate static_assertions;
 
-use core::ops::Range;
+use core::{marker::PhantomData, ops::{Add, Range}};
 
 trait Tri<A: ?Sized, B: ?Sized, C: ?Sized> {}
 
@@ -43,11 +43,19 @@ assert_impl_one!(Foo: C, A, B);
 #[derive(Clone)]
 struct Test;
 
-assert_impl!(u8: (From<u16>) | (Into<u16>));
-assert_impl!((): (From<u8>) | (From<u16>) | Send);
-assert_impl!((): (!From<u8>) & !(From<u16>) & Send);
+// Tests precedence:
+assert_impl!(Test: Clone | Clone ^ Clone & Clone);
+// assert_impl!(Test: Clone & Clone ^ Clone | Clone);
+assert_impl!(Test: !(((Clone | Clone) ^ Clone) & Clone));
+
+assert_impl!(u8: From<u16> | Into<u16>);
+assert_impl!(u8: Add<u8> & Add<&'static u8>);
+assert_impl!((): From<u8> | From<u16> | Send);
+assert_impl!((): !From<u8> & !From<u16> & Send);
 assert_impl!((): Copy | Clone);
+assert_impl!((): (Copy | Clone));
 assert_impl!((): Copy & Clone);
+assert_impl!((): (Copy & Clone));
 assert_impl!(Test: Copy | Clone);
 assert_impl!(Test: !Copy | Clone);
 assert_impl!(Test: !Copy & Clone);
@@ -57,15 +65,20 @@ assert_impl!(Test: !(!Clone));
 assert_impl!(Test: !(Copy) & !(!Clone));
 assert_impl!(Test: !(Copy & Clone));
 assert_impl!(str: !Copy & !Clone);
+assert_impl!(str: !Copy);
 
-#[derive(Clone)]
-struct Box<T>(T);
+#[derive(Clone, Copy)]
+struct Wrapper<T>(T);
 
-assert_impl!(for(T: Clone) Box<T>: Clone);
-assert_impl!(for(T: Clone + Send) Box<T>: Clone & Send);
-assert_impl!(for(T) Box<T>: (From<T>) & (Into<T>));
+assert_impl!(for(T: Copy) Wrapper<T>: Copy);
+assert_impl!(for(T: Clone) Wrapper<T>: Clone);
+assert_impl!(for(T) Wrapper<T>: !Send);
+assert_impl!(for(T: Clone + Send) Wrapper<T>: Clone & Send);
+assert_impl!(for(T) Wrapper<T>: Into<T>);
 
 assert_impl!(for(T) PhantomData<T>: Clone);
+assert_impl!(for(T) PhantomData<T>: !Copy | Clone);
 assert_impl!(for(T: Copy) T: Clone);
 assert_impl!(for(T: ?Sized) T: Clone | !Clone);
 assert_impl!(for('a, T: 'a) &'a mut T: !Copy);
+assert_impl!(for(T: Sync) &T: Send);
