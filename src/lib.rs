@@ -119,6 +119,7 @@ mod assert_obj_safe;
 mod assert_size;
 mod assert_trait;
 mod assert_type;
+mod assert_variance;
 mod const_assert;
 mod does_impl;
 
