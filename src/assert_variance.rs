@@ -1,4 +1,3 @@
-
 /// Asserts that the type is [covariant] over the given lifetime.
 ///
 /// For testing contravariance, also see [`assert_is_contravariant!`].
