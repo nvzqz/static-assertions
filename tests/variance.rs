@@ -9,11 +9,11 @@ assert_is_covariant! {
 }
 
 assert_is_covariant! {
-    for['f, T] (core::ptr::NonNull<&'f &'a T>) over 'a
+    for['a] (&'a T) over T
 }
 
 assert_is_covariant! {
-    (&'a ()) over 'a
+    for['f, T] (core::ptr::NonNull<&'f &'a T>) over 'a
 }
 
 assert_is_contravariant! {
@@ -21,7 +21,7 @@ assert_is_contravariant! {
 }
 
 assert_is_contravariant! {
-    for[T] (fn(*const &'a ()) -> T) over 'a
+    for[U] (fn(*const T) -> U) over T
 }
 
 assert_is_contravariant! {

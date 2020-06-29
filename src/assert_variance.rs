@@ -1,10 +1,10 @@
-/// Asserts that the type is [covariant] over the given lifetime.
+/// Asserts that the type is [covariant] over the given lifetime or type parameter.
 ///
-/// For testing contravariance, also see [`assert_is_contravariant!`].
+/// For testing contravariance, see [`assert_is_contravariant!`].
 ///
 /// # Examples
 ///
-/// This can ensure that any type has the expected variance for lifetime / type parameters.
+/// This can ensure that any type has the expected variance for lifetime or type parameters.
 /// This can be especially useful when making data structures:
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -12,27 +12,26 @@
 ///     x: *const T
 /// }
 ///
-/// assert_is_covariant!{
-///     for[T] (Foo<&'a T>) over 'a
+/// assert_is_covariant! {
+///     (Foo<T>) over T
 /// }
 /// ```
-/// Above, `Foo`'s variance over `T` is tested by using `&'a T` in its place, and testing variance
-/// over `'a`.
 ///
-///
-/// You don't have to include the `for[...]` clause if it would be empty:
+/// Testing generics can be done with the `for[]` clause. Note that the type or lifetime parameter
+/// being tested must not appear in the `for[]` clause.
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_is_covariant!{
-///     (fn() -> &'a i32) over 'a
+/// assert_is_covariant! {
+///     for['a, T] (&'a &'b T) over 'b
 /// }
 /// ```
+///
 ///
 /// The following example fails to compile because `&mut T` is invariant over `T` (in this case,
-/// `&'b i32`.
-///
+/// `&'b i32`).
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
+/// // WILL NOT COMPILE
 /// assert_is_covariant! {
 ///     for['a] (&'a mut &'b i32) over 'b
 /// }
@@ -54,21 +53,38 @@ macro_rules! assert_is_covariant {
         };
     };
 
-    (($type_name:ty) over $lf:lifetime) => {
-        assert_is_covariant!(for[] ($type_name) over $lf);
+    // This works because `&'a ()` is always covariant over `'a`. As a result, the subtyping
+    // relation between any `&'x ()` and `&'y ()` always matches the relation between lifetimes `'x`
+    // and `'y`. Therefore, testing variance over a type parameter `T` can be replaced by testing
+    // variance over lifetime `'a` in `&'a ()`.
+    // Even though this only checks cases where T is a reference, since a type constructor can be
+    // ONLY covariant, contravariant, or invariant over a type parameter, if it is works in this case
+    // it proves that the type is covariant in all cases.
+    (for[$($($gen_params:tt)+)?] ($type_name:ty) over $type_param:ident) => {
+        const _: () = {
+            type Transform<$($($gen_params)+,)? $type_param> = $type_name;
+
+            assert_is_covariant!{
+                for[$($($gen_params)+)?] (Transform<$($($gen_params)+,)? &'__a ()>) over '__a
+            }
+        };
+    };
+
+    (($type_name:ty) over $($rest:tt)*) => {
+        assert_is_covariant!(for[] ($type_name) over $($rest)*);
     };
 }
 
-/// Asserts that the type is [contravariant] over the given lifetime.
+/// Asserts that the type is [contravariant] over the given lifetime or type parameter.
 ///
-/// For testing covariance, also see [`assert_is_covariant!`].
+/// For testing covariance, see [`assert_is_covariant!`].
 ///
 /// **Note:** contravariance is extremely rare, and only ever occurs with `fn` types taking
 /// parameters with specific lifetimes.
 ///
 /// # Examples
 ///
-/// This can ensure that any type has the expected variance for lifetime / type parameters.
+/// This can ensure that any type has the expected variance for lifetime or type parameters.
 /// This can be especially useful when making data structures:
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -82,19 +98,20 @@ macro_rules! assert_is_covariant {
 /// ```
 ///
 ///
-/// You don't have to include the `for[...]` clause if it would be empty:
+/// The `for[...]` clause is unnecessary if it would be empty:
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
 /// assert_is_contravariant!{
-///     (fn(&'a i32)) over 'a
+///     (fn(T)) over T
 /// }
 /// ```
 ///
-/// The following example fails to compile because `&'a T` is covariant, not contravariant, over
-/// `'a`.
+/// The following example fails to compile because `&'a mut T` is covariant, not contravariant,
+/// over `'a`.
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
+/// // WILL NOT COMPILE
 /// assert_is_contravariant! {
 ///     (&'a mut f64) over 'a
 /// }
@@ -116,7 +133,18 @@ macro_rules! assert_is_contravariant {
         };
     };
 
-    (($type_name:ty) over $lf:lifetime) => {
-        assert_is_contravariant!(for[] ($type_name) over $lf);
+    // for info on why this works, see the implementation of assert_is_covariant
+    (for[$($($gen_params:tt)+)?] ($type_name:ty) over $type_param:ident) => {
+        const _: () = {
+            type Transform<$($($gen_params)+,)? $type_param> = $type_name;
+
+            assert_is_contravariant!{
+                for[$($($gen_params)+)?] (Transform<$($($gen_params)+,)? &'__a ()>) over '__a
+            }
+        };
+    };
+
+    (($type_name:ty) over $($rest:tt)*) => {
+        assert_is_contravariant!(for[] ($type_name) over $($rest)*);
     };
 }
