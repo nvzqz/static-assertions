@@ -1,3 +1,30 @@
+/// Asserts a size of a type is equal to a literal usize.
+///
+/// # Examples
+///
+/// The size of [`u32`] is 4 in bytes on all platforms:
+///
+/// ```
+/// # #[macro_use] extern crate static_assertions;
+/// assert_sizeof_eq!(u32, 4);
+/// ```
+///
+/// The example fails to compile because size of [`u64`] is not 6 in bytes:
+///
+/// ```compile_fail
+/// # #[macro_use] extern crate static_assertions;
+/// assert_sizeof_eq!(u64, 6);
+/// ```
+#[macro_export]
+macro_rules! assert_sizeof_eq {
+    ($T:ty, $SIZE:literal) => {
+        const _: &str = match $crate::_core::mem::size_of::<$T>() {
+            $SIZE => "",
+            x => ["size of $T != $SIZE"][x],
+        };
+    };
+}
+
 /// Asserts that types are equal in size.
 ///
 /// When performing operations such as pointer casts or dealing with [`usize`]
