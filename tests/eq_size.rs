@@ -5,6 +5,7 @@
 extern crate static_assertions;
 
 assert_size_eq!(u8, u8, (u8,), [u8; 1]);
+assert_sizeof_eq!(u32, 4);
 
 mod assoc_type {
     trait Trait {
