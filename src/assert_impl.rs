@@ -163,7 +163,7 @@ macro_rules! assert_impl_any {
 ///
 /// Note that the combination of all provided traits is required to not be
 /// implemented. If you want to check that none of multiple traits are
-/// implemented you should invoke [`assert_impl_not_any!`] instead.
+/// implemented, you should invoke [`assert_impl_not_any!`] instead.
 ///
 /// # Examples
 ///
@@ -233,7 +233,7 @@ macro_rules! assert_not_impl_all {
 ///
 /// This macro causes a compilation failure if any of the provided individual
 /// traits are implemented for the type. If you want to check that a combination
-/// of traits is not implemented you should invoke [`assert_impl_not_all!`]
+/// of traits is not implemented, you should invoke [`assert_impl_not_all!`]
 /// instead. For single traits both macros behave the same.
 ///
 /// # Examples

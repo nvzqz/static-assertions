@@ -2,7 +2,7 @@
 ///
 /// # Examples
 ///
-/// One can mimic `assert_impl!` using this macro:
+/// One can mimic `assert_impl!` using the following:
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}

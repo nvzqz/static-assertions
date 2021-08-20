@@ -1,4 +1,4 @@
-/// Asserts that the trait is a child of all of the other traits.
+/// Asserts that the trait is a subtrait of all of the other traits.
 ///
 /// Related:
 /// - [`assert_trait_super_all!`]
@@ -43,14 +43,14 @@ macro_rules! assert_trait_sub_all {
     };
 }
 
-/// Asserts that the trait is a parent of all of the other traits.
+/// Asserts that the trait is a supertrait of all of the other traits.
 ///
 /// Related:
 /// - [`assert_trait_sub_all!`]
 ///
 /// # Examples
 ///
-/// With this, traits `A` and `B` can both be tested to require [`Copy`] on a
+/// With this, traits `A` and `B` can both be tested to require [`Copy`] in a
 /// single line:
 ///
 /// ```
@@ -94,7 +94,7 @@ macro_rules! assert_trait_super_all {
     };
 }
 
-/// Asserts that the trait is a child of one or more of the other traits.
+/// Asserts that the trait is a subtrait of one or more of the other traits.
 ///
 /// Related:
 /// - [`assert_impl_any!`]

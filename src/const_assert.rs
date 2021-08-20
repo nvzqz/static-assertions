@@ -1,12 +1,12 @@
 /// Asserts that constant expressions evaluate to `true`.
 ///
 /// Constant expressions can be ensured to have certain properties via this
-/// macro If the expression evaluates to `false`, the file will fail to compile.
-/// This is synonymous to [`static_assert` in C++][static_assert].
+/// macro. If the expression evaluates to `false`, the module will fail to compile.
+/// This is similar to [`static_assert` in C++][static_assert].
 ///
 /// # Alternatives
 ///
-/// There also exists [`const_assert_eq`](macro.const_assert_eq.html) for
+/// There also exist [`const_assert_eq`](macro.const_assert_eq.html) for
 /// validating whether a sequence of expressions are equal to one another.
 ///
 /// # Examples
@@ -72,7 +72,7 @@ macro_rules! const_assert {
 /// const_assert_eq!(TWO * TWO, TWO + TWO);
 /// ```
 ///
-/// Just because 2 × 2 = 2 + 2 doesn't mean it holds true for other numbers:
+/// Just because 2 × 2 = 2 + 2, doesn't mean it holds true for other numbers:
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -164,7 +164,7 @@ macro_rules! const_assert_gt {
     };
 }
 
-/// Asserts that constants are less than or equal to each other.
+/// Asserts that constants are greater than or equal to each other.
 #[macro_export(local_inner_macros)]
 macro_rules! const_assert_ge {
     ($x:expr, $($y:expr),+ $(,)?) => {
