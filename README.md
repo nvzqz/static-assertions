@@ -21,7 +21,7 @@
 Compile-time assertions for Rust, brought to you by
 [Nikolai Vazquez](https://twitter.com/NikolaiVazquez).
 
-This library lets you ensure correct assumptions about constants, types, and
+This library lets you ensure assumptions about constants, types, and
 more. See the [docs] and [FAQ](#faq) for more info!
 
 ## Installation
@@ -70,12 +70,12 @@ This crate exposes the following macros:
 
 - **Q:** When would I want to use this?
 
-  **A:** This library is useful for when wanting to ensure properties of
+  **A:** This library is useful when wanting to ensure properties of
   constants, types, and traits.
 
   Basic examples:
 
-  - With the release of 1.39, `str::len` can be called in a `const`
+  - With the release of Rust 1.39, `str::len` can be called in a `const`
     context. Using [`const_assert!`], one can check that a string generated from
     elsewhere is of a given size:
 
@@ -114,7 +114,7 @@ This crate exposes the following macros:
 - **Q:** Will this affect my compiled binary?
 
   **A:** Nope! There is zero runtime cost to using this because all checks are
-  at compile-time, and so no code is emitted to run.
+  at compile-time, so no code is emitted to run.
 
 - **Q:** Will this affect my compile times?
 

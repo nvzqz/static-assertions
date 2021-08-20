@@ -20,7 +20,7 @@
 /// ```
 ///
 /// The following example fails to compile because `i32x4` explicitly has 4
-/// times the alignment as `[i32; 4]`:
+/// times the alignment of `[i32; 4]`:
 ///
 /// ```compile_fail
 /// # #[macro_use] extern crate static_assertions; fn main() {}

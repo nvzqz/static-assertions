@@ -6,7 +6,7 @@
 ///
 /// # Alternatives
 ///
-/// There also exists [`assert_size_eq_val`](macro.assert_size_eq_val.html) and
+/// There also exist [`assert_size_eq_val`](macro.assert_size_eq_val.html) and
 /// [`assert_size_eq_ptr`](macro.assert_size_eq_ptr.html). Instead of specifying
 /// types to compare, values' sizes can be directly compared against each other.
 ///
@@ -39,7 +39,7 @@ macro_rules! assert_size_eq {
     };
 }
 
-/// Asserts that types are equal in alignment.
+/// Asserts that types are equal in size.
 ///
 /// This macro has been deprecated in favor of
 /// [`assert_size_eq!`](macro.assert_size_eq.html).
@@ -58,8 +58,8 @@ macro_rules! assert_eq_size {
 ///
 /// # Examples
 ///
-/// This especially is useful for when coercing pointers between different types
-/// and ensuring the underlying values are the same size.
+/// This especially is useful when coercing between pointers to different types
+/// and ensuring the underlying values have the same size.
 ///
 /// ```
 /// # #[macro_use] extern crate static_assertions; fn main() {}
@@ -152,7 +152,7 @@ macro_rules! assert_size_eq_val {
     }
 }
 
-/// Asserts that values pointed to are equal in size.
+/// Asserts that values are equal in size.
 ///
 /// This macro has been deprecated in favor of
 /// [`assert_size_eq_val!`](macro.assert_size_eq_val.html).

@@ -11,7 +11,7 @@
 //!     <br><br>
 //! </div>
 //!
-//! Assertions to ensure correct assumptions about constants, types, and more.
+//! Assertions to ensure assumptions about constants, types, and more.
 //!
 //! _All_ checks provided by this crate are performed at [compile-time]. This
 //! allows for finding errors quickly and early when it comes to ensuring
@@ -38,19 +38,19 @@
 //! # fn main() {}
 //! ```
 //!
-//! When using [Rust 2018 edition][2018], the following shorthand can help if
+//! When using the [Rust 2018 edition][2018], the following shorthand can help if
 //! having `#[macro_use]` is undesirable.
 //!
 //! ```edition2018
-//! extern crate static_assertions as sa;
+//! use static_assertions::const_assert;
 //!
-//! sa::const_assert!(true);
+//! const_assert!(true);
 //! ```
 //!
 //! ## Procedural Extensions
 //!
-//! As an extension crate [`proc_static_assertions`] adds a number of new
-//! assertions to this. These are implemented as [procedural macros], hence the
+//! As an extension crate, [`proc_static_assertions`] adds a number of new
+//! assertions. These are implemented as [procedural macros], hence the
 //! "proc" prefix. As a result, they have a bit more visibility over what's
 //! being asserted over than normal macros would.
 //!
