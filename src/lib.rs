@@ -116,6 +116,7 @@ mod assert_cfg;
 mod assert_fields;
 mod assert_impl;
 mod assert_obj_safe;
+mod assert_one_feature;
 mod assert_size;
 mod assert_trait;
 mod assert_type;
