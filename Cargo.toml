@@ -24,5 +24,11 @@ members = ["proc"]
 nightly = []
 proc = ["proc_static_assertions"]
 
+# These are used for doctests in assert_one_feature
+feature-1 = []
+feature-2 = []
+
+default = ["feature-1", "feature-2"]
+
 [badges]
 maintenance = { status = "actively-maintained" }
