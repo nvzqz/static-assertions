@@ -2,6 +2,9 @@ on: [push, pull_request]
 
 name: CI
 
+permissions:
+  contents: read
+
 jobs:
   check:
     name: Check
