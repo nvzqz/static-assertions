@@ -36,14 +36,6 @@
 /// assert_obj_safe!(inner::BasicTrait);
 /// ```
 ///
-/// The following example fails to compile because raw pointers cannot be sent
-///  between threads safely:
-///
-/// ```compile_fail
-/// # #[macro_use] extern crate static_assertions; fn main() {}
-/// assert_impl!(*const u8, Send);
-/// ```
-///
 /// The following example fails to compile because generics without
 /// `where Self: Sized` are not allowed in [object-safe][object] trait methods:
 ///
